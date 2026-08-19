@@ -284,49 +284,6 @@
 </footer>
 
 <script>
-  /* ---------------- FORMSUBMIT VIA HIDDEN IFRAME ----------------
-   * FormSubmit ne déclenche pas l'auto-réponse (_autoresponse) pour les
-   * envois faits en AJAX/fetch (voir leur documentation officielle).
-   * On soumet donc un vrai formulaire HTML classique, mais ciblé vers un
-   * iframe invisible : aucune navigation visible pour l'internaute, tout
-   * en restant un envoi "normal" aux yeux de FormSubmit — donc l'auto-
-   * réponse fonctionne.
-   */
-  function submitViaHiddenIframe(email, payload, onDone){
-    const iframeName = 'fs_iframe_' + Date.now();
-    const iframe = document.createElement('iframe');
-    iframe.name = iframeName;
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-
-    const form = document.createElement('form');
-    form.action = 'https://formsubmit.co/' + email;
-    form.method = 'POST';
-    form.target = iframeName;
-    form.style.display = 'none';
-
-    Object.entries(payload).forEach(([key, value]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = value == null ? '' : String(value);
-      form.appendChild(input);
-    });
-    document.body.appendChild(form);
-
-    let done = false;
-    function finish(){
-      if (done) return;
-      done = true;
-      onDone();
-      setTimeout(() => { form.remove(); iframe.remove(); }, 1000);
-    }
-    iframe.addEventListener('load', finish);
-    setTimeout(finish, 6000);
-
-    form.submit();
-  }
-
   /* =====================================================================
    * CONNEXION À LA BASE D'ALERTES (Airtable)
    * =====================================================================
@@ -465,21 +422,10 @@
       const email = document.getElementById('paEmail').value.trim();
       const tel = document.getElementById('paTel').value.trim();
 
-      const autoresponseMessage =
-        'Madame, Monsieur,\n\n' +
-        'Merci d\'avoir soumis une alerte sur Défense Arnaque. Elle va être examinée par notre équipe avant toute publication éventuelle sur le forum. Vos coordonnées personnelles ne seront jamais rendues publiques.\n\n' +
-        'Bien cordialement,\n\n' +
-        'Secrétariat du cabinet d\'avocats Ziegler & Associés\n' +
-        '51, Avenue Raymond Poincaré\n' +
-        '75116 PARIS\n' +
-        '01 88 31 45 92 / 07 52 07 60 32';
-
       const payload = {
         _subject: 'Nouvelle alerte à valider — ' + (entite || 'sans nom renseigné'),
         _template: 'table',
         _captcha: 'false',
-        _autoresponse: autoresponseMessage,
-        email: email,
         'Prénom (privé)': prenom,
         'Nom (privé)': nom,
         'Email (privé)': email,
@@ -493,7 +439,21 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Envoi en cours…';
 
-      submitViaHiddenIframe('juridique@ziegler-associes.com', payload, () => {
+      fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .catch(err => {
+        console.error('Échec de l\'envoi de l\'alerte :', err);
+        const body = Object.entries(payload)
+          .filter(([k]) => !k.startsWith('_'))
+          .map(([k, v]) => k + ' : ' + (v || '—'))
+          .join('\n');
+        window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
+      })
+      .finally(() => {
         form.hidden = true;
         successEl.hidden = false;
         successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
