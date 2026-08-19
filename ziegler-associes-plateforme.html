@@ -1396,6 +1396,51 @@
 </footer>
 
 <script>
+  /* ---------------- FORMSUBMIT VIA HIDDEN IFRAME ----------------
+   * FormSubmit ne déclenche pas l'auto-réponse (_autoresponse) pour les
+   * envois faits en AJAX/fetch (voir leur documentation officielle).
+   * On soumet donc un vrai formulaire HTML classique, mais ciblé vers un
+   * iframe invisible : aucune navigation visible pour l'internaute, tout
+   * en restant un envoi "normal" aux yeux de FormSubmit — donc l'auto-
+   * réponse fonctionne. On ne peut pas lire la réponse de l'iframe
+   * (origine différente), donc on affiche la confirmation dès que
+   * l'iframe a fini de charger, avec un filet de sécurité de 6 secondes.
+   */
+  function submitViaHiddenIframe(email, payload, onDone){
+    const iframeName = 'fs_iframe_' + Date.now();
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.action = 'https://formsubmit.co/' + email;
+    form.method = 'POST';
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    Object.entries(payload).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value == null ? '' : String(value);
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+
+    let done = false;
+    function finish(){
+      if (done) return;
+      done = true;
+      onDone();
+      setTimeout(() => { form.remove(); iframe.remove(); }, 1000);
+    }
+    iframe.addEventListener('load', finish);
+    setTimeout(finish, 6000); // safety net if the load event never fires
+
+    form.submit();
+  }
+
   // Mobile nav
   const burger = document.getElementById('burger');
   const navLinks = document.getElementById('navLinks');
@@ -1503,22 +1548,7 @@
       // Sends the signalement by email to juridique@ziegler-associes.com via FormSubmit
       // (no backend required). On first use, FormSubmit sends a one-time confirmation
       // email to this address that must be validated before delivery starts working.
-      fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-      .catch(err => {
-        console.error("Échec de l'envoi automatique du signalement :", err);
-        // Fallback so the lead is never silently lost: open a pre-filled email draft.
-        const body = Object.entries(payload)
-          .filter(([k]) => !k.startsWith('_'))
-          .map(([k, v]) => k + ' : ' + (v || '—'))
-          .join('\n');
-        window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
-      })
-      .finally(() => {
+      submitViaHiddenIframe('juridique@ziegler-associes.com', payload, () => {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Envoyer mon signalement';
         form.style.display = 'none';
@@ -2048,18 +2078,10 @@
       'Source': 'Assistant conversationnel (chatbot)'
     };
 
-    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-    .then(() => { removeTyping(); addMessage('bot', flow.done.bot); composerEl.innerHTML = ''; })
-    .catch(err => {
-      console.error('Échec de l\'envoi du lead via le chatbot :', err);
+    submitViaHiddenIframe('juridique@ziegler-associes.com', payload, () => {
       removeTyping();
-      addMessage('bot', flow.error.bot);
-      renderComposer(flow.error);
+      addMessage('bot', flow.done.bot);
+      composerEl.innerHTML = '';
     });
   }
 })();

@@ -284,6 +284,49 @@
 </footer>
 
 <script>
+  /* ---------------- FORMSUBMIT VIA HIDDEN IFRAME ----------------
+   * FormSubmit ne déclenche pas l'auto-réponse (_autoresponse) pour les
+   * envois faits en AJAX/fetch (voir leur documentation officielle).
+   * On soumet donc un vrai formulaire HTML classique, mais ciblé vers un
+   * iframe invisible : aucune navigation visible pour l'internaute, tout
+   * en restant un envoi "normal" aux yeux de FormSubmit — donc l'auto-
+   * réponse fonctionne.
+   */
+  function submitViaHiddenIframe(email, payload, onDone){
+    const iframeName = 'fs_iframe_' + Date.now();
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.action = 'https://formsubmit.co/' + email;
+    form.method = 'POST';
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    Object.entries(payload).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value == null ? '' : String(value);
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+
+    let done = false;
+    function finish(){
+      if (done) return;
+      done = true;
+      onDone();
+      setTimeout(() => { form.remove(); iframe.remove(); }, 1000);
+    }
+    iframe.addEventListener('load', finish);
+    setTimeout(finish, 6000);
+
+    form.submit();
+  }
+
   /* =====================================================================
    * CONNEXION À LA BASE D'ALERTES (Airtable)
    * =====================================================================
@@ -450,21 +493,7 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Envoi en cours…';
 
-      fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-      .catch(err => {
-        console.error('Échec de l\'envoi de l\'alerte :', err);
-        const body = Object.entries(payload)
-          .filter(([k]) => !k.startsWith('_'))
-          .map(([k, v]) => k + ' : ' + (v || '—'))
-          .join('\n');
-        window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
-      })
-      .finally(() => {
+      submitViaHiddenIframe('juridique@ziegler-associes.com', payload, () => {
         form.hidden = true;
         successEl.hidden = false;
         successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
