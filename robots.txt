@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Crawlers d'IA génératives / moteurs de réponse (GEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+Sitemap: https://defense-arnaque.fr/sitemap.xml
