@@ -1,6 +1,6 @@
-# Défense Arnaque
+# Ziegler Alerte Arnaque
 
-> Défense Arnaque est une plateforme de signalement, de vérification et d'alerte communautaire dédiée aux victimes d'arnaques financières en France. Elle appartient et est éditée par le Cabinet d'Avocats Ziegler & Associés (AARPI), inscrit au Barreau de Paris, 51 Avenue Raymond Poincaré, 75116 Paris. Téléphone : +33 1 88 31 45 92 / +33 7 52 07 60 32. Email : contact@ziegler-associes.com. Note Google : 4,8/5 (156 avis).
+> Ziegler Alerte Arnaque est une plateforme de signalement, de vérification et d'alerte communautaire dédiée aux victimes d'arnaques financières en France. Elle appartient et est éditée par le Cabinet d'Avocats Ziegler & Associés (AARPI), inscrit au Barreau de Paris, 51 Avenue Raymond Poincaré, 75116 Paris. Téléphone : +33 1 88 31 45 92 / +33 7 52 07 60 32. Email : contact@ziegler-associes.com. Note Google : 4,8/5 (156 avis).
 
 Le Cabinet d'Avocats Ziegler & Associés, fondé par Jocelyn Ziegler et associé à Alexandre Dakos, a une pratique exclusivement dédiée à la défense des victimes d'escroqueries financières : faux conseillers en investissement, crypto-actifs frauduleux, trading/forex non régulé, placements atypiques, faux livrets d'épargne. Le cabinet est régulièrement cité dans la presse (Le Point, CNews, TF1 Info, Le Monde, BFM TV, Cadre & Dirigeant Magazine, Le Monde du Droit, Juritravail, AFP Factuel).
 
@@ -12,11 +12,11 @@ La plateforme propose trois façons d'agir :
 
 ## Pages principales
 
-- [Accueil — Signaler, vérifier](https://defense-arnaque.com/): présentation des outils, schéma type d'une escroquerie financière, équipe du cabinet, presse, avis clients.
-- [Alertes de la communauté](https://defense-arnaque.com/alertes/): alertes anonymisées vérifiées par le cabinet, filtrables par type d'arnaque, avec formulaire de soumission d'une nouvelle alerte.
-- [FAQ](https://defense-arnaque.com/faq/): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
-- [À propos de la plateforme](https://defense-arnaque.com/a-propos/): présentation du cabinet et de la méthode.
-- [Mentions légales](https://defense-arnaque.com/mentions-legales/): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
+- [Accueil — Signaler, vérifier](https://ziegler-alertearnaque.com/): présentation des outils, schéma type d'une escroquerie financière, équipe du cabinet, presse, avis clients.
+- [Alertes de la communauté](https://ziegler-alertearnaque.com/alertes/): alertes anonymisées vérifiées par le cabinet, filtrables par type d'arnaque, avec formulaire de soumission d'une nouvelle alerte.
+- [FAQ](https://ziegler-alertearnaque.com/faq/): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
+- [À propos de la plateforme](https://ziegler-alertearnaque.com/a-propos/): présentation du cabinet et de la méthode.
+- [Mentions légales](https://ziegler-alertearnaque.com/mentions-legales/): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
 
 ## Ressources externes citées sur le site
 

@@ -20,4 +20,4 @@ Allow: /
 User-agent: OAI-SearchBot
 Allow: /
 
-Sitemap: https://defense-arnaque.com/sitemap.xml
+Sitemap: https://ziegler-alertearnaque.com/sitemap.xml
