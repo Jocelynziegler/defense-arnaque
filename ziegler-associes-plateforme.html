@@ -167,6 +167,10 @@
     width:24px; height:24px; border-radius:50%; border:1px solid rgba(255,255,255,.35); color:#fff; text-decoration:none;
     display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; transition:.15s;
   }
+  @media(max-width:600px){
+    .ub-social a{width:32px; height:32px; font-size:13px;}
+    .ub-social{gap:10px;}
+  }
   .ub-social a:hover{background:var(--purple); border-color:var(--purple);}
   .ub-info{font-size:12.5px; color:#C7C2D6; letter-spacing:.02em;}
   @media(max-width:640px){.ub-info{display:none;}}
@@ -185,6 +189,10 @@
   .brand-text{line-height:1.15; white-space:nowrap;}
   .brand-text strong{display:block; font-family:var(--serif); font-size:14.5px; font-weight:700; color:var(--purple); text-transform:uppercase; letter-spacing:.02em;}
   .brand-text span{display:block; font-size:9.5px; letter-spacing:.01em; color:var(--ink-soft-2); text-transform:uppercase; margin-top:2px;}
+  @media(max-width:600px){
+    .nav-inner{padding:14px 16px;}
+    .brand-text span{display:none;}
+  }
   nav.links{display:flex; align-items:center; gap:18px;}
   nav.links a{text-decoration:none; font-size:14.5px; color:var(--ink-soft); font-weight:500; white-space:nowrap;}
   nav.links a:hover{color:var(--purple);}
@@ -223,7 +231,7 @@
   /* ---------- ALERTS TICKER ---------- */
   .ticker{
     display:flex; align-items:stretch; background:#0F0A18; color:#fff; overflow:hidden; position:relative;
-    border-bottom:1px solid rgba(255,255,255,.1);
+    border-bottom:1px solid rgba(255,255,255,.1); max-width:100vw;
   }
   .ticker-label{
     display:flex; align-items:center; gap:8px; flex-shrink:0; padding:10px 16px; background:var(--purple); color:#fff;
@@ -232,7 +240,7 @@
   }
   .ticker-dot{width:7px; height:7px; border-radius:50%; background:#fff; animation:tickerPulse 1.6s infinite;}
   @keyframes tickerPulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
-  .ticker-track-wrap{flex-grow:1; overflow:hidden; position:relative; mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent); -webkit-mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);}
+  .ticker-track-wrap{flex-grow:1; min-width:0; overflow:hidden; position:relative; mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent); -webkit-mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);}
   .ticker-track{display:flex; align-items:center; gap:0; width:max-content; animation:tickerScroll 38s linear infinite;}
   .ticker-track:hover{animation-play-state:paused;}
   @keyframes tickerScroll{from{transform:translateX(0);} to{transform:translateX(-50%);}}
@@ -636,6 +644,10 @@
     display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; text-transform:uppercase; transition:.15s;
   }
   .fs-social-icons a:hover{background:var(--purple); border-color:var(--purple);}
+  @media(max-width:600px){
+    .fs-social-icons{gap:12px;}
+    .fs-social-icons a{width:38px; height:38px; font-size:12px;}
+  }
 
   .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
   .reveal.in-view{opacity:1; transform:none;}

@@ -56,6 +56,10 @@
   .utility-inner{max-width:1120px; margin:0 auto; padding:9px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
   .ub-social{display:flex; align-items:center; gap:8px;}
   .ub-social a{width:24px; height:24px; border-radius:50%; border:1px solid rgba(255,255,255,.35); color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600;}
+  @media(max-width:600px){
+    .ub-social a{width:32px; height:32px; font-size:13px;}
+    .ub-social{gap:10px;}
+  }
   .ub-social a:hover{background:var(--purple); border-color:var(--purple);}
   .ub-info{font-size:12.5px; color:#C7C2D6;}
   @media(max-width:640px){.ub-info{display:none;}}
@@ -68,6 +72,12 @@
   .brand-text strong{display:block; font-size:14.5px; font-weight:700; color:var(--purple); text-transform:uppercase; letter-spacing:.02em;}
   .brand-text span{display:block; font-size:10.5px; letter-spacing:.02em; color:var(--ink-soft-2); text-transform:uppercase; margin-top:2px;}
   .back{font-size:13.5px; font-weight:600; color:var(--ink-soft); text-decoration:none; white-space:nowrap;}
+  @media(max-width:640px){
+    .nav-inner{padding:14px 16px; gap:10px;}
+    .brand-text span{display:none;}
+    .back{font-size:12.5px; flex-shrink:0; padding:10px 4px; margin:-10px -4px;}
+    .back-tail{display:none;}
+  }
   .back:hover{color:var(--purple);}
   .btn{padding:12px 22px; border-radius:999px; font-size:14px; font-weight:600; border:1px solid var(--ink); background:var(--ink); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:.15s; white-space:nowrap;}
   .btn:hover{background:transparent; color:var(--ink);}
@@ -183,7 +193,7 @@
       <span class="brand-mark">DA</span>
       <span class="brand-text"><strong>Défense Arnaque</strong><span>Un service du Cabinet d'Avocats Ziegler &amp; Associés</span></span>
     </a>
-    <a class="back" href="ziegler-associes-plateforme.html">← Retour à la plateforme</a>
+    <a class="back" href="ziegler-associes-plateforme.html">← Retour<span class="back-tail"> à la plateforme</span></a>
   </div>
 </header>
 
