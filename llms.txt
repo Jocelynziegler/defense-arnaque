@@ -9,10 +9,10 @@ Le Cabinet Ziegler & Associés a une pratique exclusivement dédiée à la défe
 
 ## Pages principales
 
-- [Accueil — Signaler, vérifier](https://defense-arnaque.fr/): présentation des deux outils, schéma type d'une escroquerie financière, équipe du cabinet.
-- [FAQ](https://defense-arnaque.fr/faq/): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
-- [À propos de la plateforme](https://defense-arnaque.fr/a-propos/): présentation du cabinet et de la méthode en 2 étapes.
-- [Mentions légales](https://defense-arnaque.fr/mentions-legales/): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
+- [Accueil — Signaler, vérifier](https://defense-arnaque.com/): présentation des deux outils, schéma type d'une escroquerie financière, équipe du cabinet.
+- [FAQ](https://defense-arnaque.com/faq/): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
+- [À propos de la plateforme](https://defense-arnaque.com/a-propos/): présentation du cabinet et de la méthode en 2 étapes.
+- [Mentions légales](https://defense-arnaque.com/mentions-legales/): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
 
 ## Ressources externes citées
 

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://defense-arnaque.fr/</loc>
+    <loc>https://defense-arnaque.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://defense-arnaque.fr/alertes/</loc>
+    <loc>https://defense-arnaque.com/alertes/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://defense-arnaque.fr/faq/</loc>
+    <loc>https://defense-arnaque.com/faq/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://defense-arnaque.fr/a-propos/</loc>
+    <loc>https://defense-arnaque.com/a-propos/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://defense-arnaque.fr/mentions-legales/</loc>
+    <loc>https://defense-arnaque.com/mentions-legales/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
