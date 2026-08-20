@@ -412,6 +412,17 @@
   }
   .result-cross-sell p{margin:0; max-width:44ch;}
   .result-cross-sell strong{color:var(--ink);}
+  .result-urgent{
+    margin-top:22px; padding:16px 20px; background:var(--paper); border:1px solid var(--rule); border-radius:var(--radius);
+  }
+  .result-urgent p{margin:0 0 8px; font-size:13.5px; max-width:none;}
+  .result-urgent strong{color:var(--ink);}
+  .result-urgent-phones{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .result-urgent-phones a{
+    font-family:var(--serif); font-weight:700; font-size:16px; color:var(--purple); text-decoration:none;
+  }
+  .result-urgent-phones a:hover{text-decoration:underline;}
+  .ru-sep{color:var(--ink-soft-2);}
 
   /* ---------- VERIFY TOOL ---------- */
   .verify-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule);}
@@ -721,7 +732,7 @@
   .cb-header-close:hover{color:#fff;}
 
   .cb-messages{flex-grow:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; background:var(--parchment);}
-  .cb-msg{max-width:82%; padding:10px 13px; border-radius:14px; font-size:13.5px; line-height:1.5; animation:cbIn .2s ease;}
+  .cb-msg{max-width:82%; padding:10px 13px; border-radius:14px; font-size:13.5px; line-height:1.5; animation:cbIn .2s ease; white-space:pre-line;}
   @keyframes cbIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
   .cb-msg.bot{align-self:flex-start; background:#fff; border:1px solid var(--rule); color:var(--ink); border-bottom-left-radius:4px;}
   .cb-msg.user{align-self:flex-end; background:var(--purple); color:#fff; border-bottom-right-radius:4px;}
@@ -1012,7 +1023,15 @@
             <div class="stamp">Dossier transmis</div>
             <div class="ref" id="refNumber">N° DOSS-2026-00000</div>
             <h3>Votre situation a bien été transmise</h3>
-            <p>Notre secrétariat juridique va vous contacter prochainement pour organiser la suite de votre dossier avec un avocat du cabinet.</p>
+            <p>Votre dossier a bien été transmis au Cabinet d'Avocats Ziegler &amp; Associés. Notre secrétariat juridique va vous contacter prochainement pour organiser la suite avec un avocat du cabinet.</p>
+            <div class="result-urgent">
+              <p>⚡ <strong>Situation urgente ?</strong> Contactez directement notre standard juridique par téléphone :</p>
+              <div class="result-urgent-phones">
+                <a href="tel:+33188314592">01 88 31 45 92</a>
+                <span class="ru-sep">·</span>
+                <a href="tel:+33752076032">07 52 07 60 32</a>
+              </div>
+            </div>
             <div class="result-cross-sell">
               <p><strong>Vous pouvez aussi aider d'autres victimes potentielles.</strong> Publiez une alerte anonyme sur la société ou la personne concernée — seul le texte de l'alerte sera visible, jamais vos coordonnées.</p>
               <a class="btn gold" href="defense-arnaque-alertes.html#publier">Publier une alerte →</a>
@@ -1922,7 +1941,7 @@
     },
     submit: { bot: 'submitting' },
     done: {
-      bot: "✅ Merci ! Votre situation a été transmise à notre secrétariat juridique, qui vous recontacte sous 48h ouvrées pour organiser la suite avec un avocat du cabinet. Souhaitez-vous aussi publier une alerte anonyme pour prévenir d'autres victimes potentielles ? Seul le texte de l'alerte serait visible, jamais vos coordonnées.",
+      bot: "✅ Merci ! Votre situation a été transmise au Cabinet d'Avocats Ziegler & Associés. Notre secrétariat juridique vous recontacte sous 48h ouvrées pour organiser la suite avec un avocat du cabinet.\n\n⚡ Situation urgente ? Appelez directement notre standard juridique : 01 88 31 45 92 ou 07 52 07 60 32.\n\nSouhaitez-vous aussi publier une alerte anonyme pour prévenir d'autres victimes potentielles ? Seul le texte de l'alerte serait visible, jamais vos coordonnées.",
       options: [
         { label: "Oui, publier une alerte", href: 'defense-arnaque-alertes.html#publier' },
         { label: "Non merci" }
