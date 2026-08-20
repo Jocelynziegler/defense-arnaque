@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9BV5B0W23Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9BV5B0W23Z');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alertes de la communauté | Ziegler Alerte Arnaque</title>
@@ -455,6 +463,7 @@
         body: JSON.stringify(payload)
       })
       .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .then(() => { if (window.gtag) gtag('event', 'alerte_publiee', { 'event_category': 'conversion', 'event_label': 'Publication alerte' }); })
       .catch(err => {
         console.error('Échec de l\'envoi de l\'alerte :', err);
         const body = Object.entries(payload)
@@ -473,5 +482,14 @@
 
 </script>
 
+
+<script>
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="tel:"]');
+  if (link && window.gtag) {
+    gtag('event', 'telephone_clic', { 'event_category': 'conversion', 'event_label': link.getAttribute('href') });
+  }
+});
+</script>
 </body>
 </html>

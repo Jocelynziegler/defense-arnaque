@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9BV5B0W23Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9BV5B0W23Z');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ziegler Alerte Arnaque — Signaler une arnaque | Ziegler &amp; Associés</title>
@@ -1561,6 +1569,7 @@
         body: JSON.stringify(payload)
       })
       .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .then(() => { if (window.gtag) gtag('event', 'signalement_envoye', { 'event_category': 'conversion', 'event_label': 'Formulaire de signalement' }); })
       .catch(err => {
         console.error("Échec de l'envoi automatique du signalement :", err);
         // Fallback so the lead is never silently lost: open a pre-filled email draft.
@@ -1839,6 +1848,7 @@
       form.querySelector('input').disabled = true;
       form.querySelector('button').disabled = true;
       note.innerHTML = 'Merci — vous recevrez nos prochaines alertes à <strong>' + email + '</strong>.';
+      if (window.gtag) gtag('event', 'newsletter_inscription', { 'event_category': 'engagement', 'event_label': 'Newsletter' });
     });
   })();
 </script>
@@ -2137,7 +2147,7 @@
       body: JSON.stringify(payload)
     })
     .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-    .then(() => { removeTyping(); addMessage('bot', flow.done.bot); composerEl.innerHTML = ''; })
+    .then(() => { if (window.gtag) gtag('event', 'chatbot_lead_envoye', { 'event_category': 'conversion', 'event_label': 'Secrétaire numérique' }); removeTyping(); addMessage('bot', flow.done.bot); composerEl.innerHTML = ''; })
     .catch(err => {
       console.error('Échec de l\'envoi du lead via le chatbot :', err);
       removeTyping();
@@ -2217,6 +2227,7 @@
       body: JSON.stringify(payload)
     })
     .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+    .then(() => { if (window.gtag) gtag('event', 'popup_sortie_envoye', { 'event_category': 'conversion', 'event_label': 'Popup de sortie' }); })
     .catch(err => {
       console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
       const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
@@ -2230,6 +2241,14 @@
     });
   });
 })();
+
+/* ---------------- SUIVI GA4 : CLICS TÉLÉPHONE ---------------- */
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href^="tel:"]');
+  if (link && window.gtag) {
+    gtag('event', 'telephone_clic', { 'event_category': 'conversion', 'event_label': link.getAttribute('href') });
+  }
+});
 </script>
 
 </body>
