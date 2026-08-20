@@ -694,15 +694,8 @@
   @media(max-width:480px){.exit-row{flex-direction:column;} .exit-row input{margin-bottom:8px;}}
 
   /* ---------- CHATBOT WIDGET ---------- */
-  .chatbot-launcher-group{
-    position:fixed; right:22px; bottom:22px; z-index:300; display:flex; flex-direction:column; align-items:center; gap:8px;
-  }
-  .chatbot-launcher-label{
-    background:#fff; color:var(--ink); font-family:var(--serif); font-weight:700; font-size:11px; letter-spacing:.02em;
-    padding:6px 13px; border-radius:999px; box-shadow:0 6px 18px rgba(20,10,30,.2); white-space:nowrap; border:1px solid var(--rule);
-  }
   .chatbot-launcher{
-    position:relative; width:60px; height:60px; border-radius:50%;
+    position:fixed; right:22px; bottom:22px; z-index:300; width:60px; height:60px; border-radius:50%;
     background:var(--purple); border:none; box-shadow:0 8px 24px rgba(20,10,30,.28);
     display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .15s;
   }
@@ -711,11 +704,7 @@
   .cl-icon-close{opacity:0; transform:scale(.5); color:#fff;}
   .chatbot-launcher.open .cl-icon-chat{opacity:0; transform:scale(.5);}
   .chatbot-launcher.open .cl-icon-close{opacity:1; transform:scale(1);}
-  @media(max-width:760px){
-    .chatbot-launcher-group{bottom:86px; right:16px;}
-    .chatbot-launcher{width:54px; height:54px;}
-    .chatbot-launcher-label{font-size:10px; padding:5px 11px;}
-  }
+  @media(max-width:760px){.chatbot-launcher{bottom:86px; right:16px; width:54px; height:54px;}}
 
   .chatbot-teaser{
     position:fixed; right:92px; bottom:34px; z-index:299; max-width:230px; background:#fff; color:var(--ink);
@@ -1865,17 +1854,14 @@
 
 <!-- CHATBOT WIDGET -->
 <div class="chatbot-teaser" id="chatbotTeaser">
-  Une question ? Le Bot Juridique peut vous aider en 2 minutes 👋
+  Une question ? Nous pouvons vous aider en 2 minutes 👋
   <button class="ct-close" id="chatbotTeaserClose" aria-label="Fermer">✕</button>
 </div>
 
-<div class="chatbot-launcher-group">
-  <span class="chatbot-launcher-label">Bot Juridique</span>
-  <button class="chatbot-launcher" id="chatbotLauncher" aria-label="Ouvrir le Bot Juridique">
-    <span class="cl-icon cl-icon-chat">💬</span>
-    <span class="cl-icon cl-icon-close">✕</span>
-  </button>
-</div>
+<button class="chatbot-launcher" id="chatbotLauncher" aria-label="Ouvrir le Secrétaire numérique">
+  <span class="cl-icon cl-icon-chat">💬</span>
+  <span class="cl-icon cl-icon-close">✕</span>
+</button>
 
 <div class="chatbot-panel" id="chatbotPanel" aria-hidden="true">
   <div class="cb-header">
