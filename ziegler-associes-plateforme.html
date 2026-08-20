@@ -407,6 +407,11 @@
   .result-card .ref{font-family:var(--mono); font-size:26px; margin:8px 0 4px;}
   .result-card p{color:var(--ink-soft); font-size:14.5px; max-width:46ch; margin:14px auto 0;}
   .result-actions{margin-top:22px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+  .result-cross-sell{
+    margin-top:26px; padding-top:24px; border-top:1px dashed var(--rule); display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+  .result-cross-sell p{margin:0; max-width:44ch;}
+  .result-cross-sell strong{color:var(--ink);}
 
   /* ---------- VERIFY TOOL ---------- */
   .verify-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule);}
@@ -642,6 +647,36 @@
   /* ---------- PILL BUTTONS (matches ziegler-associes.com / ziegler-avisarnaque.fr) ---------- */
   .cta-btn, .btn, .mobile-cta-bar a{ border-radius:999px; }
   .cta-btn, .btn{ letter-spacing:.02em; }
+  /* ---------- EXIT-INTENT POPUP ---------- */
+  .exit-overlay{
+    position:fixed; inset:0; z-index:400; background:rgba(15,10,24,.72); display:flex; align-items:center; justify-content:center;
+    padding:20px; opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .exit-overlay.show{opacity:1; pointer-events:auto;}
+  .exit-modal{
+    background:#fff; border-radius:16px; max-width:440px; width:100%; padding:36px 32px; position:relative;
+    transform:translateY(12px) scale(.97); transition:transform .25s; box-shadow:0 30px 70px rgba(15,10,24,.4);
+  }
+  .exit-overlay.show .exit-modal{transform:none;}
+  .exit-close{position:absolute; top:16px; right:16px; background:none; border:none; font-size:16px; color:var(--ink-soft-2); cursor:pointer; padding:6px;}
+  .exit-close:hover{color:var(--ink);}
+  .exit-eyebrow{
+    font-family:var(--serif); font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--purple);
+    display:block; margin-bottom:10px;
+  }
+  .exit-modal h3{font-size:22px; line-height:1.25; margin-bottom:10px;}
+  .exit-modal p{font-size:14px; color:var(--ink-soft); line-height:1.55; margin-bottom:22px;}
+  .exit-row{display:flex; gap:10px; margin-bottom:10px;}
+  #exitForm input{
+    width:100%; border:1px solid var(--rule); border-radius:var(--radius); padding:12px 14px; font-size:14px;
+    font-family:var(--sans); background:var(--parchment); color:var(--ink); margin-bottom:10px;
+  }
+  .exit-row input{margin-bottom:0;}
+  #exitForm input:focus{border-color:var(--purple); background:#fff; outline:none;}
+  #exitForm .btn{width:100%; justify-content:center; border:none; cursor:pointer; margin-top:4px;}
+  .exit-success{text-align:center; font-size:14.5px; color:var(--ink); padding:14px 0;}
+  @media(max-width:480px){.exit-row{flex-direction:column;} .exit-row input{margin-bottom:10px;}}
+
   /* ---------- CHATBOT WIDGET ---------- */
   .chatbot-launcher{
     position:fixed; right:22px; bottom:22px; z-index:300; width:60px; height:60px; border-radius:50%;
@@ -804,11 +839,11 @@
         <p>Vérifiez la fiabilité d'une société ou d'un placement avant d'investir un centime.</p>
         <span class="go">Lancer la vérification →</span>
       </a>
-      <a href="#signaler">
-        <span class="tag">03 — Être défendu</span>
-        <h3>Je veux être défendu</h3>
-        <p>Décrivez votre dossier, un avocat du cabinet vous recontacte pour en discuter.</p>
-        <span class="go">Décrire ma situation →</span>
+      <a href="defense-arnaque-alertes.html#publier">
+        <span class="tag">03 — Alerter</span>
+        <h3>Je veux prévenir les autres</h3>
+        <p>Publiez une alerte anonyme sur la société ou la personne concernée, validée par le cabinet avant diffusion.</p>
+        <span class="go">Publier une alerte →</span>
       </a>
     </div>
   </section>
@@ -978,6 +1013,10 @@
             <div class="ref" id="refNumber">N° DOSS-2026-00000</div>
             <h3>Votre situation a bien été transmise</h3>
             <p>Notre secrétariat juridique va vous contacter prochainement pour organiser la suite de votre dossier avec un avocat du cabinet.</p>
+            <div class="result-cross-sell">
+              <p><strong>Vous pouvez aussi aider d'autres victimes potentielles.</strong> Publiez une alerte anonyme sur la société ou la personne concernée — seul le texte de l'alerte sera visible, jamais vos coordonnées.</p>
+              <a class="btn gold" href="defense-arnaque-alertes.html#publier">Publier une alerte →</a>
+            </div>
             <div class="result-actions">
               <button class="btn secondary" id="newReportBtn" type="button">Nouveau signalement</button>
             </div>
@@ -1774,6 +1813,27 @@
   })();
 </script>
 
+<!-- EXIT-INTENT POPUP -->
+<div class="exit-overlay" id="exitOverlay" aria-hidden="true">
+  <div class="exit-modal" role="dialog" aria-labelledby="exitTitle">
+    <button class="exit-close" id="exitClose" aria-label="Fermer">✕</button>
+    <span class="exit-eyebrow">Avant de partir</span>
+    <h3 id="exitTitle">Vous avez un doute sur une arnaque financière ?</h3>
+    <p>Laissez-nous vos coordonnées, notre secrétariat juridique vous recontacte pour en discuter — sans engagement.</p>
+    <form id="exitForm">
+      <div class="exit-row">
+        <input type="text" id="exitPrenom" placeholder="Prénom" required>
+        <input type="tel" id="exitTel" placeholder="Téléphone" required>
+      </div>
+      <input type="email" id="exitEmail" placeholder="Email" required>
+      <button type="submit" class="btn gold" id="exitSubmitBtn">Être recontacté(e) →</button>
+    </form>
+    <div class="exit-success" id="exitSuccess" hidden>
+      ✅ Merci ! Notre secrétariat juridique vous recontacte prochainement.
+    </div>
+  </div>
+</div>
+
 <!-- CHATBOT WIDGET -->
 <div class="chatbot-teaser" id="chatbotTeaser">
   Une question ? Je peux vous aider en 2 minutes 👋
@@ -1862,7 +1922,11 @@
     },
     submit: { bot: 'submitting' },
     done: {
-      bot: "✅ Merci ! Votre situation a été transmise à notre secrétariat juridique, qui vous recontacte sous 48h ouvrées pour organiser la suite avec un avocat du cabinet."
+      bot: "✅ Merci ! Votre situation a été transmise à notre secrétariat juridique, qui vous recontacte sous 48h ouvrées pour organiser la suite avec un avocat du cabinet. Souhaitez-vous aussi publier une alerte anonyme pour prévenir d'autres victimes potentielles ? Seul le texte de l'alerte serait visible, jamais vos coordonnées.",
+      options: [
+        { label: "Oui, publier une alerte", href: 'defense-arnaque-alertes.html#publier' },
+        { label: "Non merci" }
+      ]
     },
     error: {
       bot: "L'envoi automatique a rencontré un problème. Vous pouvez réessayer, ou utiliser directement le formulaire de signalement ci-dessus.",
@@ -1997,6 +2061,10 @@
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
+    if (opt.href){
+      window.open(opt.href, '_blank');
+      return;
+    }
     goTo(opt.next);
   }
 
@@ -2046,6 +2114,88 @@
       renderComposer(flow.error);
     });
   }
+})();
+
+/* ---------------- EXIT-INTENT POPUP ---------------- */
+(function(){
+  const overlay = document.getElementById('exitOverlay');
+  const closeBtn = document.getElementById('exitClose');
+  const form = document.getElementById('exitForm');
+  const successEl = document.getElementById('exitSuccess');
+  const submitBtn = document.getElementById('exitSubmitBtn');
+  let shown = false;
+  let alreadySubmitted = false;
+
+  function openExit(){
+    if (shown || alreadySubmitted) return;
+    // Don't interrupt someone already mid-way through the report form or chatbot.
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  function closeExit(){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  closeBtn.addEventListener('click', closeExit);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });
+
+  // Desktop: mouse leaves through the top of the viewport (about to close tab / go back).
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY <= 0) openExit();
+  });
+
+  // Mobile: no mouseleave available — trigger after meaningful engagement instead
+  // (scrolled past the hero, then idle for a while), a reasonable proxy for "about to leave".
+  let idleTimer;
+  function resetIdleTimer(){
+    clearTimeout(idleTimer);
+    if (window.scrollY > window.innerHeight * 0.6){
+      idleTimer = setTimeout(openExit, 25000);
+    }
+  }
+  window.addEventListener('scroll', resetIdleTimer, { passive: true });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const prenom = document.getElementById('exitPrenom').value.trim();
+    const tel = document.getElementById('exitTel').value.trim();
+    const email = document.getElementById('exitEmail').value.trim();
+
+    const payload = {
+      _subject: 'Nouveau lead via le popup de sortie — Défense Arnaque',
+      _template: 'table',
+      _captcha: 'false',
+      'Prénom': prenom,
+      'Téléphone': tel,
+      'Email': email,
+      'Source': 'Popup de sortie (exit-intent)'
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours…';
+
+    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+    .catch(err => {
+      console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
+      const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
+      window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
+    })
+    .finally(() => {
+      alreadySubmitted = true;
+      form.hidden = true;
+      successEl.hidden = false;
+      setTimeout(closeExit, 2500);
+    });
+  });
 })();
 </script>
 
