@@ -457,15 +457,6 @@
   <a class="mc-report" href="ziegler-alertearnaque.html#signaler">Signaler une arnaque</a>
 </div>
 
-
-
-document.addEventListener('click', (e) => {
-  const link = e.target.closest('a[href^="tel:"]');
-  if (link && window.gtag) {
-    gtag('event', 'telephone_clic', { 'event_category': 'conversion', 'event_label': link.getAttribute('href') });
-  }
-});
-</script>
 <!-- EXIT-INTENT POPUP -->
 <div class="exit-overlay" id="exitOverlay" aria-hidden="true">
   <div class="exit-modal" role="dialog" aria-labelledby="exitTitle">
@@ -856,91 +847,6 @@ document.addEventListener('click', (e) => {
       renderComposer(flow.error);
     });
   }
-})();
-
-/* ---------------- EXIT-INTENT POPUP ---------------- */
-(function(){
-  const overlay = document.getElementById('exitOverlay');
-  const closeBtn = document.getElementById('exitClose');
-  const form = document.getElementById('exitForm');
-  const successEl = document.getElementById('exitSuccess');
-  const submitBtn = document.getElementById('exitSubmitBtn');
-  let shown = false;
-  let alreadySubmitted = false;
-
-  function openExit(){
-    if (shown || alreadySubmitted) return;
-    // Don't interrupt someone already mid-way through the report form or chatbot.
-    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
-    if (chatOpen) return;
-    shown = true;
-    overlay.classList.add('show');
-    overlay.setAttribute('aria-hidden', 'false');
-  }
-  function closeExit(){
-    overlay.classList.remove('show');
-    overlay.setAttribute('aria-hidden', 'true');
-  }
-
-  closeBtn.addEventListener('click', closeExit);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });
-
-  // Desktop: mouse leaves through the top of the viewport (about to close tab / go back).
-  document.addEventListener('mouseleave', (e) => {
-    if (e.clientY <= 0) openExit();
-  });
-
-  // Mobile: no mouseleave available — trigger after meaningful engagement instead
-  // (scrolled past the hero, then idle for a while), a reasonable proxy for "about to leave".
-  let idleTimer;
-  function resetIdleTimer(){
-    clearTimeout(idleTimer);
-    if (window.scrollY > window.innerHeight * 0.6){
-      idleTimer = setTimeout(openExit, 25000);
-    }
-  }
-  window.addEventListener('scroll', resetIdleTimer, { passive: true });
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const prenom = document.getElementById('exitPrenom').value.trim();
-    const tel = document.getElementById('exitTel').value.trim();
-    const email = document.getElementById('exitEmail').value.trim();
-    const details = document.getElementById('exitDetails').value.trim();
-
-    const payload = {
-      _subject: 'Nouveau lead via le popup de sortie — Ziegler Alerte Arnaque',
-      _template: 'table',
-      _captcha: 'false',
-      'Prénom': prenom,
-      'Téléphone': tel,
-      'Email': email,
-      'Faits et préjudice décrits': details,
-      'Source': 'Popup de sortie (exit-intent)'
-    };
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Envoi en cours…';
-
-    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-    .then(() => { if (window.gtag) gtag('event', 'popup_sortie_envoye', { 'event_category': 'conversion', 'event_label': 'Popup de sortie' }); })
-    .catch(err => {
-      console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
-      const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
-      window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
-    })
-    .finally(() => {
-      alreadySubmitted = true;
-      form.hidden = true;
-      successEl.hidden = false;
-      setTimeout(closeExit, 2500);
-    });
-  });
 })();
 
 /* ---------------- SUIVI GA4 : CLICS TÉLÉPHONE ---------------- */
