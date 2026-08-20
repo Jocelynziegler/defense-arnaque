@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Défense Arnaque — Signalement, vérification et défense des victimes d'arnaques financières | Ziegler &amp; Associés</title>
-<meta name="description" content="Victime d'une arnaque financière ? Signalez votre situation et vérifiez un placement avant d'investir. Notre secrétariat juridique vous recontacte. Plateforme du Cabinet Ziegler & Associés, avocats au Barreau de Paris.">
+<title>Défense Arnaque — Signaler une arnaque financière | Ziegler &amp; Associés</title>
+<meta name="description" content="Victime d'une arnaque financière ? Signalez votre situation et vérifiez un placement avant d'investir. Plateforme du Cabinet Ziegler & Associés, avocats à Paris.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="author" content="Cabinet d'Avocats Ziegler & Associés">
 <link rel="canonical" href="https://defense-arnaque.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Défense Arnaque">
-<meta property="og:title" content="Défense Arnaque — Signalement, vérification et défense des victimes d'arnaques financières">
-<meta property="og:description" content="Signalez une arnaque financière et vérifiez un placement avant d'investir. Notre secrétariat juridique vous recontacte pour organiser la suite avec un avocat du Cabinet Ziegler & Associés.">
+<meta property="og:title" content="Défense Arnaque — Signaler une arnaque financière">
+<meta property="og:description" content="Signalez une arnaque financière et vérifiez un placement avant d'investir. Plateforme du Cabinet Ziegler & Associés, avocats au Barreau de Paris.">
 <meta property="og:url" content="https://defense-arnaque.com/">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:image" content="https://defense-arnaque.com/assets/og-image.png">
@@ -101,16 +101,10 @@
       ]
     },
     {
-      "@type": "ItemList",
-      "name": "Dernières alertes signalées par la communauté",
-      "url": "https://defense-arnaque.com/alertes/",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Crypto-actifs — Plateforme de trading crypto non régulée" },
-        { "@type": "ListItem", "position": 2, "name": "Faux conseiller — Faux conseiller se présentant comme mandataire d'une banque" },
-        { "@type": "ListItem", "position": 3, "name": "Trading / Forex — Plateforme de trading Forex / CFD non autorisée" },
-        { "@type": "ListItem", "position": 4, "name": "Placement atypique — Placement vin et métaux précieux non agréé AMF" },
-        { "@type": "ListItem", "position": 5, "name": "Livret fictif — Faux livret d'épargne à haut rendement" }
-      ]
+      "@type": "CollectionPage",
+      "name": "Alertes de la communauté",
+      "description": "Alertes anonymisées d'arnaques financières, vérifiées par le Cabinet Ziegler & Associés avant publication, mises à jour régulièrement.",
+      "url": "https://defense-arnaque.com/alertes/"
     },
     {
       "@type": "FAQPage",
@@ -1707,7 +1701,7 @@
     }
 
     async function loadTicker(){
-      if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) return FALLBACK_TICKER;
+      if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) return { items: FALLBACK_TICKER, isDemo: true };
       try {
         const url = 'https://api.airtable.com/v0/' + AIRTABLE_BASE_ID + '/' + encodeURIComponent(AIRTABLE_TABLE_NAME)
           + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()')
@@ -1720,16 +1714,26 @@
           entity: r.fields['Entité concernée'] || '',
           when: r.fields['Date'] ? timeAgo(r.fields['Date']) : ''
         }));
-        return records.length ? records : FALLBACK_TICKER;
+        // Airtable is properly connected: if there are zero published alerts yet,
+        // never fall back to fictional demo entries — that would look like real
+        // data. Hide the ticker entirely instead (handled by the caller).
+        return { items: records, isDemo: false };
       } catch (err){
         console.error('Ticker : Airtable injoignable, repli sur les exemples.', err);
-        return FALLBACK_TICKER;
+        return { items: FALLBACK_TICKER, isDemo: true };
       }
     }
 
     const track = document.getElementById('tickerTrack');
+    const tickerBar = document.querySelector('.ticker');
     if (track){
-      loadTicker().then(items => {
+      loadTicker().then(({ items, isDemo }) => {
+        if (!items.length){
+          // Airtable is connected and working, but has zero published alerts yet:
+          // hide the ticker rather than show fictional entries as if real.
+          if (tickerBar) tickerBar.style.display = 'none';
+          return;
+        }
         const itemHtml = items.map(a =>
           '<a class="ticker-item" href="defense-arnaque-alertes.html"><span class="ti-tag">' + a.tag + '</span><span class="ti-sep">·</span>' + a.entity + '<span class="ti-sep">·</span><span class="ti-when">' + a.when + '</span></a>'
         ).join('');
