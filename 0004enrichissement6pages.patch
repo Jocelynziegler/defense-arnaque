@@ -1,0 +1,681 @@
+From a76ffbaa0f0e85fbbc2397e95f7dfc2c3ca1805f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 21 Aug 2026 20:41:07 +0000
+Subject: [PATCH] SEO: enrichit les 6 pages d'outils et corrige sitemap,
+ llms.txt, titres
+
+PROBLEME TRAITE
+Les 6 pages d'outils partageaient 67 a 79% de leur vocabulaire avec la page
+d'accueil, pour seulement 34 a 55 mots propres et 460 a 530 mots au total.
+Google risquait de les traiter comme des quasi-doublons de l'accueil, et
+elles se seraient concurrencees au lieu de s'additionner.
+
+ENRICHISSEMENT (contenu inedit, absent de l'accueil)
+- IBAN : lecture d'un IBAN francais groupe par groupe, six signaux d'alerte,
+  ce que seule la banque peut verifier, demarches si le virement est parti.
+- Telephone : detail des prefixes ARCEP, usurpation de numero (spoofing) et
+  pourquoi le numero affiche ne prouve rien, ce qu'un interlocuteur legitime
+  ne demande jamais, 33700 et Bloctel.
+- Email : methode de lecture d'une adresse (domaine reel, sous-domaines
+  trompeurs, variations typographiques), usurpations d'autorites, fraude au
+  recouvrement de fonds.
+- Societe : registres d'agrement a croiser (REGAFI, ORIAS, listes blanches),
+  dix signaux d'alerte, conduite a tenir en cas d'inscription en liste noire.
+- Crypto : irreversibilite des transactions, formats par blockchain,
+  mecanismes d'arnaque frequents, cinq reflexes avant tout envoi.
+- Auto-diagnostic : les six signaux expliques un par un, lecture du resultat,
+  schema type d'une escroquerie en huit etapes.
+Chaque page recoit aussi une FAQ qui lui est propre.
+
+Resultat mesure : 1165 a 1285 mots par page (contre 460-530), vocabulaire
+commun avec l'accueil ramene a 44-50%, 180 a 250 mots propres par page.
+
+CORRECTIFS
+- sitemap : le sommaire /alertes/ n'etait jamais declare. Ajout dans
+  generate-alert-pages.php, verifie idempotent sur deux passages.
+- llms.txt : 5 des 6 pages d'outils absentes, plus /alertes/. Ajoutees avec
+  le detail de leur contenu, pour les moteurs de reponse IA.
+- 5 titres depassaient 60 caracteres (91 pour crypto) et etaient tronques
+  dans les resultats Google. Tous ramenes sous la limite, og:title et
+  twitter:title alignes.
+- 7 meta descriptions depassaient 160 caracteres. Toutes ramenees en 130-141.
+
+VERIFICATIONS
+HTML bien forme et JSON-LD valide sur les 13 fichiers, un seul H1 par page,
+outils testes en navigateur apres insertion (IBAN valide et invalide,
+auto-diagnostic, format crypto), aucune erreur JavaScript.
+
+Le contenu ajoute traite de sujets juridiques et financiers : il est redige
+de facon factuelle et prudente, mais doit etre relu par le cabinet avant
+mise en ligne.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01WJN3oTb4k7ZkiWYhmrqBj7
+---
+ generate-alert-pages.php                      |  3 +
+ llms.txt                                      | 12 ++++
+ ziegler-alertearnaque-auto-diagnostic.html    | 67 +++++++++++++++++--
+ ziegler-alertearnaque-verifier-crypto.html    | 60 +++++++++++++++--
+ ziegler-alertearnaque-verifier-email.html     | 54 +++++++++++++--
+ ziegler-alertearnaque-verifier-iban.html      | 60 +++++++++++++++--
+ ziegler-alertearnaque-verifier-societe.html   | 59 ++++++++++++++--
+ ziegler-alertearnaque-verifier-telephone.html | 61 +++++++++++++++--
+ 8 files changed, 341 insertions(+), 35 deletions(-)
+
+diff --git a/generate-alert-pages.php b/generate-alert-pages.php
+index d19d359..b9846c5 100644
+--- a/generate-alert-pages.php
++++ b/generate-alert-pages.php
+@@ -373,6 +373,9 @@ if (file_exists($SITEMAP_FILE)) {
+     // Retire les anciennes entrées /alertes/ générées précédemment
+     $sitemap = preg_replace('#\s*<url>\s*<loc>' . preg_quote($SITE_URL, '#') . '/alertes/[^<]*</loc>.*?</url>\s*#s', '', $sitemap);
+     $newEntries = '';
++    // Le sommaire /alertes/ doit lui aussi figurer au sitemap : c'est la page
++    // qui recense toutes les alertes, et elle etait jusqu'ici absente.
++    $newEntries .= "  <url>\n    <loc>$SITE_URL/alertes/</loc>\n    <lastmod>" . date('Y-m-d') . "</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n";
+     foreach ($currentSlugs as $slug) {
+         $newEntries .= "  <url>\n    <loc>$SITE_URL/alertes/$slug.html</loc>\n    <lastmod>" . date('Y-m-d') . "</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n";
+     }
+diff --git a/llms.txt b/llms.txt
+index 8a05af7..61821b7 100644
+--- a/llms.txt
++++ b/llms.txt
+@@ -26,6 +26,18 @@ La plateforme propose trois façons d'agir :
+ - [FAQ](https://ziegler-alertearnaque.com/ziegler-alertearnaque-faq.html): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
+ - [À propos de la plateforme](https://ziegler-alertearnaque.com/ziegler-alertearnaque-a-propos.html): présentation du cabinet et de la méthode.
+ - [Mentions légales](https://ziegler-alertearnaque.com/ziegler-alertearnaque-mentions-legales.html): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
++- [Archive des signalements](https://ziegler-alertearnaque.com/alertes/): page dédiée pour chaque alerte communautaire publiée, avec le détail du signalement, l'entité concernée et les coordonnées utilisées par l'interlocuteur.
++
++## Pages dédiées aux six outils de vérification
++
++Chaque outil dispose de sa page autonome, avec l'outil fonctionnel et un contenu explicatif détaillé.
++
++- [Vérifier une société avant d'investir](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-societe.html): liste noire officielle Banque de France / ACPR / AMF, registres d'agrément à croiser (REGAFI, ORIAS, listes blanches AMF), dix signaux d'alerte sur un site d'investissement.
++- [Vérifier un numéro de téléphone](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-telephone.html): préfixes de démarchage officiels ARCEP détaillés, explication de l'usurpation de numéro (spoofing), ce qu'un interlocuteur légitime ne demande jamais, signalement au 33700 et Bloctel.
++- [Vérifier une adresse email suspecte](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html): liste noire officielle Banque de France / ACPR / AMF, méthode de lecture d'une adresse (domaine réel, sous-domaines trompeurs, variations typographiques), usurpations d'autorités et fraude au recouvrement de fonds.
++- [Vérifier un IBAN avant un virement](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html): validation ISO 7064 (clé mod-97), décomposition d'un IBAN français, identification de la banque, six signaux d'alerte sur un IBAN, démarches si le virement est déjà parti.
++- [Vérifier un portefeuille crypto](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html): détection d'adresse malveillante via GoPlus Security, formats d'adresse par blockchain, irréversibilité des transactions, mécanismes d'arnaque crypto les plus fréquents.
++- [Auto-diagnostic d'arnaque financière](https://ziegler-alertearnaque.com/ziegler-alertearnaque-auto-diagnostic.html): questionnaire en 6 questions inspiré de l'AMF et du ministère de l'Intérieur, chaque signal expliqué en détail, lecture du résultat, schéma type d'une escroquerie en huit étapes.
+ 
+ ## Ressources externes citées sur le site
+ 
+diff --git a/ziegler-alertearnaque-auto-diagnostic.html b/ziegler-alertearnaque-auto-diagnostic.html
+index 8a39b8f..ac9e561 100644
+--- a/ziegler-alertearnaque-auto-diagnostic.html
++++ b/ziegler-alertearnaque-auto-diagnostic.html
+@@ -17,14 +17,14 @@
+ <link rel="icon" type="image/x-icon" href="/favicon.ico">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#8A4CB8">
+-<title>Auto-diagnostic : suis-je victime d'une arnaque financière ? | Ziegler Alerte Arnaque</title>
+-<meta name="description" content="Répondez à 6 questions inspirées des signaux d'alerte de l'AMF pour évaluer si votre situation présente des signes d'arnaque financière. Outil du Cabinet d'Avocats Ziegler & Associés.">
++<title>Suis-je victime d'une arnaque ? Auto-diagnostic AMF</title>
++<meta name="description" content="Six questions inspirées des signaux d&#x27;alerte de l&#x27;AMF pour évaluer votre situation, avec l&#x27;explication détaillée de chaque signal.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-auto-diagnostic.html">
+ <meta property="og:type" content="website">
+ <meta property="og:site_name" content="Ziegler Alerte Arnaque">
+-<meta property="og:title" content="Auto-diagnostic arnaque financière — Ziegler Alerte Arnaque">
+-<meta property="og:description" content="6 questions pour évaluer si votre situation présente des signes d'arnaque financière.">
++<meta property="og:title" content="Suis-je victime d&#x27;une arnaque ? Auto-diagnostic AMF">
++<meta property="og:description" content="Six questions inspirées des signaux d&#x27;alerte de l&#x27;AMF pour évaluer votre situation, avec l&#x27;explication détaillée de chaque signal.">
+ <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-auto-diagnostic.html">
+ <meta property="og:locale" content="fr_FR">
+ <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+@@ -33,8 +33,8 @@
+ <meta property="og:image:type" content="image/png">
+ <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <meta name="twitter:card" content="summary_large_image">
+-<meta name="twitter:title" content="Auto-diagnostic arnaque financière — Ziegler Alerte Arnaque">
+-<meta name="twitter:description" content="6 questions pour évaluer si votre situation présente des signes d'arnaque financière.">
++<meta name="twitter:title" content="Suis-je victime d&#x27;une arnaque ? Auto-diagnostic AMF">
++<meta name="twitter:description" content="Six questions inspirées des signaux d&#x27;alerte de l&#x27;AMF pour évaluer votre situation, avec l&#x27;explication détaillée de chaque signal.">
+ <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+ <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+@@ -363,6 +363,7 @@
+   .btn.gold:hover{background:transparent; color:var(--purple);}
+   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
+   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
++  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
+   .intro-content ul{padding-left:20px; margin:12px 0;}
+   .intro-content li{margin-bottom:6px;}
+   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
+@@ -441,6 +442,60 @@
+       <h2>Cet outil remplace-t-il une vérification officielle ?</h2>
+       <p>Non. Cet auto-diagnostic est un outil d'aide à la décision à caractère indicatif. Il ne remplace ni les vérifications officielles de l'AMF, ni une consultation juridique individualisée. En cas de doute, en particulier si votre résultat indique un risque élevé, un avocat du cabinet peut examiner votre situation en détail.</p>
+ 
++
++      <h2>Les six signaux, expliqués un par un</h2>
++      <p>Ce questionnaire reprend les marqueurs identifiés par l'AMF et le ministère de l'Intérieur. Voici ce que chacun révèle concrètement, et pourquoi il figure dans la liste.</p>
++
++      <h3>1. Un rendement garanti, élevé et sans risque</h3>
++      <p>C'est le signal le plus fiable, parce qu'il repose sur une impossibilité économique. En matière financière, le rendement rémunère le risque : les deux sont indissociables. Un placement réellement sans risque offre un rendement faible ; un rendement élevé implique nécessairement un risque de perte. Une promesse combinant « garanti », « élevé » et « sans risque » ne décrit aucun produit existant. Elle décrit un argumentaire de vente.</p>
++
++      <h3>2. Une pression pour investir rapidement</h3>
++      <p>L'urgence sert à empêcher la vérification. Offre limitée dans le temps, place à réserver, cours qui va monter, dossier qui se ferme ce soir : l'objectif est de vous faire décider avant d'avoir consulté un registre officiel ou un proche. Un professionnel légitime vous laisse le temps de la réflexion — il y est même tenu pour un certain nombre de produits.</p>
++
++      <h3>3. Un contact initial non sollicité</h3>
++      <p>Réseau social, application de messagerie, site de rencontre, appel entrant, publicité ciblée : vous n'avez pas cherché ce placement, il est venu à vous. Le démarchage financier est strictement encadré en France, et la plupart des acteurs sérieux ne prospectent pas de cette manière. Ce signal prend une importance particulière lorsqu'il se combine avec une relation de confiance construite sur plusieurs semaines avant toute proposition d'investissement.</p>
++
++      <h3>4. Des difficultés pour retirer vos fonds</h3>
++      <p>C'est le moment de bascule, et souvent celui où la victime prend conscience de la situation. Tant que vous versez, tout fonctionne. Dès que vous demandez à récupérer, les obstacles apparaissent : délais techniques, justificatifs supplémentaires, interlocuteur injoignable, opération « en cours de traitement ». Si vous en êtes là, n'attendez pas d'avoir la certitude : agissez immédiatement.</p>
++
++      <h3>5. Des frais ou taxes réclamés pour débloquer un retrait</h3>
++      <p>Ce signal est presque définitif à lui seul. <strong>Aucun opérateur légitime ne vous demande de payer pour récupérer vos propres fonds.</strong> Les frais éventuels sont prélevés sur le montant restitué, jamais réclamés par un versement complémentaire. Quel que soit le motif invoqué — taxe, frais de conversion, caution, commission de déblocage, régularisation fiscale — il s'agit d'une tentative d'extraire un versement supplémentaire. Ne payez pas.</p>
++
++      <h3>6. L'acteur est introuvable sur les listes officielles</h3>
++      <p>Toute société proposant des services d'investissement en France doit être enregistrée et identifiable sur les registres publics. Son absence n'est pas un détail administratif : elle signifie que l'activité s'exerce en dehors du cadre légal, et donc sans les protections qui s'y attachent. Vérifiez avant, pas après.</p>
++
++      <h2>Comment lire votre résultat</h2>
++      <ul>
++        <li><strong>0 à 1 signal</strong> — peu d'indices dans vos réponses. Cela ne vaut pas validation : vérifiez systématiquement l'agrément de tout acteur avant d'investir.</li>
++        <li><strong>2 à 3 signaux</strong> — plusieurs marqueurs sont réunis. Suspendez tout nouveau versement et procédez aux vérifications officielles avant d'aller plus loin.</li>
++        <li><strong>4 signaux ou plus</strong> — la configuration correspond aux schémas d'escroquerie documentés. N'effectuez plus aucun versement, rassemblez vos preuves et faites examiner votre situation sans attendre.</li>
++      </ul>
++      <p>Ce diagnostic est un outil d'orientation, pas une expertise juridique. Il ne tient compte ni du montant en jeu, ni de la chronologie précise des faits, ni du comportement des établissements intervenus — trois éléments pourtant déterminants pour apprécier les suites envisageables.</p>
++
++      <h2>Le schéma type d'une escroquerie financière</h2>
++      <p>Les dossiers se ressemblent au point que la mécanique est prévisible. La reconnaître permet de situer où vous en êtes.</p>
++      <ul>
++        <li><strong>Prise de contact</strong> — approche non sollicitée, mise en confiance progressive.</li>
++        <li><strong>Premier versement modeste</strong> — le montant est volontairement accessible.</li>
++        <li><strong>Gains affichés</strong> — une interface montre une progression, qui n'existe que sur cet écran.</li>
++        <li><strong>Retrait test réussi</strong> — une petite somme est effectivement restituée. C'est l'étape qui installe la confiance, et la plus coûteuse à terme.</li>
++        <li><strong>Versements croissants</strong> — en confiance, les montants augmentent, parfois avec recours à l'épargne, au crédit ou à des proches.</li>
++        <li><strong>Blocage</strong> — les retraits deviennent impossibles, des frais sont réclamés.</li>
++        <li><strong>Disparition</strong> — l'interlocuteur devient injoignable.</li>
++        <li><strong>Re-ciblage</strong> — un faux service de récupération recontacte la victime et réclame des frais préalables. Beaucoup de personnes perdent une seconde fois à ce stade.</li>
++      </ul>
++      <p>Si vous vous reconnaissez à l'une de ces étapes, il n'est pas nécessaire d'attendre la suivante pour agir.</p>
++
++      <h2>Questions fréquentes sur l'auto-diagnostic</h2>
++      <h3>Mes réponses sont-elles enregistrées ?</h3>
++      <p>Non. Le calcul s'effectue entièrement dans votre navigateur. Aucune réponse n'est transmise au cabinet, et rien n'est conservé.</p>
++      <h3>Un score faible signifie-t-il qu'il n'y a pas d'arnaque ?</h3>
++      <p>Non. Ces six questions couvrent les signaux les plus fréquents, pas toutes les configurations possibles. Un montage sophistiqué peut n'en déclencher aucun.</p>
++      <h3>Faut-il déposer plainte même sans certitude ?</h3>
++      <p>Le dépôt de plainte est ouvert à toute personne s'estimant victime, et il n'exige pas de disposer de preuves complètes. Il présente en outre l'intérêt de dater les faits.</p>
++      <h3>Est-il trop tard si les faits remontent à plusieurs mois ?</h3>
++      <p>Pas nécessairement. L'ancienneté rend certaines démarches plus difficiles, mais elle ne ferme pas la porte : cela dépend des circonstances, des montants, des canaux de paiement utilisés et des intervenants. Faites examiner votre situation plutôt que de renoncer par avance.</p>
++
+       <h2>Autres outils de vérification</h2>
+       <p>Cet auto-diagnostic fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+       <div class="other-tools">
+diff --git a/ziegler-alertearnaque-verifier-crypto.html b/ziegler-alertearnaque-verifier-crypto.html
+index 0f74f14..50c8367 100644
+--- a/ziegler-alertearnaque-verifier-crypto.html
++++ b/ziegler-alertearnaque-verifier-crypto.html
+@@ -17,14 +17,14 @@
+ <link rel="icon" type="image/x-icon" href="/favicon.ico">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#8A4CB8">
+-<title>Vérifier un portefeuille crypto — Détection d'adresse malveillante | Ziegler Alerte Arnaque</title>
+-<meta name="description" content="Vérifiez une adresse de portefeuille crypto (Ethereum, Bitcoin, Solana...) avant tout paiement, via GoPlus Security. Outil du Cabinet d'Avocats Ziegler & Associés.">
++<title>Vérifier un portefeuille crypto | Ziegler Alerte Arnaque</title>
++<meta name="description" content="Vérifiez une adresse de portefeuille crypto avant tout envoi : format par blockchain et détection d&#x27;adresse malveillante via GoPlus Security.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html">
+ <meta property="og:type" content="website">
+ <meta property="og:site_name" content="Ziegler Alerte Arnaque">
+-<meta property="og:title" content="Vérifier un portefeuille crypto — Ziegler Alerte Arnaque">
+-<meta property="og:description" content="Vérifiez une adresse de portefeuille crypto avant tout paiement, via GoPlus Security.">
++<meta property="og:title" content="Vérifier un portefeuille crypto | Ziegler Alerte Arnaque">
++<meta property="og:description" content="Vérifiez une adresse de portefeuille crypto avant tout envoi : format par blockchain et détection d&#x27;adresse malveillante via GoPlus Security.">
+ <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html">
+ <meta property="og:locale" content="fr_FR">
+ <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+@@ -33,8 +33,8 @@
+ <meta property="og:image:type" content="image/png">
+ <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <meta name="twitter:card" content="summary_large_image">
+-<meta name="twitter:title" content="Vérifier un portefeuille crypto — Ziegler Alerte Arnaque">
+-<meta name="twitter:description" content="Vérifiez une adresse de portefeuille crypto avant tout paiement, via GoPlus Security.">
++<meta name="twitter:title" content="Vérifier un portefeuille crypto | Ziegler Alerte Arnaque">
++<meta name="twitter:description" content="Vérifiez une adresse de portefeuille crypto avant tout envoi : format par blockchain et détection d&#x27;adresse malveillante via GoPlus Security.">
+ <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+ <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+@@ -366,6 +366,7 @@
+   .pub-empty{font-size:13.5px; color:var(--ink-soft); margin:4px 0 0; line-height:1.55;}
+   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
+   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
++  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
+   .intro-content ul{padding-left:20px; margin:12px 0;}
+   .intro-content li{margin-bottom:6px;}
+   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
+@@ -457,6 +458,53 @@
+       <h2>Une adresse non signalée est-elle forcément fiable ?</h2>
+       <p>Non. L'absence de signalement ne garantit pas la fiabilité d'une adresse — de nouvelles adresses frauduleuses apparaissent chaque jour, avant même d'être répertoriées. Restez prudent, en particulier pour un premier envoi ou un montant important, et ne cédez jamais à la pression d'un interlocuteur pressant un virement rapide.</p>
+ 
++
++      <h2>Pourquoi une transaction en crypto-actifs ne se rattrape pas</h2>
++      <p>C'est la différence essentielle avec un virement bancaire, et elle explique pourquoi les escrocs privilégient ce canal. Une transaction inscrite sur une blockchain est <strong>définitive</strong> : il n'existe ni annulation, ni rappel de fonds, ni service client habilité à revenir dessus. Là où un virement peut parfois faire l'objet d'une tentative de rappel dans les heures qui suivent, un envoi en crypto-actifs est acquis dès sa confirmation.</p>
++      <p>Conséquence directe : <strong>la vérification doit avoir lieu avant l'envoi</strong>, jamais après. C'est précisément l'objet de cet outil.</p>
++
++      <h2>Reconnaître le format d'une adresse selon la blockchain</h2>
++      <p>Chaque réseau possède sa propre structure d'adresse. Une erreur de réseau — envoyer vers une adresse d'un autre réseau que celui sélectionné — entraîne généralement une perte définitive des fonds, même sans aucune intention frauduleuse.</p>
++      <ul>
++        <li><strong>Ethereum et réseaux compatibles</strong> (BNB Chain, Polygon, Arbitrum, Base, Optimism, Avalanche) : commence par <em>0x</em>, suivi de 40 caractères hexadécimaux.</li>
++        <li><strong>Bitcoin</strong> : commence par <em>1</em> ou <em>3</em> pour les formats historiques, ou par <em>bc1</em> pour le format SegWit natif.</li>
++        <li><strong>Solana</strong> : 32 à 44 caractères, sans préfixe caractéristique.</li>
++        <li><strong>Tron</strong> : commence par un <em>T</em> majuscule, 34 caractères au total.</li>
++      </ul>
++      <p>Notre outil contrôle cette structure, puis interroge GoPlus Security — un service de sécurité Web3 utilisé notamment par OKX et DexScreener — pour déterminer si l'adresse a déjà été associée à du hameçonnage, du blanchiment ou un vol de fonds.</p>
++
++      <h2>Les mécanismes d'arnaque les plus fréquents</h2>
++      <ul>
++        <li><strong>La fausse plateforme d'investissement.</strong> Une interface affiche vos gains, qui n'existent que sur cet écran. Le blocage survient au retrait, souvent assorti de « frais de déblocage » ou d'une « taxe » à régler d'abord.</li>
++        <li><strong>L'arnaque sentimentale, dite <em>pig butchering</em>.</strong> Une relation de confiance est construite sur plusieurs semaines, parfois plusieurs mois, avant toute proposition d'investissement. C'est aujourd'hui l'un des schémas les plus lourds en montants.</li>
++        <li><strong>Le faux support technique.</strong> Un prétendu conseiller vous contacte au sujet de votre portefeuille et demande votre phrase de récupération. <strong>Aucun service légitime ne demande jamais ces douze ou vingt-quatre mots</strong> — quiconque les détient contrôle définitivement vos fonds.</li>
++        <li><strong>L'approbation de contrat malveillant.</strong> En connectant votre portefeuille à un site, vous pouvez autoriser sans le voir un contrat à dépenser vos jetons. Le vol intervient parfois des semaines plus tard. Pensez à passer en revue et révoquer périodiquement les autorisations accordées.</li>
++        <li><strong>L'adresse substituée dans le presse-papiers.</strong> Un logiciel malveillant remplace l'adresse que vous venez de copier. Vérifiez toujours les premiers <em>et</em> les derniers caractères de l'adresse dans le champ de destination avant de valider.</li>
++      </ul>
++
++      <h2>Cinq réflexes avant tout envoi</h2>
++      <ul>
++        <li><strong>Vérifiez que le prestataire est enregistré.</strong> En France, les prestataires de services sur actifs numériques doivent être enregistrés auprès de l'AMF. Cette information est publique et consultable.</li>
++        <li><strong>Envoyez d'abord un montant test</strong> lorsque c'est possible, et confirmez sa bonne réception avant l'envoi principal.</li>
++        <li><strong>Contrôlez l'adresse caractère par caractère</strong>, au moins sur le début et la fin.</li>
++        <li><strong>Ne communiquez jamais votre phrase de récupération</strong>, à personne, sous aucun prétexte.</li>
++        <li><strong>Méfiez-vous de l'urgence.</strong> Une opportunité qui « expire dans l'heure » est un procédé de manipulation, pas une réalité de marché.</li>
++      </ul>
++
++      <h2>Vous avez déjà envoyé des fonds</h2>
++      <p>La transaction ne peut pas être annulée, mais votre situation n'est pas sans issue pour autant. Une transaction est publique et traçable : l'adresse de destination, les montants et les mouvements ultérieurs sont inscrits sur la blockchain et consultables. Ces éléments constituent une matière exploitable, notamment lorsque les fonds transitent vers une plateforme d'échange soumise à des obligations d'identification de ses clients.</p>
++      <p>Conservez l'identifiant de transaction, l'adresse de destination, l'ensemble de vos échanges et les captures de la plateforme concernée. Déposez plainte et faites analyser votre dossier rapidement : les délais comptent, en particulier lorsqu'une plateforme régulée est impliquée dans la chaîne.</p>
++
++      <h2>Questions fréquentes sur la vérification d'une adresse crypto</h2>
++      <h3>L'adresse n'est pas signalée : puis-je envoyer ?</h3>
++      <p>Prudence. Cela signifie qu'elle n'est pas encore répertoriée comme malveillante. Les escrocs génèrent des adresses neuves en permanence, précisément pour échapper à ces bases.</p>
++      <h3>Pourquoi Bitcoin n'est-il pas couvert par la détection ?</h3>
++      <p>La base de détection utilisée couvre les réseaux compatibles EVM ainsi que Solana et Tron. Pour Bitcoin, l'outil valide le format de l'adresse, sans analyse de réputation.</p>
++      <h3>Peut-on identifier le propriétaire d'une adresse ?</h3>
++      <p>Pas directement : une adresse n'est pas nominative. En revanche, les mouvements sont publics, et l'identification devient possible lorsque les fonds atteignent un intermédiaire régulé, dans le cadre d'une procédure appropriée.</p>
++      <h3>Les sociétés promettant de récupérer mes cryptomonnaies sont-elles fiables ?</h3>
++      <p>Soyez extrêmement vigilant. Les victimes d'arnaques crypto sont massivement re-ciblées par de faux services de récupération réclamant des frais préalables. C'est une seconde escroquerie, et elle est très répandue.</p>
++
+       <h2>Autres outils de vérification</h2>
+       <p>Ce vérificateur de portefeuille crypto fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+       <div class="other-tools">
+diff --git a/ziegler-alertearnaque-verifier-email.html b/ziegler-alertearnaque-verifier-email.html
+index a117e94..3f3c5b8 100644
+--- a/ziegler-alertearnaque-verifier-email.html
++++ b/ziegler-alertearnaque-verifier-email.html
+@@ -18,13 +18,13 @@
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#8A4CB8">
+ <title>Vérifier une adresse email suspecte | Ziegler Alerte Arnaque</title>
+-<meta name="description" content="Vérifiez qu'une adresse email n'est pas sur la liste noire officielle Banque de France / ACPR / AMF. Outil du Cabinet d'Avocats Ziegler & Associés.">
++<meta name="description" content="Vérifiez si une adresse email figure sur la liste noire officielle Banque de France / ACPR / AMF, et apprenez à repérer une usurpation.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html">
+ <meta property="og:type" content="website">
+ <meta property="og:site_name" content="Ziegler Alerte Arnaque">
+-<meta property="og:title" content="Vérifier une adresse email — Ziegler Alerte Arnaque">
+-<meta property="og:description" content="Vérifiez qu'une adresse email n'est pas sur liste noire officielle avant de répondre.">
++<meta property="og:title" content="Vérifier une adresse email suspecte | Ziegler Alerte Arnaque">
++<meta property="og:description" content="Vérifiez si une adresse email figure sur la liste noire officielle Banque de France / ACPR / AMF, et apprenez à repérer une usurpation.">
+ <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html">
+ <meta property="og:locale" content="fr_FR">
+ <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+@@ -33,8 +33,8 @@
+ <meta property="og:image:type" content="image/png">
+ <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <meta name="twitter:card" content="summary_large_image">
+-<meta name="twitter:title" content="Vérifier une adresse email — Ziegler Alerte Arnaque">
+-<meta name="twitter:description" content="Vérifiez qu'une adresse email n'est pas sur liste noire officielle avant de répondre.">
++<meta name="twitter:title" content="Vérifier une adresse email suspecte | Ziegler Alerte Arnaque">
++<meta name="twitter:description" content="Vérifiez si une adresse email figure sur la liste noire officielle Banque de France / ACPR / AMF, et apprenez à repérer une usurpation.">
+ <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+ <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+@@ -370,6 +370,7 @@
+   .official-links a{font-size:13px; color:var(--ink-soft); text-decoration:underline; text-underline-offset:2px;}
+   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
+   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
++  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
+   .intro-content ul{padding-left:20px; margin:12px 0;}
+   .intro-content li{margin-bottom:6px;}
+   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
+@@ -474,6 +475,49 @@
+       <h2>L'adresse n'apparaît sur aucune liste : est-elle fiable ?</h2>
+       <p>Non, l'absence de signalement ne garantit pas la fiabilité d'une adresse — de nouvelles adresses frauduleuses apparaissent chaque jour. Vérifiez toujours le nom de domaine complet (souvent très proche de l'original avec une lettre modifiée), et ne cliquez jamais sur un lien ou une pièce jointe d'un expéditeur non vérifié.</p>
+ 
++
++      <h2>Lire une adresse email : ce qui compte vraiment</h2>
++      <p>Une adresse email frauduleuse est presque toujours construite pour ressembler à une adresse légitime. Savoir où regarder change tout.</p>
++      <ul>
++        <li><strong>Le nom affiché n'est pas l'adresse.</strong> Votre messagerie affiche souvent « Service client — Banque X » alors que l'adresse réelle est tout autre. Ce libellé est librement choisi par l'expéditeur : affichez systématiquement l'adresse complète avant toute décision.</li>
++        <li><strong>Seul compte ce qui suit l'arobase</strong>, et plus précisément la fin. Dans <em>service@banque-x.securite-client.com</em>, le domaine réel est <em>securite-client.com</em> : « banque-x » n'est qu'un sous-domaine que n'importe qui peut créer.</li>
++        <li><strong>Les variations typographiques.</strong> Un tiret ajouté, un « rn » à la place d'un « m », un « l » minuscule à la place d'un « I » majuscule, une extension changée de .fr en .com ou .net : ces écarts d'un caractère sont la méthode la plus courante.</li>
++        <li><strong>Les extensions inhabituelles</strong> pour un acteur financier français — .cfd, .sbs, .xyz, .click reviennent fréquemment dans la liste noire officielle.</li>
++      </ul>
++
++      <h2>Sur quoi repose notre vérification</h2>
++      <p>Cet outil interroge la liste noire officielle publiée conjointement par la Banque de France, l'ACPR et l'AMF. Elle recense les sites et adresses email qui usurpent l'identité de professionnels autorisés, ou qui proposent des produits financiers sans disposer de l'agrément requis en France.</p>
++      <p>Cette liste est récupérée automatiquement chaque nuit sur nos serveurs, et non figée dans le code du site : la version que vous interrogez est celle du jour. Un résultat positif est un signal fort — l'adresse a été identifiée par les autorités françaises de contrôle.</p>
++      <p>Un résultat négatif, en revanche, ne vaut pas quitus. Une liste noire est par nature en retard sur la fraude : une entité y figure une fois qu'elle a été repérée et instruite, ce qui prend du temps. Beaucoup d'adresses frauduleuses actives n'y sont pas encore.</p>
++
++      <h2>Les usurpations les plus fréquentes</h2>
++      <p>Trois familles reviennent constamment dans les dossiers du cabinet :</p>
++      <ul>
++        <li><strong>L'usurpation d'autorités.</strong> Des adresses imitant l'AMF, l'ACPR ou la Banque de France, souvent pour annoncer qu'une somme a été « bloquée » et qu'une démarche payante permettrait de la débloquer. Ces autorités ne contactent jamais un particulier pour lui réclamer un versement.</li>
++        <li><strong>L'usurpation de sociétés de gestion connues.</strong> Le nom d'un établissement réputé est repris, parfois avec son identité visuelle complète et de faux documents contractuels très soignés. Le seul écart est le domaine de l'adresse.</li>
++        <li><strong>La fraude au recouvrement de fonds.</strong> Elle vise les personnes <em>déjà</em> victimes : un prétendu cabinet ou organisme promet de récupérer les sommes perdues contre des frais préalables. C'est une seconde escroquerie greffée sur la première, et elle est particulièrement répandue.</li>
++      </ul>
++
++      <h2>Trois vérifications complémentaires en quelques minutes</h2>
++      <ul>
++        <li><strong>Vérifiez l'agrément, pas seulement l'adresse.</strong> Toute société proposant des services d'investissement en France doit être enregistrée. Les registres officiels des agents financiers et des intermédiaires permettent de le contrôler — l'absence d'enregistrement est rédhibitoire.</li>
++        <li><strong>Regardez l'âge du nom de domaine.</strong> Un domaine créé il y a quelques semaines pour un acteur qui se présente comme établi depuis des années est une contradiction en soi.</li>
++        <li><strong>Ne cliquez pas, retapez.</strong> Plutôt que de suivre un lien reçu par email, saisissez vous-même l'adresse du site officiel dans votre navigateur. Cela neutralise l'essentiel des redirections frauduleuses.</li>
++      </ul>
++
++      <h2>Vous avez répondu ou transmis des informations</h2>
++      <p>Si vous avez communiqué des identifiants bancaires, changez immédiatement vos mots de passe et prévenez votre banque. Si vous avez ouvert une pièce jointe, faites analyser votre appareil. Si vous avez effectué un versement, contactez votre banque sans délai et conservez l'intégralité des échanges : ces messages constituent des éléments de preuve utiles pour la suite.</p>
++
++      <h2>Questions fréquentes sur la vérification d'une adresse email</h2>
++      <h3>L'adresse n'est pas sur la liste noire : est-ce rassurant ?</h3>
++      <p>Modérément. Cela signifie qu'elle n'a pas encore été recensée par les autorités françaises, pas qu'elle est fiable. Complétez toujours par une vérification de l'agrément de la société.</p>
++      <h3>Puis-je vérifier un nom de domaine et pas une adresse complète ?</h3>
++      <p>Oui. L'outil accepte indifféremment une adresse email complète ou un nom de domaine, et la liste noire officielle recense les deux.</p>
++      <h3>Mon adresse a été usurpée pour écrire à d'autres personnes. Que faire ?</h3>
++      <p>Cette situation, dite d'usurpation d'expéditeur, ne suppose pas nécessairement que votre messagerie ait été compromise. Changez votre mot de passe par précaution, prévenez vos contacts, et signalez les faits.</p>
++      <h3>Ma saisie est-elle conservée ?</h3>
++      <p>Non. La comparaison s'effectue dans votre navigateur, et l'adresse saisie n'est pas enregistrée par le cabinet.</p>
++
+       <h2>Autres outils de vérification</h2>
+       <p>Ce vérificateur d'email fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+       <div class="other-tools">
+diff --git a/ziegler-alertearnaque-verifier-iban.html b/ziegler-alertearnaque-verifier-iban.html
+index 7be8f2b..c39455f 100644
+--- a/ziegler-alertearnaque-verifier-iban.html
++++ b/ziegler-alertearnaque-verifier-iban.html
+@@ -17,14 +17,14 @@
+ <link rel="icon" type="image/x-icon" href="/favicon.ico">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#8A4CB8">
+-<title>Vérifier un IBAN — Format, clé de contrôle et banque | Ziegler Alerte Arnaque</title>
+-<meta name="description" content="Vérifiez qu'un IBAN est valide : format, clé de contrôle (norme ISO 7064) et identification de la banque à partir du BIC. Outil du Cabinet d'Avocats Ziegler & Associés.">
++<title>Vérifier un IBAN avant un virement | Ziegler Alerte Arnaque</title>
++<meta name="description" content="Vérifiez le format et la clé de contrôle d&#x27;un IBAN (norme ISO 7064), identifiez la banque, et repérez les signaux d&#x27;alerte avant un virement.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html">
+ <meta property="og:type" content="website">
+ <meta property="og:site_name" content="Ziegler Alerte Arnaque">
+-<meta property="og:title" content="Vérifier un IBAN — Ziegler Alerte Arnaque">
+-<meta property="og:description" content="Vérifiez le format, la clé de contrôle et la banque d'un IBAN avant tout virement important.">
++<meta property="og:title" content="Vérifier un IBAN avant un virement | Ziegler Alerte Arnaque">
++<meta property="og:description" content="Vérifiez le format et la clé de contrôle d&#x27;un IBAN (norme ISO 7064), identifiez la banque, et repérez les signaux d&#x27;alerte avant un virement.">
+ <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html">
+ <meta property="og:locale" content="fr_FR">
+ <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+@@ -33,8 +33,8 @@
+ <meta property="og:image:type" content="image/png">
+ <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <meta name="twitter:card" content="summary_large_image">
+-<meta name="twitter:title" content="Vérifier un IBAN — Ziegler Alerte Arnaque">
+-<meta name="twitter:description" content="Vérifiez le format, la clé de contrôle et la banque d'un IBAN avant tout virement important.">
++<meta name="twitter:title" content="Vérifier un IBAN avant un virement | Ziegler Alerte Arnaque">
++<meta name="twitter:description" content="Vérifiez le format et la clé de contrôle d&#x27;un IBAN (norme ISO 7064), identifiez la banque, et repérez les signaux d&#x27;alerte avant un virement.">
+ <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+ <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+@@ -366,6 +366,7 @@
+   .pub-empty{font-size:13.5px; color:var(--ink-soft); margin:4px 0 0; line-height:1.55;}
+   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
+   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
++  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
+   .intro-content ul{padding-left:20px; margin:12px 0;}
+   .intro-content li{margin-bottom:6px;}
+   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
+@@ -448,6 +449,53 @@
+       <h2>Un IBAN valide garantit-il que le paiement est sûr ?</h2>
+       <p>Non. Un IBAN mathématiquement valide confirme uniquement que le numéro est correctement formé — pas que le compte existe, ni qu'il appartient réellement à la personne ou à la société qui vous l'a communiqué. Seule votre banque peut vérifier ce dernier point avant un virement important. En cas de doute sur l'origine d'un IBAN, ou si la clé de contrôle s'avère incorrecte, ne réalisez aucun versement et rapprochez-vous d'un avocat.</p>
+ 
++
++      <h2>Lire un IBAN français ligne par ligne</h2>
++      <p>Un IBAN français compte exactement 27 caractères, et chaque groupe a une signification précise. Savoir les lire permet de repérer une incohérence avant même de lancer une vérification automatique.</p>
++      <ul>
++        <li><strong>FR</strong> — le code pays sur 2 lettres. Un interlocuteur qui se présente comme une société française mais communique un IBAN commençant par autre chose mérite une question directe.</li>
++        <li><strong>2 chiffres</strong> — la clé de contrôle internationale, calculée sur l'ensemble du numéro. C'est elle que teste le calcul modulo 97.</li>
++        <li><strong>5 chiffres</strong> — le code banque, qui identifie l'établissement.</li>
++        <li><strong>5 chiffres</strong> — le code guichet, qui identifie l'agence de rattachement du compte.</li>
++        <li><strong>11 caractères</strong> — le numéro de compte proprement dit.</li>
++        <li><strong>2 chiffres</strong> — la clé RIB, un second contrôle spécifiquement français.</li>
++      </ul>
++      <p>Notre outil affiche automatiquement cette décomposition pour tout IBAN français saisi, ce qui vous permet de comparer visuellement avec le RIB que vous avez reçu.</p>
++
++      <h2>Les six signaux qui doivent vous alerter sur un IBAN</h2>
++      <p>Dans les dossiers d'escroquerie financière que traite le cabinet, l'IBAN de destination est souvent le premier élément vérifiable objectivement. Certaines configurations reviennent régulièrement :</p>
++      <ul>
++        <li><strong>Un changement d'IBAN en cours de relation.</strong> Vous avez déjà viré sur un compte, et on vous annonce un « changement de domiciliation bancaire ». C'est le schéma classique de la fraude au faux fournisseur ou au faux conseiller. Appelez systématiquement votre interlocuteur sur un numéro que vous connaissez déjà — jamais celui indiqué dans le message annonçant le changement.</li>
++        <li><strong>Un IBAN étranger pour une société présentée comme française.</strong> Ce n'est pas illégal en soi : une entreprise peut détenir un compte à l'étranger. Mais l'écart mérite une explication claire, surtout vers des pays où le recouvrement est difficile.</li>
++        <li><strong>Un compte au nom d'un particulier</strong> alors que vous réglez une prestation à une société. Le titulaire annoncé doit correspondre à l'entité avec laquelle vous contractez.</li>
++        <li><strong>Un IBAN transmis dans l'urgence</strong>, avec une échéance impérative ou la menace de perdre une opportunité. La pression sur le temps est un marqueur constant de l'escroquerie.</li>
++        <li><strong>Une clé de contrôle invalide.</strong> Soit c'est une faute de frappe — demandez confirmation par un autre canal — soit le numéro a été fabriqué.</li>
++        <li><strong>Un IBAN communiqué par messagerie instantanée</strong> (WhatsApp, Telegram, SMS) plutôt que sur un document officiel comportant l'identité complète de l'établissement.</li>
++      </ul>
++
++      <h2>Ce que votre banque peut vérifier, et que nous ne pouvons pas</h2>
++      <p>Aucun outil en ligne ne peut confirmer qu'un compte existe réellement ni à qui il appartient : cette information est couverte par le secret bancaire. En revanche, votre propre banque peut, avant un virement d'un montant important, procéder à des vérifications que vous ne pouvez pas mener seul. Prenez le réflexe d'appeler votre conseiller avant un premier versement significatif vers un bénéficiaire inconnu — c'est quelques minutes qui peuvent éviter une perte définitive.</p>
++      <p>Depuis le déploiement de la vérification du bénéficiaire dans l'espace SEPA, un contrôle de cohérence entre le nom du titulaire annoncé et celui du compte tend à se généraliser. Ce dispositif réduit le risque d'erreur, mais il ne remplace pas votre propre vigilance : il vérifie une correspondance de nom, pas l'honnêteté de votre interlocuteur.</p>
++
++      <h2>Vous avez déjà effectué le virement : que faire ?</h2>
++      <p>La rapidité est déterminante. Un virement exécuté n'est pas automatiquement irrécupérable, mais les chances diminuent d'heure en heure, les fonds étant généralement redistribués très vite vers d'autres comptes.</p>
++      <ul>
++        <li><strong>Contactez votre banque immédiatement</strong>, par téléphone puis par écrit, et demandez expressément une tentative de rappel des fonds. La banque destinataire n'est pas tenue d'y faire droit, mais la démarche doit être engagée sans délai.</li>
++        <li><strong>Conservez toutes les preuves</strong> : échanges, captures d'écran, documents reçus, relevés. Ces éléments seront déterminants pour la suite.</li>
++        <li><strong>Déposez plainte</strong> auprès de la police ou de la gendarmerie, et signalez la situation sur les plateformes officielles.</li>
++        <li><strong>Faites analyser votre dossier.</strong> Selon les circonstances du versement et le comportement des établissements concernés, plusieurs voies de recours peuvent être envisagées.</li>
++      </ul>
++
++      <h2>Questions fréquentes sur la vérification d'un IBAN</h2>
++      <h3>Un IBAN valide signifie-t-il que le compte existe ?</h3>
++      <p>Non. La validation confirme uniquement que le numéro est correctement construit sur le plan mathématique. Un IBAN peut être parfaitement valide et ne correspondre à aucun compte ouvert.</p>
++      <h3>Peut-on savoir à qui appartient un IBAN ?</h3>
++      <p>Pas publiquement. L'identité du titulaire est protégée par le secret bancaire. Notre outil identifie l'établissement bancaire, jamais la personne.</p>
++      <h3>Communiquer mon IBAN présente-t-il un risque ?</h3>
++      <p>Transmettre son IBAN pour recevoir un paiement est une opération courante et nécessaire. Le risque n'est pas dans l'IBAN lui-même mais dans ce qui l'accompagne : ne signez jamais un mandat de prélèvement à un interlocuteur que vous n'avez pas vérifié, et surveillez vos relevés.</p>
++      <h3>La vérification est-elle enregistrée ?</h3>
++      <p>Le contrôle du format et de la clé s'effectue directement dans votre navigateur. L'IBAN saisi n'est pas conservé par le cabinet.</p>
++
+       <h2>Autres outils de vérification</h2>
+       <p>Ce vérificateur d'IBAN fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+       <div class="other-tools">
+diff --git a/ziegler-alertearnaque-verifier-societe.html b/ziegler-alertearnaque-verifier-societe.html
+index c6bfdaf..aeb7ad9 100644
+--- a/ziegler-alertearnaque-verifier-societe.html
++++ b/ziegler-alertearnaque-verifier-societe.html
+@@ -17,14 +17,14 @@
+ <link rel="icon" type="image/x-icon" href="/favicon.ico">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#8A4CB8">
+-<title>Vérifier une société avant d'investir | Ziegler Alerte Arnaque</title>
+-<meta name="description" content="Vérifiez qu'une société ou un site n'est pas sur la liste noire officielle Banque de France / ACPR / AMF avant d'investir. Outil du Cabinet d'Avocats Ziegler & Associés.">
++<title>Vérifier une société avant d'investir | Ziegler Alerte</title>
++<meta name="description" content="Vérifiez une société contre la liste noire officielle Banque de France / ACPR / AMF, croisez les registres d&#x27;agrément et repérez les signaux.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-societe.html">
+ <meta property="og:type" content="website">
+ <meta property="og:site_name" content="Ziegler Alerte Arnaque">
+-<meta property="og:title" content="Vérifier une société — Ziegler Alerte Arnaque">
+-<meta property="og:description" content="Vérifiez qu'une société n'est pas sur liste noire officielle avant d'investir.">
++<meta property="og:title" content="Vérifier une société avant d&#x27;investir | Ziegler Alerte">
++<meta property="og:description" content="Vérifiez une société contre la liste noire officielle Banque de France / ACPR / AMF, croisez les registres d&#x27;agrément et repérez les signaux.">
+ <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-societe.html">
+ <meta property="og:locale" content="fr_FR">
+ <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+@@ -33,8 +33,8 @@
+ <meta property="og:image:type" content="image/png">
+ <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <meta name="twitter:card" content="summary_large_image">
+-<meta name="twitter:title" content="Vérifier une société — Ziegler Alerte Arnaque">
+-<meta name="twitter:description" content="Vérifiez qu'une société n'est pas sur liste noire officielle avant d'investir.">
++<meta name="twitter:title" content="Vérifier une société avant d&#x27;investir | Ziegler Alerte">
++<meta name="twitter:description" content="Vérifiez une société contre la liste noire officielle Banque de France / ACPR / AMF, croisez les registres d&#x27;agrément et repérez les signaux.">
+ <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+ <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+@@ -370,6 +370,7 @@
+   .official-links a{font-size:13px; color:var(--ink-soft); text-decoration:underline; text-underline-offset:2px;}
+   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
+   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
++  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
+   .intro-content ul{padding-left:20px; margin:12px 0;}
+   .intro-content li{margin-bottom:6px;}
+   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
+@@ -474,6 +475,52 @@
+       <h2>La société n'apparaît sur aucune liste : est-elle fiable ?</h2>
+       <p>Non, l'absence de signalement ne garantit pas la fiabilité d'un acteur — de nouvelles sociétés frauduleuses apparaissent chaque jour, avant même d'être répertoriées sur les listes officielles. Vérifiez systématiquement l'agrément AMF/ACPR d'un professionnel avant tout investissement, et restez vigilant face à des promesses de rendement garanti.</p>
+ 
++
++      <h2>Les registres officiels à croiser avant d'investir</h2>
++      <p>Notre outil interroge la liste noire officielle Banque de France / ACPR / AMF, qui recense les acteurs déjà identifiés comme non autorisés. Mais une liste noire est toujours en retard sur la fraude : elle sanctionne ce qui a été repéré. La démarche complémentaire, et souvent plus décisive, consiste à vérifier l'inverse — la présence sur les registres <em>positifs</em>.</p>
++      <ul>
++        <li><strong>Le registre des agents financiers (REGAFI)</strong> recense les établissements autorisés à fournir des services d'investissement en France.</li>
++        <li><strong>Le registre des intermédiaires (ORIAS)</strong> couvre les conseillers en investissements financiers, courtiers et intermédiaires en financement participatif.</li>
++        <li><strong>Les listes blanches de l'AMF</strong> permettent de vérifier qu'un produit ou un prestataire est effectivement autorisé à être commercialisé en France.</li>
++        <li><strong>Le registre du commerce et des sociétés</strong> permet de contrôler l'existence juridique réelle de l'entreprise, sa date d'immatriculation et ses dirigeants.</li>
++      </ul>
++      <p>Le raisonnement à retenir : <strong>l'absence sur une liste noire ne prouve rien, l'absence sur les registres d'autorisation prouve beaucoup.</strong> Un acteur qui propose des placements financiers en France sans y figurer exerce en dehors du cadre légal, quelle que soit la qualité de sa présentation.</p>
++
++      <h2>Dix signaux d'alerte sur un site d'investissement</h2>
++      <p>Ces marqueurs reviennent avec une constance frappante dans les dossiers traités par le cabinet :</p>
++      <ul>
++        <li><strong>Un rendement élevé présenté comme garanti.</strong> En matière financière, rendement et risque sont indissociables. « Garanti » et « élevé » sont contradictoires — c'est le signal le plus fiable de tous.</li>
++        <li><strong>Des mentions légales absentes, vagues ou invérifiables</strong> : pas de numéro d'immatriculation, pas d'adresse précise, ou une adresse qui correspond à un centre de domiciliation.</li>
++        <li><strong>Un nom de domaine très récent</strong> pour une société qui se présente comme établie de longue date.</li>
++        <li><strong>Un nom très proche de celui d'un acteur connu</strong>, à un mot ou un caractère près.</li>
++        <li><strong>Une pression sur le calendrier</strong> : offre limitée, place à réserver, opportunité qui se referme.</li>
++        <li><strong>Un premier versement modeste</strong>, suivi d'un « gain » affiché sur une interface, puis d'incitations à investir davantage.</li>
++        <li><strong>Un contact initial non sollicité</strong> : réseau social, application de messagerie, site de rencontre, appel entrant.</li>
++        <li><strong>Des retraits qui se compliquent</strong> : délais, justificatifs supplémentaires, et surtout des « frais » ou « taxes » à régler avant déblocage. Aucun opérateur légitime ne réclame un paiement pour vous restituer vos propres fonds.</li>
++        <li><strong>Des moyens de paiement inhabituels</strong> : virement vers un compte de particulier, crypto-actifs, cartes prépayées.</li>
++        <li><strong>Des témoignages invérifiables</strong>, souvent illustrés de photographies génériques.</li>
++      </ul>
++      <p>Un seul de ces signaux justifie déjà la prudence. Trois ou plus, la probabilité d'être face à une escroquerie devient très forte.</p>
++
++      <h2>La société figure sur la liste noire : et maintenant ?</h2>
++      <p>Une inscription signifie que les autorités françaises ont identifié cet acteur comme non autorisé, ou comme usurpant l'identité d'un professionnel agréé.</p>
++      <ul>
++        <li><strong>N'effectuez aucun versement supplémentaire</strong>, y compris si l'on vous présente ce versement comme la condition d'un déblocage. C'est un mécanisme d'escroquerie récurrent, pas une formalité.</li>
++        <li><strong>Rassemblez vos preuves</strong> : contrats, échanges, relevés, captures des interfaces, coordonnées de vos interlocuteurs.</li>
++        <li><strong>Prévenez votre banque</strong> et signalez les faits aux autorités compétentes.</li>
++        <li><strong>Méfiez-vous des propositions de récupération de fonds</strong> qui suivront. Les victimes sont souvent recontactées par de prétendus organismes proposant de récupérer les sommes perdues contre des frais préalables — il s'agit d'une seconde escroquerie.</li>
++      </ul>
++
++      <h2>Questions fréquentes sur la vérification d'une société</h2>
++      <h3>La société n'apparaît nulle part : est-ce bon signe ?</h3>
++      <p>Au contraire. Une société qui propose des placements financiers en France doit être identifiable sur les registres officiels. Son absence est un signal négatif fort, pas neutre.</p>
++      <h3>Le site est très professionnel, est-ce rassurant ?</h3>
++      <p>Non. La qualité graphique d'un site ne demande aujourd'hui ni compétence particulière ni budget important. Certains des dossiers les plus lourds impliquent des plateformes très abouties, avec espace client, documents contractuels et interface de suivi.</p>
++      <h3>Une société étrangère peut-elle proposer des placements en France ?</h3>
++      <p>Oui, sous conditions, notamment lorsqu'elle est agréée dans un autre État de l'Union européenne et régulièrement passeportée. Cela reste vérifiable sur les registres officiels — et cette vérification est indispensable.</p>
++      <h3>Que valent les avis trouvés en ligne ?</h3>
++      <p>Ils sont un indice, pas une preuve. Les avis positifs peuvent être fabriqués, et l'absence d'avis négatifs s'explique souvent par la jeunesse de la plateforme. Croisez toujours avec les registres officiels.</p>
++
+       <h2>Autres outils de vérification</h2>
+       <p>Ce vérificateur de société fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+       <div class="other-tools">
+diff --git a/ziegler-alertearnaque-verifier-telephone.html b/ziegler-alertearnaque-verifier-telephone.html
+index 815c231..10cfa92 100644
+--- a/ziegler-alertearnaque-verifier-telephone.html
++++ b/ziegler-alertearnaque-verifier-telephone.html
+@@ -17,14 +17,14 @@
+ <link rel="icon" type="image/x-icon" href="/favicon.ico">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="theme-color" content="#8A4CB8">
+-<title>Vérifier un numéro de téléphone suspect | Ziegler Alerte Arnaque</title>
+-<meta name="description" content="Vérifiez un numéro de téléphone suspect : préfixes de démarchage ARCEP et signalements de la communauté. Outil du Cabinet d'Avocats Ziegler & Associés.">
++<title>Vérifier un numéro de téléphone | Ziegler Alerte Arnaque</title>
++<meta name="description" content="Vérifiez un numéro suspect : préfixes de démarchage ARCEP, signalements de la communauté, et pourquoi le numéro affiché ne prouve rien.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-telephone.html">
+ <meta property="og:type" content="website">
+ <meta property="og:site_name" content="Ziegler Alerte Arnaque">
+-<meta property="og:title" content="Vérifier un numéro de téléphone — Ziegler Alerte Arnaque">
+-<meta property="og:description" content="Vérifiez un numéro de téléphone suspect avant de rappeler ou de répondre.">
++<meta property="og:title" content="Vérifier un numéro de téléphone | Ziegler Alerte Arnaque">
++<meta property="og:description" content="Vérifiez un numéro suspect : préfixes de démarchage ARCEP, signalements de la communauté, et pourquoi le numéro affiché ne prouve rien.">
+ <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-telephone.html">
+ <meta property="og:locale" content="fr_FR">
+ <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+@@ -33,8 +33,8 @@
+ <meta property="og:image:type" content="image/png">
+ <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <meta name="twitter:card" content="summary_large_image">
+-<meta name="twitter:title" content="Vérifier un numéro de téléphone — Ziegler Alerte Arnaque">
+-<meta name="twitter:description" content="Vérifiez un numéro de téléphone suspect avant de rappeler ou de répondre.">
++<meta name="twitter:title" content="Vérifier un numéro de téléphone | Ziegler Alerte Arnaque">
++<meta name="twitter:description" content="Vérifiez un numéro suspect : préfixes de démarchage ARCEP, signalements de la communauté, et pourquoi le numéro affiché ne prouve rien.">
+ <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+ <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+@@ -370,6 +370,7 @@
+   .official-links a{font-size:13px; color:var(--ink-soft); text-decoration:underline; text-underline-offset:2px;}
+   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
+   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
++  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
+   .intro-content ul{padding-left:20px; margin:12px 0;}
+   .intro-content li{margin-bottom:6px;}
+   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
+@@ -474,6 +475,54 @@
+       <h2>Il n'existe pas de liste officielle des numéros frauduleux</h2>
+       <p>Contrairement aux sites internet ou emails, il n'existe pas en France de liste noire officielle des numéros de téléphone utilisés pour arnaquer. Restez donc vigilant même en l'absence de signalement : ne communiquez jamais de code de sécurité, ne rappelez pas un numéro surtaxé inconnu, et raccrochez en cas de pression pour un virement urgent.</p>
+ 
++
++      <h2>Les préfixes de démarchage ARCEP, et ce qu'ils signifient vraiment</h2>
++      <p>Depuis 2023, l'ARCEP — l'autorité qui régule les télécommunications en France — impose aux professionnels du démarchage commercial d'utiliser des tranches de numéros réservées à cet usage. Un appel émis depuis l'un de ces préfixes est donc, légalement, un appel de prospection commerciale.</p>
++      <ul>
++        <li><strong>0162, 0163</strong> — zone géographique Île-de-France</li>
++        <li><strong>0270, 0271</strong> — zone Nord-Ouest</li>
++        <li><strong>0377, 0378</strong> — zone Nord-Est</li>
++        <li><strong>0424, 0425</strong> — zone Sud-Est</li>
++        <li><strong>0568, 0569</strong> — zone Sud-Ouest</li>
++        <li><strong>0948, 0949</strong> — numéros non géographiques</li>
++      </ul>
++      <p>Notre outil identifie automatiquement ces tranches. Attention à l'interprétation : un numéro dans ces plages indique du démarchage commercial, <strong>pas nécessairement une arnaque</strong>. Beaucoup d'entreprises parfaitement légitimes les utilisent. À l'inverse — et c'est le point important — un escroc n'a aucune raison de respecter cette obligation. L'absence de préfixe ARCEP ne prouve donc rien.</p>
++
++      <h2>Pourquoi le numéro affiché ne prouve rien : l'usurpation de numéro</h2>
++      <p>C'est la limite que tout le monde ignore, et elle est décisive. La technique dite du <em>spoofing</em> permet à un appelant d'afficher sur votre téléphone un numéro qui n'est pas le sien. Les escroqueries au faux conseiller bancaire reposent massivement dessus : votre téléphone affiche le numéro réel de votre agence, et la personne au bout du fil n'a aucun lien avec votre banque.</p>
++      <p>Conséquence pratique : <strong>ne considérez jamais un numéro affiché comme une preuve d'identité</strong>. Si un interlocuteur se présente comme votre banque, votre opérateur, l'administration fiscale ou une autorité de contrôle, raccrochez et rappelez vous-même le numéro officiel figurant sur votre contrat, votre carte bancaire ou le site officiel de l'organisme. Un interlocuteur légitime ne vous reprochera jamais cette précaution.</p>
++      <p>Un dispositif d'authentification des numéros a été mis en place par les opérateurs pour limiter cette usurpation, en particulier pour les appels émis depuis l'étranger avec un numéro français. Il réduit le phénomène sans le faire disparaître.</p>
++
++      <h2>Ce qu'un interlocuteur légitime ne vous demandera jamais</h2>
++      <p>Quel que soit le numéro affiché, certaines demandes sont des signaux d'alerte sans exception :</p>
++      <ul>
++        <li><strong>Votre code de confirmation reçu par SMS.</strong> Aucun conseiller bancaire ne le demande, jamais. Ce code valide une opération que vous êtes seul à devoir autoriser.</li>
++        <li><strong>Vos identifiants de connexion</strong> ou le mot de passe de votre espace en ligne.</li>
++        <li><strong>Un virement « de sécurité »</strong> vers un compte présenté comme un compte tampon, un séquestre ou un compte technique. Ce motif n'existe pas.</li>
++        <li><strong>L'installation d'un logiciel de prise en main à distance</strong> pour « sécuriser » votre poste.</li>
++        <li><strong>Le renvoi vers un « service » qui vous rappellera</strong> depuis un autre numéro pour finaliser l'opération.</li>
++      </ul>
++      <p>L'AMF et l'ACPR, en particulier, ne démarchent jamais les épargnants par téléphone et ne réclament aucun versement. Un appel se réclamant de ces autorités est frauduleux par construction.</p>
++
++      <h2>Que faire après un appel suspect</h2>
++      <ul>
++        <li><strong>Ne rappelez pas le numéro</strong> depuis lequel vous avez été contacté, en particulier s'il s'agit d'un appel d'une seule sonnerie destiné à provoquer un rappel surtaxé.</li>
++        <li><strong>Signalez le numéro au 33700</strong>, la plateforme officielle de signalement des appels et SMS frauduleux, en envoyant un SMS gratuit.</li>
++        <li><strong>Inscrivez-vous sur Bloctel</strong>, la liste d'opposition au démarchage téléphonique. Elle n'arrête pas les escrocs, qui l'ignorent, mais réduit le volume d'appels commerciaux légitimes et rend les appels restants plus faciles à identifier comme anormaux.</li>
++        <li><strong>Publiez une alerte communautaire</strong> sur cette plateforme si le numéro vous a proposé un placement financier : votre signalement apparaîtra pour le prochain visiteur qui vérifiera ce même numéro.</li>
++        <li><strong>Si vous avez transmis des informations ou versé des fonds</strong>, contactez votre banque sans attendre, puis faites examiner votre situation.</li>
++      </ul>
++
++      <h2>Questions fréquentes sur la vérification d'un numéro</h2>
++      <h3>Existe-t-il une liste officielle des numéros frauduleux ?</h3>
++      <p>Non, et c'est une limite structurelle. Aucune autorité française ne publie de liste de numéros frauduleux, notamment parce que ces numéros changent en permanence. C'est pourquoi notre outil croise les préfixes officiels de démarchage avec les signalements de notre propre communauté.</p>
++      <h3>Le numéro n'est pas signalé : puis-je avoir confiance ?</h3>
++      <p>Non. Une absence de signalement signifie seulement que personne ne l'a encore signalé chez nous. Les numéros utilisés pour les escroqueries sont renouvelés très vite, souvent en quelques jours.</p>
++      <h3>Peut-on identifier la personne derrière un numéro ?</h3>
++      <p>Pas librement. L'identification du titulaire d'une ligne relève d'une procédure engagée par les autorités dans un cadre judiciaire.</p>
++      <h3>J'ai simplement décroché, est-ce risqué ?</h3>
++      <p>Décrocher n'expose pas en soi. Le risque commence lorsque vous communiquez des informations, validez une opération ou installez un logiciel à la demande de l'appelant.</p>
++
+       <h2>Autres outils de vérification</h2>
+       <p>Ce vérificateur de numéro fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+       <div class="other-tools">
+-- 
+2.43.0
+
