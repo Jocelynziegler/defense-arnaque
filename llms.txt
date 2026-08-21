@@ -7,8 +7,15 @@ Le Cabinet d'Avocats Ziegler & Associés, fondé par Jocelyn Ziegler et associé
 La plateforme propose trois façons d'agir :
 
 1. **Signaler sa situation** — un formulaire en 4 étapes ou un assistant conversationnel (chatbot) pour décrire une arnaque financière. Les coordonnées transmises restent strictement confidentielles ; le secrétariat juridique du cabinet recontacte la personne pour organiser la suite avec un avocat. Aucune publication n'est faite depuis ce canal.
-2. **Vérifier un placement** — un outil de vérification rapide et un auto-diagnostic en 6 questions inspirés des signaux d'alerte de l'AMF, avec recherche automatique dans les publications déjà rédigées par le cabinet sur des cas similaires.
-3. **Consulter ou publier une alerte communautaire** — une page dédiée liste les alertes anonymisées (type d'arnaque, entité concernée, description) déjà vérifiées et validées par le cabinet. Toute personne peut aussi soumettre une alerte à valider ; seul le texte de l'alerte peut être rendu public, jamais les coordonnées personnelles du déclarant.
+2. **Vérifier avant d'agir** — six outils gratuits, organisés en onglets sur la page d'accueil (section "Vérifier un placement avant d'investir") :
+   - **Société / site** : recherche contre la liste noire officielle Banque de France / ACPR / AMF (mise à jour automatique quotidienne) et les publications du cabinet.
+   - **Téléphone** : détection des préfixes de démarchage commercial officiels ARCEP, et recherche dans les alertes communautaires publiées par d'autres visiteurs.
+   - **Email** : recherche contre la même liste noire officielle Banque de France / ACPR / AMF (usurpations d'identité, sites non autorisés).
+   - **IBAN** : validation du format et de la clé de contrôle (norme ISO 7064 / mod-97), décomposition du code banque pour la France, et identification automatique de l'établissement bancaire pour la France (annuaire BIC) et 7 pays européens (Allemagne, Belgique, Pays-Bas, Luxembourg, Suisse, Autriche, Liechtenstein) via openiban.com.
+   - **Portefeuille crypto-actifs** : vérification du format d'adresse (Ethereum et chaînes compatibles EVM, Bitcoin, Solana, Tron) et détection d'adresse malveillante via GoPlus Security (service utilisé notamment par OKX et DexScreener).
+   - **Auto-diagnostic** : questionnaire en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur.
+   Chaque outil affiche, en cas de signal de risque, une invitation claire à signaler la situation au cabinet.
+3. **Consulter ou publier une alerte communautaire** — une page dédiée liste les alertes anonymisées (type d'arnaque, entité concernée, description) déjà vérifiées et validées par le cabinet. Toute personne peut aussi soumettre une alerte à valider, avec le téléphone et l'email de l'interlocuteur suspect si connus ; seul le texte de l'alerte peut être rendu public, jamais les coordonnées personnelles du déclarant.
 
 ## Pages principales
 
