@@ -26,6 +26,18 @@ La plateforme propose trois façons d'agir :
 - [FAQ](https://ziegler-alertearnaque.com/ziegler-alertearnaque-faq.html): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
 - [À propos de la plateforme](https://ziegler-alertearnaque.com/ziegler-alertearnaque-a-propos.html): présentation du cabinet et de la méthode.
 - [Mentions légales](https://ziegler-alertearnaque.com/ziegler-alertearnaque-mentions-legales.html): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
+- [Archive des signalements](https://ziegler-alertearnaque.com/alertes/): page dédiée pour chaque alerte communautaire publiée, avec le détail du signalement, l'entité concernée et les coordonnées utilisées par l'interlocuteur.
+
+## Pages dédiées aux six outils de vérification
+
+Chaque outil dispose de sa page autonome, avec l'outil fonctionnel et un contenu explicatif détaillé.
+
+- [Vérifier une société avant d'investir](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-societe.html): liste noire officielle Banque de France / ACPR / AMF, registres d'agrément à croiser (REGAFI, ORIAS, listes blanches AMF), dix signaux d'alerte sur un site d'investissement.
+- [Vérifier un numéro de téléphone](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-telephone.html): préfixes de démarchage officiels ARCEP détaillés, explication de l'usurpation de numéro (spoofing), ce qu'un interlocuteur légitime ne demande jamais, signalement au 33700 et Bloctel.
+- [Vérifier une adresse email suspecte](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html): liste noire officielle Banque de France / ACPR / AMF, méthode de lecture d'une adresse (domaine réel, sous-domaines trompeurs, variations typographiques), usurpations d'autorités et fraude au recouvrement de fonds.
+- [Vérifier un IBAN avant un virement](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html): validation ISO 7064 (clé mod-97), décomposition d'un IBAN français, identification de la banque, six signaux d'alerte sur un IBAN, démarches si le virement est déjà parti.
+- [Vérifier un portefeuille crypto](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html): détection d'adresse malveillante via GoPlus Security, formats d'adresse par blockchain, irréversibilité des transactions, mécanismes d'arnaque crypto les plus fréquents.
+- [Auto-diagnostic d'arnaque financière](https://ziegler-alertearnaque.com/ziegler-alertearnaque-auto-diagnostic.html): questionnaire en 6 questions inspiré de l'AMF et du ministère de l'Intérieur, chaque signal expliqué en détail, lecture du résultat, schéma type d'une escroquerie en huit étapes.
 
 ## Ressources externes citées sur le site
 

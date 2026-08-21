@@ -17,14 +17,14 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#8A4CB8">
-<title>Vérifier un IBAN — Format, clé de contrôle et banque | Ziegler Alerte Arnaque</title>
-<meta name="description" content="Vérifiez qu'un IBAN est valide : format, clé de contrôle (norme ISO 7064) et identification de la banque à partir du BIC. Outil du Cabinet d'Avocats Ziegler & Associés.">
+<title>Vérifier un IBAN avant un virement | Ziegler Alerte Arnaque</title>
+<meta name="description" content="Vérifiez le format et la clé de contrôle d&#x27;un IBAN (norme ISO 7064), identifiez la banque, et repérez les signaux d&#x27;alerte avant un virement.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ziegler Alerte Arnaque">
-<meta property="og:title" content="Vérifier un IBAN — Ziegler Alerte Arnaque">
-<meta property="og:description" content="Vérifiez le format, la clé de contrôle et la banque d'un IBAN avant tout virement important.">
+<meta property="og:title" content="Vérifier un IBAN avant un virement | Ziegler Alerte Arnaque">
+<meta property="og:description" content="Vérifiez le format et la clé de contrôle d&#x27;un IBAN (norme ISO 7064), identifiez la banque, et repérez les signaux d&#x27;alerte avant un virement.">
 <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
@@ -33,8 +33,8 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vérifier un IBAN — Ziegler Alerte Arnaque">
-<meta name="twitter:description" content="Vérifiez le format, la clé de contrôle et la banque d'un IBAN avant tout virement important.">
+<meta name="twitter:title" content="Vérifier un IBAN avant un virement | Ziegler Alerte Arnaque">
+<meta name="twitter:description" content="Vérifiez le format et la clé de contrôle d&#x27;un IBAN (norme ISO 7064), identifiez la banque, et repérez les signaux d&#x27;alerte avant un virement.">
 <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
 <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -366,6 +366,7 @@
   .pub-empty{font-size:13.5px; color:var(--ink-soft); margin:4px 0 0; line-height:1.55;}
   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
+  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
   .intro-content ul{padding-left:20px; margin:12px 0;}
   .intro-content li{margin-bottom:6px;}
   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
@@ -447,6 +448,53 @@
 
       <h2>Un IBAN valide garantit-il que le paiement est sûr ?</h2>
       <p>Non. Un IBAN mathématiquement valide confirme uniquement que le numéro est correctement formé — pas que le compte existe, ni qu'il appartient réellement à la personne ou à la société qui vous l'a communiqué. Seule votre banque peut vérifier ce dernier point avant un virement important. En cas de doute sur l'origine d'un IBAN, ou si la clé de contrôle s'avère incorrecte, ne réalisez aucun versement et rapprochez-vous d'un avocat.</p>
+
+
+      <h2>Lire un IBAN français ligne par ligne</h2>
+      <p>Un IBAN français compte exactement 27 caractères, et chaque groupe a une signification précise. Savoir les lire permet de repérer une incohérence avant même de lancer une vérification automatique.</p>
+      <ul>
+        <li><strong>FR</strong> — le code pays sur 2 lettres. Un interlocuteur qui se présente comme une société française mais communique un IBAN commençant par autre chose mérite une question directe.</li>
+        <li><strong>2 chiffres</strong> — la clé de contrôle internationale, calculée sur l'ensemble du numéro. C'est elle que teste le calcul modulo 97.</li>
+        <li><strong>5 chiffres</strong> — le code banque, qui identifie l'établissement.</li>
+        <li><strong>5 chiffres</strong> — le code guichet, qui identifie l'agence de rattachement du compte.</li>
+        <li><strong>11 caractères</strong> — le numéro de compte proprement dit.</li>
+        <li><strong>2 chiffres</strong> — la clé RIB, un second contrôle spécifiquement français.</li>
+      </ul>
+      <p>Notre outil affiche automatiquement cette décomposition pour tout IBAN français saisi, ce qui vous permet de comparer visuellement avec le RIB que vous avez reçu.</p>
+
+      <h2>Les six signaux qui doivent vous alerter sur un IBAN</h2>
+      <p>Dans les dossiers d'escroquerie financière que traite le cabinet, l'IBAN de destination est souvent le premier élément vérifiable objectivement. Certaines configurations reviennent régulièrement :</p>
+      <ul>
+        <li><strong>Un changement d'IBAN en cours de relation.</strong> Vous avez déjà viré sur un compte, et on vous annonce un « changement de domiciliation bancaire ». C'est le schéma classique de la fraude au faux fournisseur ou au faux conseiller. Appelez systématiquement votre interlocuteur sur un numéro que vous connaissez déjà — jamais celui indiqué dans le message annonçant le changement.</li>
+        <li><strong>Un IBAN étranger pour une société présentée comme française.</strong> Ce n'est pas illégal en soi : une entreprise peut détenir un compte à l'étranger. Mais l'écart mérite une explication claire, surtout vers des pays où le recouvrement est difficile.</li>
+        <li><strong>Un compte au nom d'un particulier</strong> alors que vous réglez une prestation à une société. Le titulaire annoncé doit correspondre à l'entité avec laquelle vous contractez.</li>
+        <li><strong>Un IBAN transmis dans l'urgence</strong>, avec une échéance impérative ou la menace de perdre une opportunité. La pression sur le temps est un marqueur constant de l'escroquerie.</li>
+        <li><strong>Une clé de contrôle invalide.</strong> Soit c'est une faute de frappe — demandez confirmation par un autre canal — soit le numéro a été fabriqué.</li>
+        <li><strong>Un IBAN communiqué par messagerie instantanée</strong> (WhatsApp, Telegram, SMS) plutôt que sur un document officiel comportant l'identité complète de l'établissement.</li>
+      </ul>
+
+      <h2>Ce que votre banque peut vérifier, et que nous ne pouvons pas</h2>
+      <p>Aucun outil en ligne ne peut confirmer qu'un compte existe réellement ni à qui il appartient : cette information est couverte par le secret bancaire. En revanche, votre propre banque peut, avant un virement d'un montant important, procéder à des vérifications que vous ne pouvez pas mener seul. Prenez le réflexe d'appeler votre conseiller avant un premier versement significatif vers un bénéficiaire inconnu — c'est quelques minutes qui peuvent éviter une perte définitive.</p>
+      <p>Depuis le déploiement de la vérification du bénéficiaire dans l'espace SEPA, un contrôle de cohérence entre le nom du titulaire annoncé et celui du compte tend à se généraliser. Ce dispositif réduit le risque d'erreur, mais il ne remplace pas votre propre vigilance : il vérifie une correspondance de nom, pas l'honnêteté de votre interlocuteur.</p>
+
+      <h2>Vous avez déjà effectué le virement : que faire ?</h2>
+      <p>La rapidité est déterminante. Un virement exécuté n'est pas automatiquement irrécupérable, mais les chances diminuent d'heure en heure, les fonds étant généralement redistribués très vite vers d'autres comptes.</p>
+      <ul>
+        <li><strong>Contactez votre banque immédiatement</strong>, par téléphone puis par écrit, et demandez expressément une tentative de rappel des fonds. La banque destinataire n'est pas tenue d'y faire droit, mais la démarche doit être engagée sans délai.</li>
+        <li><strong>Conservez toutes les preuves</strong> : échanges, captures d'écran, documents reçus, relevés. Ces éléments seront déterminants pour la suite.</li>
+        <li><strong>Déposez plainte</strong> auprès de la police ou de la gendarmerie, et signalez la situation sur les plateformes officielles.</li>
+        <li><strong>Faites analyser votre dossier.</strong> Selon les circonstances du versement et le comportement des établissements concernés, plusieurs voies de recours peuvent être envisagées.</li>
+      </ul>
+
+      <h2>Questions fréquentes sur la vérification d'un IBAN</h2>
+      <h3>Un IBAN valide signifie-t-il que le compte existe ?</h3>
+      <p>Non. La validation confirme uniquement que le numéro est correctement construit sur le plan mathématique. Un IBAN peut être parfaitement valide et ne correspondre à aucun compte ouvert.</p>
+      <h3>Peut-on savoir à qui appartient un IBAN ?</h3>
+      <p>Pas publiquement. L'identité du titulaire est protégée par le secret bancaire. Notre outil identifie l'établissement bancaire, jamais la personne.</p>
+      <h3>Communiquer mon IBAN présente-t-il un risque ?</h3>
+      <p>Transmettre son IBAN pour recevoir un paiement est une opération courante et nécessaire. Le risque n'est pas dans l'IBAN lui-même mais dans ce qui l'accompagne : ne signez jamais un mandat de prélèvement à un interlocuteur que vous n'avez pas vérifié, et surveillez vos relevés.</p>
+      <h3>La vérification est-elle enregistrée ?</h3>
+      <p>Le contrôle du format et de la clé s'effectue directement dans votre navigateur. L'IBAN saisi n'est pas conservé par le cabinet.</p>
 
       <h2>Autres outils de vérification</h2>
       <p>Ce vérificateur d'IBAN fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>

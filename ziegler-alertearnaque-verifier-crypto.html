@@ -17,14 +17,14 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#8A4CB8">
-<title>Vérifier un portefeuille crypto — Détection d'adresse malveillante | Ziegler Alerte Arnaque</title>
-<meta name="description" content="Vérifiez une adresse de portefeuille crypto (Ethereum, Bitcoin, Solana...) avant tout paiement, via GoPlus Security. Outil du Cabinet d'Avocats Ziegler & Associés.">
+<title>Vérifier un portefeuille crypto | Ziegler Alerte Arnaque</title>
+<meta name="description" content="Vérifiez une adresse de portefeuille crypto avant tout envoi : format par blockchain et détection d&#x27;adresse malveillante via GoPlus Security.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ziegler Alerte Arnaque">
-<meta property="og:title" content="Vérifier un portefeuille crypto — Ziegler Alerte Arnaque">
-<meta property="og:description" content="Vérifiez une adresse de portefeuille crypto avant tout paiement, via GoPlus Security.">
+<meta property="og:title" content="Vérifier un portefeuille crypto | Ziegler Alerte Arnaque">
+<meta property="og:description" content="Vérifiez une adresse de portefeuille crypto avant tout envoi : format par blockchain et détection d&#x27;adresse malveillante via GoPlus Security.">
 <meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
@@ -33,8 +33,8 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vérifier un portefeuille crypto — Ziegler Alerte Arnaque">
-<meta name="twitter:description" content="Vérifiez une adresse de portefeuille crypto avant tout paiement, via GoPlus Security.">
+<meta name="twitter:title" content="Vérifier un portefeuille crypto | Ziegler Alerte Arnaque">
+<meta name="twitter:description" content="Vérifiez une adresse de portefeuille crypto avant tout envoi : format par blockchain et détection d&#x27;adresse malveillante via GoPlus Security.">
 <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
 <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -366,6 +366,7 @@
   .pub-empty{font-size:13.5px; color:var(--ink-soft); margin:4px 0 0; line-height:1.55;}
   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
+  .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
   .intro-content ul{padding-left:20px; margin:12px 0;}
   .intro-content li{margin-bottom:6px;}
   .tool-source-note{font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);}
@@ -456,6 +457,53 @@
 
       <h2>Une adresse non signalée est-elle forcément fiable ?</h2>
       <p>Non. L'absence de signalement ne garantit pas la fiabilité d'une adresse — de nouvelles adresses frauduleuses apparaissent chaque jour, avant même d'être répertoriées. Restez prudent, en particulier pour un premier envoi ou un montant important, et ne cédez jamais à la pression d'un interlocuteur pressant un virement rapide.</p>
+
+
+      <h2>Pourquoi une transaction en crypto-actifs ne se rattrape pas</h2>
+      <p>C'est la différence essentielle avec un virement bancaire, et elle explique pourquoi les escrocs privilégient ce canal. Une transaction inscrite sur une blockchain est <strong>définitive</strong> : il n'existe ni annulation, ni rappel de fonds, ni service client habilité à revenir dessus. Là où un virement peut parfois faire l'objet d'une tentative de rappel dans les heures qui suivent, un envoi en crypto-actifs est acquis dès sa confirmation.</p>
+      <p>Conséquence directe : <strong>la vérification doit avoir lieu avant l'envoi</strong>, jamais après. C'est précisément l'objet de cet outil.</p>
+
+      <h2>Reconnaître le format d'une adresse selon la blockchain</h2>
+      <p>Chaque réseau possède sa propre structure d'adresse. Une erreur de réseau — envoyer vers une adresse d'un autre réseau que celui sélectionné — entraîne généralement une perte définitive des fonds, même sans aucune intention frauduleuse.</p>
+      <ul>
+        <li><strong>Ethereum et réseaux compatibles</strong> (BNB Chain, Polygon, Arbitrum, Base, Optimism, Avalanche) : commence par <em>0x</em>, suivi de 40 caractères hexadécimaux.</li>
+        <li><strong>Bitcoin</strong> : commence par <em>1</em> ou <em>3</em> pour les formats historiques, ou par <em>bc1</em> pour le format SegWit natif.</li>
+        <li><strong>Solana</strong> : 32 à 44 caractères, sans préfixe caractéristique.</li>
+        <li><strong>Tron</strong> : commence par un <em>T</em> majuscule, 34 caractères au total.</li>
+      </ul>
+      <p>Notre outil contrôle cette structure, puis interroge GoPlus Security — un service de sécurité Web3 utilisé notamment par OKX et DexScreener — pour déterminer si l'adresse a déjà été associée à du hameçonnage, du blanchiment ou un vol de fonds.</p>
+
+      <h2>Les mécanismes d'arnaque les plus fréquents</h2>
+      <ul>
+        <li><strong>La fausse plateforme d'investissement.</strong> Une interface affiche vos gains, qui n'existent que sur cet écran. Le blocage survient au retrait, souvent assorti de « frais de déblocage » ou d'une « taxe » à régler d'abord.</li>
+        <li><strong>L'arnaque sentimentale, dite <em>pig butchering</em>.</strong> Une relation de confiance est construite sur plusieurs semaines, parfois plusieurs mois, avant toute proposition d'investissement. C'est aujourd'hui l'un des schémas les plus lourds en montants.</li>
+        <li><strong>Le faux support technique.</strong> Un prétendu conseiller vous contacte au sujet de votre portefeuille et demande votre phrase de récupération. <strong>Aucun service légitime ne demande jamais ces douze ou vingt-quatre mots</strong> — quiconque les détient contrôle définitivement vos fonds.</li>
+        <li><strong>L'approbation de contrat malveillant.</strong> En connectant votre portefeuille à un site, vous pouvez autoriser sans le voir un contrat à dépenser vos jetons. Le vol intervient parfois des semaines plus tard. Pensez à passer en revue et révoquer périodiquement les autorisations accordées.</li>
+        <li><strong>L'adresse substituée dans le presse-papiers.</strong> Un logiciel malveillant remplace l'adresse que vous venez de copier. Vérifiez toujours les premiers <em>et</em> les derniers caractères de l'adresse dans le champ de destination avant de valider.</li>
+      </ul>
+
+      <h2>Cinq réflexes avant tout envoi</h2>
+      <ul>
+        <li><strong>Vérifiez que le prestataire est enregistré.</strong> En France, les prestataires de services sur actifs numériques doivent être enregistrés auprès de l'AMF. Cette information est publique et consultable.</li>
+        <li><strong>Envoyez d'abord un montant test</strong> lorsque c'est possible, et confirmez sa bonne réception avant l'envoi principal.</li>
+        <li><strong>Contrôlez l'adresse caractère par caractère</strong>, au moins sur le début et la fin.</li>
+        <li><strong>Ne communiquez jamais votre phrase de récupération</strong>, à personne, sous aucun prétexte.</li>
+        <li><strong>Méfiez-vous de l'urgence.</strong> Une opportunité qui « expire dans l'heure » est un procédé de manipulation, pas une réalité de marché.</li>
+      </ul>
+
+      <h2>Vous avez déjà envoyé des fonds</h2>
+      <p>La transaction ne peut pas être annulée, mais votre situation n'est pas sans issue pour autant. Une transaction est publique et traçable : l'adresse de destination, les montants et les mouvements ultérieurs sont inscrits sur la blockchain et consultables. Ces éléments constituent une matière exploitable, notamment lorsque les fonds transitent vers une plateforme d'échange soumise à des obligations d'identification de ses clients.</p>
+      <p>Conservez l'identifiant de transaction, l'adresse de destination, l'ensemble de vos échanges et les captures de la plateforme concernée. Déposez plainte et faites analyser votre dossier rapidement : les délais comptent, en particulier lorsqu'une plateforme régulée est impliquée dans la chaîne.</p>
+
+      <h2>Questions fréquentes sur la vérification d'une adresse crypto</h2>
+      <h3>L'adresse n'est pas signalée : puis-je envoyer ?</h3>
+      <p>Prudence. Cela signifie qu'elle n'est pas encore répertoriée comme malveillante. Les escrocs génèrent des adresses neuves en permanence, précisément pour échapper à ces bases.</p>
+      <h3>Pourquoi Bitcoin n'est-il pas couvert par la détection ?</h3>
+      <p>La base de détection utilisée couvre les réseaux compatibles EVM ainsi que Solana et Tron. Pour Bitcoin, l'outil valide le format de l'adresse, sans analyse de réputation.</p>
+      <h3>Peut-on identifier le propriétaire d'une adresse ?</h3>
+      <p>Pas directement : une adresse n'est pas nominative. En revanche, les mouvements sont publics, et l'identification devient possible lorsque les fonds atteignent un intermédiaire régulé, dans le cadre d'une procédure appropriée.</p>
+      <h3>Les sociétés promettant de récupérer mes cryptomonnaies sont-elles fiables ?</h3>
+      <p>Soyez extrêmement vigilant. Les victimes d'arnaques crypto sont massivement re-ciblées par de faux services de récupération réclamant des frais préalables. C'est une seconde escroquerie, et elle est très répandue.</p>
 
       <h2>Autres outils de vérification</h2>
       <p>Ce vérificateur de portefeuille crypto fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>

@@ -373,6 +373,9 @@ if (file_exists($SITEMAP_FILE)) {
     // Retire les anciennes entrées /alertes/ générées précédemment
     $sitemap = preg_replace('#\s*<url>\s*<loc>' . preg_quote($SITE_URL, '#') . '/alertes/[^<]*</loc>.*?</url>\s*#s', '', $sitemap);
     $newEntries = '';
+    // Le sommaire /alertes/ doit lui aussi figurer au sitemap : c'est la page
+    // qui recense toutes les alertes, et elle etait jusqu'ici absente.
+    $newEntries .= "  <url>\n    <loc>$SITE_URL/alertes/</loc>\n    <lastmod>" . date('Y-m-d') . "</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n";
     foreach ($currentSlugs as $slug) {
         $newEntries .= "  <url>\n    <loc>$SITE_URL/alertes/$slug.html</loc>\n    <lastmod>" . date('Y-m-d') . "</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n";
     }
