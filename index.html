@@ -1959,7 +1959,24 @@
     const ibanBtn = document.getElementById('ibanCheckBtn');
     if (!ibanBtn) return;
 
-    ibanBtn.addEventListener('click', () => {
+    // Pays pour lesquels openiban.com (service gratuit, public, autorise l'appel direct
+    // depuis un navigateur — voir openiban.com) identifie automatiquement la banque à
+    // partir du seul IBAN, sans que l'internaute ait besoin de saisir un BIC séparément.
+    const OPENIBAN_SUPPORTED_COUNTRIES = ['DE', 'BE', 'NL', 'LU', 'CH', 'AT', 'LI'];
+
+    async function lookupBankViaOpenIban(cleanedIban){
+      try {
+        const res = await fetch('https://openiban.com/validate/' + encodeURIComponent(cleanedIban) + '?getBIC=true&validateBankCode=true');
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data;
+      } catch (err){
+        console.warn('openiban.com injoignable pour le moment.', err);
+        return null;
+      }
+    }
+
+    ibanBtn.addEventListener('click', async () => {
       const rawIban = document.getElementById('vIban').value.trim();
       const rawBic = document.getElementById('vBic').value.trim().toUpperCase();
       const out = document.getElementById('ibanOut');
@@ -2010,7 +2027,26 @@
         breakdownEl.innerHTML = 'Code banque : <strong>' + bankCode + '</strong> — Code guichet : <strong>' + branchCode + '</strong> — N° de compte : <strong>' + account + '</strong> — Clé RIB : <strong>' + ribKey + '</strong>';
       }
 
-      // Recherche dans l'annuaire BIC si un code a été fourni
+      // Identification automatique de la banque pour les pays couverts par openiban.com
+      // (DE, BE, NL, LU, CH, AT, LI) — l'internaute reste sur notre site, la requête se
+      // fait en arrière-plan, avec attribution claire de la source.
+      if (checksumOk && OPENIBAN_SUPPORTED_COUNTRIES.includes(country)){
+        bicResultEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Identification de la banque en cours…</p>';
+        const openIbanData = await lookupBankViaOpenIban(cleaned);
+        if (openIbanData && openIbanData.bankData && openIbanData.bankData.name){
+          const bd = openIbanData.bankData;
+          bicResultEl.innerHTML = '<div class="pub-article" style="border-color:var(--ok);">'
+            + '<span class="pa-tag" style="color:var(--ok);">Établissement identifié</span>'
+            + '<span class="pa-title">' + bd.name + '</span>'
+            + '<p class="pa-excerpt">' + (bd.city ? 'Ville : ' + bd.city + ' — ' : '') + (bd.bic ? 'Code BIC : ' + bd.bic : '') + '</p>'
+            + '<a class="pa-link" href="https://openiban.com/" target="_blank" rel="noopener">Information fournie par openiban.com →</a>'
+            + '</div>';
+        } else {
+          bicResultEl.innerHTML = '<p class="pub-empty">La banque n\'a pas pu être identifiée automatiquement pour cet IBAN (service momentanément indisponible, ou établissement non référencé).</p>';
+        }
+      }
+
+      // Recherche dans l'annuaire BIC français si un code a été fourni manuellement
       if (rawBic){
         const matches = BIC_DIRECTORY.filter(e => e.bic === rawBic || e.bic.startsWith(rawBic));
         if (matches.length){
