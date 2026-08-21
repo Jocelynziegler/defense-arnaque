@@ -36,6 +36,7 @@
 <meta name="twitter:title" content="Forum de la communauté — Ziegler Alerte Arnaque">
 <meta name="twitter:description" content="Posez vos questions et échangez sur les arnaques financières. Chaque sujet est validé par le cabinet avant publication.">
 <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+<meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -549,6 +550,17 @@
   const listView = document.getElementById('forumListView');
   const detailView = document.getElementById('forumDetailView');
 
+  // Échappe les caractères HTML sensibles avant insertion dans le DOM.
+  // Indispensable pour tout texte provenant de la communauté (faille XSS sinon).
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function categorySlug(tag){
     const t = (tag || '').toLowerCase();
     if (t.includes('crypto')) return 'crypto';
@@ -598,15 +610,15 @@
     }
     grid.innerHTML = items.map((t, i) => `
       <div class="alert-card forum-thread-card" data-thread-index="${i}" style="cursor:pointer;">
-        <div class="ac-avatar">${t.pseudo.slice(0, 2).toUpperCase()}</div>
+        <div class="ac-avatar">${escapeHtml(t.pseudo.slice(0, 2).toUpperCase())}</div>
         <div class="ac-body">
           <div class="ac-top">
-            <span class="ac-who">${t.pseudo}</span>
-            <span class="ac-badge" data-cat="${categorySlug(t.type)}">${t.type}</span>
+            <span class="ac-who">${escapeHtml(t.pseudo)}</span>
+            <span class="ac-badge" data-cat="${categorySlug(t.type)}">${escapeHtml(t.type)}</span>
             <span class="ac-date">${formatDate(t.date)}</span>
           </div>
-          <div class="ac-entity">${t.titre}</div>
-          <p class="ac-text">${t.text}</p>
+          <div class="ac-entity">${escapeHtml(t.titre)}</div>
+          <p class="ac-text">${escapeHtml(t.text)}</p>
         </div>
       </div>
     `).join('');
@@ -633,15 +645,15 @@
     window.scrollTo({ top: detailView.offsetTop - 100, behavior: 'smooth' });
 
     document.getElementById('threadDetailCard').innerHTML = `
-      <div class="ac-avatar">${thread.pseudo.slice(0, 2).toUpperCase()}</div>
+      <div class="ac-avatar">${escapeHtml(thread.pseudo.slice(0, 2).toUpperCase())}</div>
       <div class="ac-body">
         <div class="ac-top">
-          <span class="ac-who">${thread.pseudo}</span>
-          <span class="ac-badge" data-cat="${categorySlug(thread.type)}">${thread.type}</span>
+          <span class="ac-who">${escapeHtml(thread.pseudo)}</span>
+          <span class="ac-badge" data-cat="${categorySlug(thread.type)}">${escapeHtml(thread.type)}</span>
           <span class="ac-date">${formatDate(thread.date)}</span>
         </div>
-        <div class="ac-entity">${thread.titre}</div>
-        <p class="ac-text">${thread.text}</p>
+        <div class="ac-entity">${escapeHtml(thread.titre)}</div>
+        <p class="ac-text">${escapeHtml(thread.text)}</p>
       </div>
     `;
     document.getElementById('replyToTitle').value = thread.titre;
@@ -672,10 +684,10 @@
       repliesStatus.textContent = '';
       repliesList.innerHTML = replies.map(r => `
         <div class="alert-card" style="padding:16px 18px;">
-          <div class="ac-avatar" style="width:34px; height:34px; font-size:12px;">${r.pseudo.slice(0, 2).toUpperCase()}</div>
+          <div class="ac-avatar" style="width:34px; height:34px; font-size:12px;">${escapeHtml(r.pseudo.slice(0, 2).toUpperCase())}</div>
           <div class="ac-body">
-            <div class="ac-top"><span class="ac-who">${r.pseudo}</span><span class="ac-date">${formatDate(r.date)}</span></div>
-            <p class="ac-text">${r.text}</p>
+            <div class="ac-top"><span class="ac-who">${escapeHtml(r.pseudo)}</span><span class="ac-date">${formatDate(r.date)}</span></div>
+            <p class="ac-text">${escapeHtml(r.text)}</p>
           </div>
         </div>
       `).join('');

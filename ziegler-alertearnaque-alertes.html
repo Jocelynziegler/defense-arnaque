@@ -36,6 +36,7 @@
 <meta name="twitter:title" content="Alertes de la communauté — Ziegler Alerte Arnaque">
 <meta name="twitter:description" content="Signalements d'arnaques financières partagés anonymement et vérifiés par le Cabinet d'Avocats Ziegler & Associés.">
 <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+<meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -552,6 +553,19 @@
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
+  // Échappe les caractères HTML sensibles avant insertion dans le DOM.
+  // Indispensable pour tout texte provenant de la communauté (alertes,
+  // pseudos...) : sans ça, une entrée malveillante pourrait exécuter du
+  // code chez les visiteurs (faille XSS).
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function categorySlug(tag){
     const t = (tag || '').toLowerCase();
     if (t.includes('crypto')) return 'crypto';
@@ -570,15 +584,15 @@
     }
     grid.innerHTML = items.map(a => `
       <div class="alert-card">
-        <div class="ac-avatar">${a.initials}</div>
+        <div class="ac-avatar">${escapeHtml(a.initials)}</div>
         <div class="ac-body">
           <div class="ac-top">
-            <span class="ac-who">${a.initials}</span>
-            <span class="ac-badge" data-cat="${categorySlug(a.type)}">${a.type}</span>
+            <span class="ac-who">${escapeHtml(a.initials)}</span>
+            <span class="ac-badge" data-cat="${categorySlug(a.type)}">${escapeHtml(a.type)}</span>
             <span class="ac-date">${formatDate(a.date)}</span>
           </div>
-          <div class="ac-entity">${a.entity}</div>
-          <p class="ac-text">${a.text}</p>
+          <div class="ac-entity">${escapeHtml(a.entity)}</div>
+          <p class="ac-text">${escapeHtml(a.text)}</p>
         </div>
         <div class="ac-meta"><span class="ac-count">${a.count}</span> signalement${a.count > 1 ? 's' : ''} similaire${a.count > 1 ? 's' : ''}</div>
       </div>

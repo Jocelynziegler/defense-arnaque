@@ -37,6 +37,7 @@
 <meta name="twitter:title" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler &amp; Associés">
 <meta name="twitter:description" content="Signalez, vérifiez, agissez : la plateforme du cabinet dédié à la défense des victimes d'arnaques financières.">
 <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
+<meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1414,18 +1415,18 @@
         <p>Deux avocats associés, une équipe dédiée, une seule pratique : la défense des victimes d'escroqueries financières.</p>
       </div>
 
-      <img class="team-photo" src="assets/equipe-fondateurs.jpg" alt="Jocelyn Ziegler et Alexandre Dakos, avocats associés du Cabinet d'Avocats Ziegler & Associés" loading="lazy">
+      <img class="team-photo" src="assets/equipe-fondateurs.jpg" alt="Jocelyn Ziegler et Alexandre Dakos, avocats associés du Cabinet d'Avocats Ziegler & Associés" width="1600" height="1066" loading="lazy">
 
       <div class="team-grid">
         <div class="team-card">
-          <img class="team-card-photo" src="assets/jocelyn-ziegler.jpg" alt="Jocelyn Ziegler, Avocat Associé" loading="lazy">
+          <img class="team-card-photo" src="assets/jocelyn-ziegler.jpg" alt="Jocelyn Ziegler, Avocat Associé" width="900" height="1200" loading="lazy">
           <span class="team-role">Avocat Associé</span>
           <h3>Jocelyn Ziegler</h3>
           <p>Titulaire d'une double formation en droit public et en droit privé des affaires, Jocelyn Ziegler met ses compétences au service des clients qu'il accompagne avec rigueur et engagement. Sa pratique couvre le conseil et le contentieux, notamment dans les domaines du droit bancaire, financier et des litiges complexes. Il se distingue par sa disponibilité, son écoute et sa réactivité.</p>
           <p>Grâce à une approche pragmatique et stratégique, il veille à défendre les intérêts de ses clients avec efficacité et à leur apporter des solutions concrètes et personnalisées.</p>
         </div>
         <div class="team-card">
-          <img class="team-card-photo" src="assets/alexandre-dakos.jpg" alt="Alexandre Dakos, Avocat Associé" loading="lazy">
+          <img class="team-card-photo" src="assets/alexandre-dakos.jpg" alt="Alexandre Dakos, Avocat Associé" width="900" height="1200" loading="lazy">
           <span class="team-role">Avocat Associé</span>
           <h3>Alexandre Dakos</h3>
           <p>Diplômé de l'Université Panthéon-Assas et de HEC, Alexandre Dakos a exercé dans plusieurs cabinets d'affaires prestigieux, dont Darrois Villey Maillot Brochier, Bredin Prat, UGGC et Dentons, avant de créer sa propre structure puis de rejoindre le Cabinet d'Avocats Ziegler &amp; Associés.</p>
@@ -1995,6 +1996,17 @@
     // signalé par la communauté correspond à celui recherché. C'est la seule vraie
     // base "anti-arnaque téléphonique" légale disponible : celle que le
     // cabinet construit lui-même via les signalements de ses visiteurs.
+    // Échappe les caractères HTML sensibles avant insertion dans le DOM.
+    // Indispensable pour tout texte provenant de la communauté (faille XSS sinon).
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     async function searchCommunityAlerts(query, field){
       // field vaut 'Téléphone concerné' ou 'Email concerné'
       const resultsEl = document.getElementById('communityResults');
@@ -2011,10 +2023,12 @@
           return val.toLowerCase().trim() === query.toLowerCase().trim();
         });
         if (matches.length){
+          const excerpt = (matches[0].fields['Texte de l\'alerte'] || '').toString().slice(0, 160);
+          const excerptSuffix = matches[0].fields['Texte de l\'alerte'] && matches[0].fields['Texte de l\'alerte'].length > 160 ? '…' : '';
           resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
             + '<span class="pa-tag" style="color:var(--danger);">Signalé par la communauté</span>'
             + '<span class="pa-title">' + matches.length + ' alerte' + (matches.length > 1 ? 's' : '') + ' publiée' + (matches.length > 1 ? 's' : '') + (matches.length > 1 ? ' mentionnent' : ' mentionne') + ' ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + '</span>'
-            + '<p class="pa-excerpt">' + (matches[0].fields['Texte de l\'alerte'] || '').toString().slice(0, 160) + (matches[0].fields['Texte de l\'alerte'] && matches[0].fields['Texte de l\'alerte'].length > 160 ? '…' : '') + '</p>'
+            + '<p class="pa-excerpt">' + escapeHtml(excerpt) + escapeHtml(excerptSuffix) + '</p>'
             + '<a class="pa-link" href="ziegler-alertearnaque-alertes.html" target="_blank" rel="noopener">Voir les alertes de la communauté →</a>'
             + '</div>';
           document.getElementById('comboCta').style.display = 'inline-flex';
