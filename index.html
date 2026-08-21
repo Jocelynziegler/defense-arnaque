@@ -344,6 +344,15 @@
   .hero-meta .num{font-family:var(--mono); font-size:22px; color:var(--purple-light);}
   .hero-meta .lbl{font-size:12.5px; color:#9AA2B6; margin-top:2px;}
 
+  .tech-badges{display:flex; flex-wrap:wrap; gap:10px; margin-top:26px;}
+  .tech-badge{
+    display:inline-flex; align-items:center; gap:7px; padding:8px 15px; border-radius:999px;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); color:#EDE9DE;
+    font-size:12.5px; font-weight:600; text-decoration:none; transition:background .15s, border-color .15s, transform .15s;
+  }
+  .tech-badge:hover{background:rgba(138,76,184,.25); border-color:var(--purple-light); transform:translateY(-2px);}
+  .tech-badge .tb-dot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
+
   /* quick access dossier cards */
   .quick{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:-1px;}
   .quick a{
@@ -942,6 +951,13 @@
         <div><span class="num">4,8 / 5</span><span class="lbl">Note Google — 156 avis</span></div>
         <div><span class="num">6</span><span class="lbl">Outils de vérification</span></div>
         <div><span class="num">TF1 · Le Monde · BFM</span><span class="lbl">Cabinet cité dans la presse</span></div>
+      </div>
+
+      <div class="tech-badges">
+        <a href="#verifier" class="tech-badge" data-goto-tab="email"><span class="tb-dot" style="background:#8A4CB8;"></span>Banque de France · ACPR · AMF</a>
+        <a href="#verifier" class="tech-badge" data-goto-tab="telephone"><span class="tb-dot" style="background:#2D6FBF;"></span>ARCEP</a>
+        <a href="#verifier" class="tech-badge" data-goto-tab="crypto"><span class="tb-dot" style="background:#D97A2E;"></span>GoPlus Security</a>
+        <a href="#verifier" class="tech-badge" data-goto-tab="iban"><span class="tb-dot" style="background:#1E8F76;"></span>ISO 7064 · openiban.com</a>
       </div>
     </div>
     <div class="quick">
@@ -1877,6 +1893,17 @@
     document.querySelectorAll('.tool-card').forEach(card => {
       card.addEventListener('click', () => {
         const key = card.dataset.goto;
+        const targetTab = document.querySelector('.vtab[data-tab="' + key + '"]');
+        if (targetTab) targetTab.click();
+        document.querySelector('.verify-tabbed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Les badges de technologies dans le hero font de même.
+    document.querySelectorAll('.tech-badge').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.preventDefault();
+        const key = badge.dataset.gotoTab;
         const targetTab = document.querySelector('.vtab[data-tab="' + key + '"]');
         if (targetTab) targetTab.click();
         document.querySelector('.verify-tabbed').scrollIntoView({ behavior: 'smooth', block: 'start' });
