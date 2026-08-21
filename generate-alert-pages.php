@@ -241,6 +241,9 @@ $pageTemplate = <<<'TPL'
   h1{font-size:clamp(24px,4vw,32px); line-height:1.25; margin-bottom:10px;}
   .meta-line{font-size:13px; color:var(--ink-soft-2); margin-bottom:32px;}
   .alert-text{font-size:16.5px; line-height:1.75; color:var(--ink); margin-bottom:32px; white-space:pre-line;}
+  .contact-note{background:var(--paper); border-left:3px solid var(--purple); border-radius:8px; padding:18px 22px; font-size:14px; color:var(--ink-soft); line-height:1.6; margin-bottom:32px;}
+  .contact-note strong{color:var(--ink);}
+  .contact-note a{color:var(--purple); font-weight:600;}
   .cta-band{background:var(--ink); border-radius:16px; padding:32px; text-align:center; color:#fff;}
   .cta-band h2{color:#fff; font-size:19px; margin-bottom:10px;}
   .cta-band p{font-size:14px; color:#C7CCD9; margin-bottom:20px;}
@@ -272,6 +275,10 @@ $pageTemplate = <<<'TPL'
     <p class="meta-line">Signalement du {{DATE}} — {{COUNT}} signalement{{PLURAL}} similaire{{PLURAL}} reçu{{PLURAL}} par le cabinet</p>
 
     <div class="alert-text">{{TEXT}}</div>
+
+    <div class="contact-note">
+      <strong>Vous êtes en lien avec cette société ?</strong> N'hésitez pas à <a href="/#contact">prendre contact avec le cabinet</a> — nous étudions chaque situation avec attention.
+    </div>
 
     <div class="cta-band">
       <h2>Vous vivez une situation similaire ?</h2>
