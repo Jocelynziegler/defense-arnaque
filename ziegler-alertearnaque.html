@@ -1177,6 +1177,41 @@
           </div>
         </div>
       </div>
+
+      <div class="tool-panel" style="margin-top:32px;">
+        <div class="tool-tabbar">
+          <div class="tb">Vérifier un portefeuille crypto</div>
+          <div class="tb">Format et détection d'adresse malveillante</div>
+        </div>
+        <div class="verify-col" style="max-width:none;">
+          <h3>On vous a communiqué une adresse pour un paiement en crypto-actifs ?</h3>
+          <p class="sub">Vérifiez le format de l'adresse, et si elle a déjà été identifiée comme malveillante (phishing, blanchiment, arnaque connue) par GoPlus Security, un service de sécurité Web3 reconnu utilisé notamment par OKX et DexScreener. Cela ne garantit pas la fiabilité d'une adresse non signalée — de nouvelles adresses d'arnaque apparaissent chaque jour.</p>
+          <div class="field-row">
+            <div class="field"><label for="vCrypto">Adresse du portefeuille</label><input id="vCrypto" type="text" placeholder="Ex. : 0x742d35Cc... ou bc1q..."></div>
+            <div class="field"><label for="vCryptoChain">Blockchain</label>
+              <select id="vCryptoChain">
+                <option value="1">Ethereum</option>
+                <option value="56">BNB Chain (BSC)</option>
+                <option value="137">Polygon</option>
+                <option value="42161">Arbitrum</option>
+                <option value="8453">Base</option>
+                <option value="10">Optimism</option>
+                <option value="43114">Avalanche</option>
+                <option value="solana">Solana</option>
+                <option value="tron">Tron</option>
+                <option value="bitcoin">Bitcoin</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn" id="cryptoCheckBtn" type="button" style="margin-top:6px;">Vérifier l'adresse</button>
+
+          <div class="verify-out" id="cryptoOut">
+            <div class="score-readout"><span class="lvl" id="cryptoLevel">—</span><span class="pts" id="cryptoPts"></span></div>
+            <div class="score-gauge"><i id="cryptoBar"></i></div>
+            <p id="cryptoText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2059,6 +2094,97 @@
         } else if (BIC_DIRECTORY.length) {
           bicResultEl.innerHTML = '<p class="pub-empty">Ce code BIC n\'a pas été retrouvé dans notre annuaire des établissements français. Il peut s\'agir d\'une banque étrangère, ou d\'un code inexistant — vérifiez-le directement auprès de l\'émetteur.</p>';
         }
+      }
+    });
+  })();
+
+  /* ---------------- CRYPTO WALLET VERIFICATION (format + GoPlus Security) ---------------- */
+  (function(){
+    const cryptoBtn = document.getElementById('cryptoCheckBtn');
+    if (!cryptoBtn) return;
+
+    // Vérifications de format par blockchain (structure/longueur). Ce n'est pas une
+    // somme de contrôle cryptographique complète (contrairement à l'IBAN) mais cela
+    // détecte déjà la grande majorité des adresses mal recopiées ou du mauvais format.
+    function formatCheck(address, chain){
+      const a = address.trim();
+      if (chain === 'bitcoin'){
+        if (/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(a)) return { ok: true, label: 'Bitcoin (Legacy/P2SH)' };
+        if (/^bc1[a-z0-9]{25,59}$/i.test(a)) return { ok: true, label: 'Bitcoin (Bech32/SegWit natif)' };
+        return { ok: false };
+      }
+      if (chain === 'solana'){
+        return { ok: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a), label: 'Solana' };
+      }
+      if (chain === 'tron'){
+        return { ok: /^T[a-zA-Z0-9]{33}$/.test(a), label: 'Tron' };
+      }
+      // Chaines compatibles EVM (Ethereum, BSC, Polygon, Arbitrum, Base, Optimism, Avalanche...)
+      return { ok: /^0x[a-fA-F0-9]{40}$/.test(a), label: 'compatible EVM' };
+    }
+
+    cryptoBtn.addEventListener('click', async () => {
+      const address = document.getElementById('vCrypto').value.trim();
+      const chain = document.getElementById('vCryptoChain').value;
+      const chainLabel = document.getElementById('vCryptoChain').selectedOptions[0].textContent;
+      const out = document.getElementById('cryptoOut');
+
+      if (!address){ document.getElementById('vCrypto').focus(); return; }
+
+      const fc = formatCheck(address, chain);
+      let level, score, color, text;
+
+      if (!fc.ok){
+        level = 'Format invalide'; score = 5; color = 'var(--danger)';
+        text = "Cette adresse ne correspond pas au format attendu pour " + chainLabel + ". Vérifiez qu'elle a été copiée intégralement, sans espace ni caractère manquant.";
+        document.getElementById('cryptoLevel').textContent = level;
+        document.getElementById('cryptoPts').textContent = score + ' / 100';
+        const bar = document.getElementById('cryptoBar');
+        bar.style.width = score + '%'; bar.style.background = color;
+        document.getElementById('cryptoText').textContent = text;
+        out.classList.add('show');
+        return;
+      }
+
+      level = 'Format valide — vérification en cours…'; score = 50; color = 'var(--warn)';
+      text = 'Recherche en cours auprès de GoPlus Security…';
+      document.getElementById('cryptoLevel').textContent = level;
+      document.getElementById('cryptoPts').textContent = '';
+      const bar = document.getElementById('cryptoBar');
+      bar.style.width = '50%'; bar.style.background = color;
+      document.getElementById('cryptoText').textContent = text;
+      out.classList.add('show');
+
+      if (chain === 'bitcoin'){
+        // GoPlus Security ne couvre pas Bitcoin pour cette vérification.
+        document.getElementById('cryptoLevel').textContent = 'Format valide';
+        document.getElementById('cryptoPts').textContent = '';
+        bar.style.width = '60%'; bar.style.background = 'var(--warn)';
+        document.getElementById('cryptoText').textContent = "L'adresse a un format Bitcoin valide. Aucune base gratuite de détection d'adresses malveillantes n'est disponible pour Bitcoin — restez vigilant, en particulier si le montant demandé est important.";
+        return;
+      }
+
+      try {
+        const res = await fetch('/check-crypto-address.php?address=' + encodeURIComponent(address) + '&chain_id=' + encodeURIComponent(chain));
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+
+        if (data.is_risky){
+          document.getElementById('cryptoLevel').textContent = 'Adresse signalée à risque';
+          document.getElementById('cryptoPts').textContent = '5 / 100';
+          bar.style.width = '5%'; bar.style.background = 'var(--danger)';
+          document.getElementById('cryptoText').textContent = "Cette adresse est associée à une activité à risque connue de GoPlus Security (" + data.risk_flags.join(', ') + "). N'envoyez aucun fonds vers cette adresse.";
+        } else {
+          document.getElementById('cryptoLevel').textContent = 'Aucun signal de risque connu';
+          document.getElementById('cryptoPts').textContent = '70 / 100';
+          bar.style.width = '70%'; bar.style.background = 'var(--warn)';
+          document.getElementById('cryptoText').textContent = "Cette adresse n'apparaît pas dans la base de GoPlus Security au moment de la vérification. Cela ne garantit pas sa fiabilité : de nouvelles adresses frauduleuses apparaissent en continu. Restez prudent, en particulier pour un premier envoi.";
+        }
+      } catch (err){
+        document.getElementById('cryptoLevel').textContent = 'Vérification indisponible';
+        document.getElementById('cryptoPts').textContent = '';
+        bar.style.width = '50%'; bar.style.background = 'var(--warn)';
+        document.getElementById('cryptoText').textContent = "Le format de l'adresse est valide, mais la vérification en direct n'a pas pu être effectuée pour le moment. Réessayez dans quelques instants.";
       }
     });
   })();
