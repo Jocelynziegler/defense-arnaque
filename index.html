@@ -2472,11 +2472,11 @@
     const AIRTABLE_TOKEN = '';          // identique à celui de la page Alertes
 
     const FALLBACK_TICKER = [
-      { tag: "Crypto-actifs", entity: "Plateforme de trading crypto non régulée", when: "il y a 2 semaines" },
-      { tag: "Faux conseiller", entity: "Faux conseiller se présentant comme mandataire d'une banque", when: "il y a 1 mois" },
-      { tag: "Trading / Forex", entity: "Plateforme de trading Forex / CFD non autorisée", when: "il y a 1 mois" },
-      { tag: "Placement atypique", entity: "Placement vin et métaux précieux non agréé AMF", when: "il y a 2 mois" },
-      { tag: "Livret fictif", entity: "Faux livret d'épargne à haut rendement", when: "il y a 2 mois" }
+      { tag: "Crypto-actifs", entity: "Plateforme de trading crypto non régulée", when: "il y a 2 semaines", link: "ziegler-alertearnaque-alertes.html" },
+      { tag: "Faux conseiller", entity: "Faux conseiller se présentant comme mandataire d'une banque", when: "il y a 1 mois", link: "ziegler-alertearnaque-alertes.html" },
+      { tag: "Trading / Forex", entity: "Plateforme de trading Forex / CFD non autorisée", when: "il y a 1 mois", link: "ziegler-alertearnaque-alertes.html" },
+      { tag: "Placement atypique", entity: "Placement vin et métaux précieux non agréé AMF", when: "il y a 2 mois", link: "ziegler-alertearnaque-alertes.html" },
+      { tag: "Livret fictif", entity: "Faux livret d'épargne à haut rendement", when: "il y a 2 mois", link: "ziegler-alertearnaque-alertes.html" }
     ];
 
     function timeAgo(iso){
@@ -2488,28 +2488,60 @@
       return "il y a " + Math.round(days / 30) + " mois";
     }
 
+    function decodeEntTicker(str){
+      const ta = document.createElement('textarea');
+      ta.innerHTML = str;
+      return ta.value;
+    }
+
     async function loadTicker(){
-      if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN) return { items: FALLBACK_TICKER, isDemo: true };
-      try {
-        const url = 'https://api.airtable.com/v0/' + AIRTABLE_BASE_ID + '/' + encodeURIComponent(AIRTABLE_TABLE_NAME)
-          + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()')
-          + '&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=8';
-        const res = await fetch(url, { headers: { Authorization: 'Bearer ' + AIRTABLE_TOKEN } });
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        const records = (data.records || []).map(r => ({
-          tag: r.fields['Type'] || 'Autre',
-          entity: r.fields['Entité concernée'] || '',
-          when: r.fields['Date'] ? timeAgo(r.fields['Date']) : ''
-        }));
-        // Airtable is properly connected: if there are zero published alerts yet,
-        // never fall back to fictional demo entries — that would look like real
-        // data. Hide the ticker entirely instead (handled by the caller).
-        return { items: records, isDemo: false };
-      } catch (err){
-        console.error('Ticker : Airtable injoignable, repli sur les exemples.', err);
-        return { items: FALLBACK_TICKER, isDemo: true };
+      // 1. Priorité aux alertes communautaires publiées (Airtable) : ce sont les
+      // signalements des visiteurs eux-mêmes, la source la plus pertinente.
+      if (AIRTABLE_BASE_ID && AIRTABLE_TOKEN) {
+        try {
+          const url = 'https://api.airtable.com/v0/' + AIRTABLE_BASE_ID + '/' + encodeURIComponent(AIRTABLE_TABLE_NAME)
+            + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()')
+            + '&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=8';
+          const res = await fetch(url, { headers: { Authorization: 'Bearer ' + AIRTABLE_TOKEN } });
+          if (res.ok) {
+            const data = await res.json();
+            const records = (data.records || []).map(r => ({
+              tag: r.fields['Type'] || 'Autre',
+              entity: r.fields['Entité concernée'] || '',
+              when: r.fields['Date'] ? timeAgo(r.fields['Date']) : '',
+              link: 'ziegler-alertearnaque-alertes.html'
+            }));
+            if (records.length) return { items: records, isDemo: false };
+          }
+        } catch (err){
+          console.warn('Ticker : Airtable injoignable, tentative avec les publications du cabinet.', err);
+        }
       }
+
+      // 2. À défaut (aucune alerte communautaire publiée pour l'instant), on
+      // affiche automatiquement les dernières analyses réelles et déjà publiées
+      // par le cabinet sur ziegler-associes.com — jamais de contenu fictif, et
+      // toujours à jour sans aucune intervention manuelle.
+      try {
+        const res = await fetch('https://ziegler-associes.com/wp-json/wp/v2/posts?per_page=8', { headers: { Accept: 'application/json' } });
+        if (res.ok) {
+          const posts = await res.json();
+          if (Array.isArray(posts) && posts.length) {
+            const items = posts.map(post => ({
+              tag: 'Alerte du cabinet',
+              entity: decodeEntTicker((post.title && post.title.rendered) || 'Analyse du cabinet'),
+              when: post.date ? timeAgo(post.date) : '',
+              link: post.link || 'https://ziegler-associes.com/publications/'
+            }));
+            return { items, isDemo: false };
+          }
+        }
+      } catch (err){
+        console.warn('Ticker : publications du cabinet injoignables, repli sur les exemples.', err);
+      }
+
+      // 3. Dernier recours seulement : exemples illustratifs figés.
+      return { items: FALLBACK_TICKER, isDemo: true };
     }
 
     const track = document.getElementById('tickerTrack');
@@ -2523,7 +2555,7 @@
           return;
         }
         const itemHtml = items.map(a =>
-          '<a class="ticker-item" href="ziegler-alertearnaque-alertes.html"><span class="ti-tag">' + a.tag + '</span><span class="ti-sep">·</span>' + a.entity + '<span class="ti-sep">·</span><span class="ti-when">' + a.when + '</span></a>'
+          '<a class="ticker-item" href="' + (a.link || 'ziegler-alertearnaque-alertes.html') + '"' + (a.link && a.link.startsWith('http') ? ' target="_blank" rel="noopener"' : '') + '><span class="ti-tag">' + a.tag + '</span><span class="ti-sep">·</span>' + a.entity + '<span class="ti-sep">·</span><span class="ti-when">' + a.when + '</span></a>'
         ).join('');
         // Duplicated once for a seamless infinite scroll loop.
         track.innerHTML = itemHtml + itemHtml;
