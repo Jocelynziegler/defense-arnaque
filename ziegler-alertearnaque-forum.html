@@ -412,7 +412,7 @@
           <div class="field"><label for="replyPseudo">Votre pseudo</label><input id="replyPseudo" type="text" placeholder="Ex. : Marie_P" required></div>
           <div class="field"><label for="replyText">Votre réponse</label><textarea id="replyText" rows="4" required></textarea></div>
           <div class="field-row">
-            <div class="field"><label for="replyEmail">Email <span class="opt">(privé, pour vous recontacter si besoin)</span></label><input id="replyEmail" type="email" required></div>
+            <div class="field"><label for="replyEmail">Email <span class="opt">(privé, pour vous recontacter si besoin)</span></label><input id="replyEmail" type="email" autocomplete="email" required></div>
           </div>
           <button type="submit" class="btn gold pa-submit" id="replySubmitBtn">Envoyer ma réponse pour validation</button>
         </form>
@@ -459,12 +459,12 @@
 
         <div class="pa-section-label pa-private">Vos coordonnées <span>— ne seront jamais publiées</span></div>
         <div class="field-row">
-          <div class="field"><label for="thPrenom">Prénom</label><input id="thPrenom" type="text" required></div>
-          <div class="field"><label for="thNom">Nom</label><input id="thNom" type="text" required></div>
+          <div class="field"><label for="thPrenom">Prénom</label><input id="thPrenom" type="text" autocomplete="given-name" required></div>
+          <div class="field"><label for="thNom">Nom</label><input id="thNom" type="text" autocomplete="family-name" required></div>
         </div>
         <div class="field-row">
-          <div class="field"><label for="thEmail">Email</label><input id="thEmail" type="email" required></div>
-          <div class="field"><label for="thTel">Téléphone</label><input id="thTel" type="tel" required></div>
+          <div class="field"><label for="thEmail">Email</label><input id="thEmail" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="thTel">Téléphone</label><input id="thTel" type="tel" autocomplete="tel" inputmode="tel" required></div>
         </div>
 
         <button type="submit" class="btn gold pa-submit" id="thSubmitBtn">Envoyer mon sujet pour validation</button>

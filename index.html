@@ -17,15 +17,15 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#8A4CB8">
-<title>Ziegler Alerte Arnaque — Signaler une arnaque | Ziegler &amp; Associés</title>
-<meta name="description" content="Victime d'une arnaque financière ? Vérifiez société, téléphone, email, IBAN ou portefeuille crypto, et signalez votre situation. Cabinet d'Avocats Ziegler & Associés, Paris.">
+<title>Ziegler Alerte Arnaque — Signaler, vérifier, agir</title>
+<meta name="description" content="Victime d'une arnaque financière ? Vérifiez société, email, téléphone, IBAN ou crypto, et signalez votre situation. Cabinet Ziegler & Associés.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="author" content="Cabinet d'Avocats Ziegler & Associés">
 <link rel="canonical" href="https://ziegler-alertearnaque.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ziegler Alerte Arnaque">
-<meta property="og:title" content="Ziegler Alerte Arnaque — Signaler une arnaque financière">
-<meta property="og:description" content="Vérifiez société, téléphone, email, IBAN ou portefeuille crypto, et signalez une arnaque financière. Plateforme du Cabinet d'Avocats Ziegler & Associés.">
+<meta property="og:title" content="Ziegler Alerte Arnaque — Signaler, vérifier, agir">
+<meta property="og:description" content="Vérifiez société, email, téléphone, IBAN ou crypto, et signalez une arnaque financière. Plateforme du Cabinet Ziegler & Associés.">
 <meta property="og:url" content="https://ziegler-alertearnaque.com/">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
@@ -249,7 +249,7 @@
     flex:1; text-align:center; padding:12px 10px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none;
   }
   .mobile-cta-bar .mc-call{background:transparent; border:1px solid rgba(255,255,255,.35); color:#EDE9DE;}
-  .mobile-cta-bar .mc-report{background:var(--purple); color:var(--ink);}
+  .mobile-cta-bar .mc-report{background:var(--purple); color:#fff;}
   @media(max-width:760px){
     .mobile-cta-bar{display:flex;}
     body{padding-bottom:64px;}
@@ -326,7 +326,7 @@
 
   .hero-search-row-main{margin-bottom:20px;}
   .hero-search-row-main input{padding:17px 20px; font-size:16px;}
-  .hero-search-row-main .btn.gold{padding:0 26px; font-size:15px; font-weight:700;}
+  .hero-search-row-main .btn.gold{padding:0 26px; font-size:15px; font-weight:700; min-height:44px; display:inline-flex; align-items:center; justify-content:center;}
 
   @media(max-width:640px){
     .hero-inner{padding:36px 20px 32px;}
@@ -1150,12 +1150,12 @@
               <span class="step-label">Étape 4 / 4</span>
               <h3 class="step-title">Vos coordonnées</h3>
               <div class="field-row">
-                <div class="field"><label for="prenom">Prénom</label><input id="prenom" name="prenom" type="text" required></div>
-                <div class="field"><label for="nom">Nom</label><input id="nom" name="nom" type="text" required></div>
+                <div class="field"><label for="prenom">Prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" required></div>
+                <div class="field"><label for="nom">Nom</label><input id="nom" name="nom" type="text" autocomplete="family-name" required></div>
               </div>
               <div class="field-row">
-                <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required></div>
-                <div class="field"><label for="telp">Téléphone</label><input id="telp" name="telephone" type="tel" required></div>
+                <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+                <div class="field"><label for="telp">Téléphone</label><input id="telp" name="telephone" type="tel" autocomplete="tel" inputmode="tel" required></div>
               </div>
               <div class="field" style="margin-bottom:18px;">
                 <label for="explicatif">Décrivez votre situation et le préjudice subi</label>
@@ -1220,12 +1220,12 @@
 
       <div class="tool-panel verify-tabbed">
         <div class="vtabs" role="tablist">
-          <button class="vtab active" data-tab="societe" type="button">Société</button>
-          <button class="vtab" data-tab="telephone" type="button">Téléphone</button>
-          <button class="vtab" data-tab="email" type="button">Email</button>
-          <button class="vtab" data-tab="iban" type="button">IBAN</button>
-          <button class="vtab" data-tab="crypto" type="button">Crypto</button>
-          <button class="vtab" data-tab="quiz" type="button">Auto-diagnostic</button>
+          <button class="vtab active" data-tab="societe" type="button" role="tab" aria-selected="true">Société</button>
+          <button class="vtab" data-tab="telephone" type="button" role="tab" aria-selected="false">Téléphone</button>
+          <button class="vtab" data-tab="email" type="button" role="tab" aria-selected="false">Email</button>
+          <button class="vtab" data-tab="iban" type="button" role="tab" aria-selected="false">IBAN</button>
+          <button class="vtab" data-tab="crypto" type="button" role="tab" aria-selected="false">Crypto</button>
+          <button class="vtab" data-tab="quiz" type="button" role="tab" aria-selected="false">Auto-diagnostic</button>
         </div>
 
         <div class="vpanel" data-panel="societe">
@@ -1659,7 +1659,7 @@
         <form class="nl-form" id="newsletterForm">
           <div class="nl-row">
             <label for="nlEmail" class="sr-only">Adresse email</label>
-            <input id="nlEmail" type="email" placeholder="Votre adresse email" required>
+            <input id="nlEmail" type="email" placeholder="Votre adresse email" autocomplete="email" required>
             <button class="btn gold" type="submit">S'inscrire</button>
           </div>
           <p class="nl-note" id="nlNote">Vous pouvez vous désinscrire à tout moment. Voir notre <a href="ziegler-alertearnaque-mentions-legales.html">politique de confidentialité</a>.</p>
@@ -1914,8 +1914,9 @@
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const key = tab.dataset.tab;
-        tabs.forEach(t => t.classList.remove('active'));
+        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
         tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
 
         const targetPanelKey = (key === 'telephone' || key === 'email') ? 'societe' : key;
         panels.forEach(p => { p.hidden = (p.dataset.panel !== targetPanelKey); });
@@ -2658,19 +2659,43 @@
   })();
 
   /* ---------------- NEWSLETTER (lead capture) ---------------- */
-  // Front-end only: replace this handler with a real call to your email
-  // provider (Brevo, Mailchimp, etc.) or to your own /subscribe endpoint.
   (function(){
     const form = document.getElementById('newsletterForm');
     const note = document.getElementById('nlNote');
+    const originalNote = note.innerHTML;
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('nlEmail').value.trim();
       if (!email) return;
-      form.querySelector('input').disabled = true;
-      form.querySelector('button').disabled = true;
-      note.innerHTML = 'Merci — vous recevrez nos prochaines alertes à <strong>' + email + '</strong>.';
-      if (window.gtag) gtag('event', 'newsletter_inscription', { 'event_category': 'engagement', 'event_label': 'Newsletter' });
+      const input = form.querySelector('input');
+      const btn = form.querySelector('button');
+      input.disabled = true;
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours…';
+
+      fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: 'Nouvelle inscription newsletter — Ziegler Alerte Arnaque',
+          _template: 'table',
+          _captcha: 'false',
+          'Email': email,
+          'Source': 'Formulaire newsletter — ziegler-alertearnaque.com (pied de page)'
+        })
+      })
+      .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .then(() => {
+        note.innerHTML = '✅ Merci — vous recevrez nos prochaines alertes à <strong>' + email + '</strong>.';
+        if (window.gtag) gtag('event', 'newsletter_inscription', { 'event_category': 'engagement', 'event_label': 'Newsletter' });
+      })
+      .catch(err => {
+        console.error('Échec de l\'inscription newsletter :', err);
+        input.disabled = false;
+        btn.disabled = false;
+        btn.textContent = "S'inscrire";
+        note.innerHTML = "Une erreur est survenue. Réessayez, ou écrivez-nous directement à <a href=\"mailto:juridique@ziegler-associes.com\">juridique@ziegler-associes.com</a>.";
+      });
     });
   })();
 </script>
@@ -2684,10 +2709,10 @@
     <p>Transmettez vos coordonnées au secrétariat juridique.</p>
     <form id="exitForm">
       <div class="exit-row">
-        <input type="text" id="exitPrenom" placeholder="Prénom" required>
-        <input type="tel" id="exitTel" placeholder="Téléphone" required>
+        <input type="text" id="exitPrenom" placeholder="Prénom" autocomplete="given-name" required>
+        <input type="tel" id="exitTel" placeholder="Téléphone" autocomplete="tel" inputmode="tel" required>
       </div>
-      <input type="email" id="exitEmail" placeholder="Email" required>
+      <input type="email" id="exitEmail" placeholder="Email" autocomplete="email" required>
       <textarea id="exitDetails" placeholder="Décrivez brièvement les faits et le montant de votre préjudice" rows="3"></textarea>
       <button type="submit" class="btn gold" id="exitSubmitBtn">Demander à être rappelé(e)</button>
     </form>
