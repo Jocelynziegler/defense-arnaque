@@ -250,7 +250,7 @@
   }
   .mobile-cta-bar .mc-call{background:transparent; border:1px solid rgba(255,255,255,.35); color:#EDE9DE;}
   .mobile-cta-bar .mc-report{background:var(--purple); color:#fff;}
-  @media(max-width:760px){
+  @media(max-width:900px){
     .mobile-cta-bar{display:flex;}
     body{padding-bottom:64px;}
   }
@@ -772,10 +772,12 @@
     .schema-grid{grid-template-columns:repeat(3,1fr);}
     .price-grid{grid-template-columns:1fr;}
   }
-  @media(max-width:760px){
+  @media(max-width:900px){
     nav.links, .hero-actions .cta-btn.ghost{display:none;}
     .nav-inner .cta-btn{display:none;}
     .burger{display:block;}
+  }
+  @media(max-width:760px){
     .schema-grid{grid-template-columns:repeat(2,1fr);}
     .choice-grid{grid-template-columns:1fr;}
   }
@@ -2054,6 +2056,13 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
+    // N'autorise que des liens http(s) — bloque explicitement javascript: et
+    // autres schémas dangereux avant insertion dans un attribut href.
+    function safeUrl(url){
+      if (!url) return '#';
+      const trimmed = String(url).trim();
+      return /^https?:\/\//i.test(trimmed) ? trimmed : '#';
+    }
 
     async function searchCommunityAlerts(query, field){
       // field vaut 'Téléphone concerné' ou 'Email concerné'
@@ -2097,10 +2106,11 @@
 
     function pubEmptyMarkup(query, isError){
       const searchLink = 'https://ziegler-associes.com/?s=' + encodeURIComponent(query);
+      const safeQuery = escapeHtml(query);
       const msg = isError
         ? "La recherche en direct n'a pas pu être effectuée depuis ce navigateur."
         : "Aucun article publié par le cabinet sur ce sujet pour le moment.";
-      return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + query + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
+      return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + safeQuery + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
     }
 
     // Si un article du cabinet existe sur ce sujet, le score de démo générique
@@ -2134,11 +2144,12 @@
           // laisser un message rassurant à côté d'un article potentiellement alarmant.
           if (!demoFlagged) overrideScoreWithPublicationFound();
           resultsEl.innerHTML = data.slice(0, 3).map(post => {
-            const title = decodeEntities((post.title && post.title.rendered) || 'Article du cabinet');
+            const title = escapeHtml(decodeEntities((post.title && post.title.rendered) || 'Article du cabinet'));
             const excerptRaw = (post.excerpt && post.excerpt.rendered) || '';
-            let excerpt = decodeEntities(excerptRaw.replace(/<[^>]+>/g, '')).trim();
-            if (excerpt.length > 170) excerpt = excerpt.slice(0, 170).trim() + '…';
-            const link = post.link || ('https://ziegler-associes.com/?s=' + encodeURIComponent(query));
+            let excerptPlain = decodeEntities(excerptRaw.replace(/<[^>]+>/g, '')).trim();
+            if (excerptPlain.length > 170) excerptPlain = excerptPlain.slice(0, 170).trim() + '…';
+            const excerpt = escapeHtml(excerptPlain);
+            const link = safeUrl(post.link) !== '#' ? safeUrl(post.link) : ('https://ziegler-associes.com/?s=' + encodeURIComponent(query));
             return '<div class="pub-article">'
               + '<span class="pa-tag">Article du cabinet</span>'
               + '<span class="pa-title">' + title + '</span>'
@@ -2641,6 +2652,29 @@
 
     const track = document.getElementById('tickerTrack');
     const tickerBar = document.querySelector('.ticker');
+
+    // Échappe les caractères HTML sensibles avant insertion dans le DOM.
+    // Indispensable ici : ces données viennent d'Airtable (alertes publiées
+    // par la communauté) ou de l'API WordPress de ziegler-associes.com — sans
+    // échappement, un contenu malveillant s'exécuterait chez tous les
+    // visiteurs de la page d'accueil (faille XSS stockée).
+    function escapeHtmlTicker(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    // N'autorise que des liens http(s) ou relatifs — bloque explicitement
+    // javascript: et autres schémas dangereux.
+    function safeUrlTicker(url){
+      if (!url) return 'ziegler-alertearnaque-alertes.html';
+      const trimmed = String(url).trim();
+      if (/^https?:\/\//i.test(trimmed) || /^[a-z0-9._-]/i.test(trimmed)) return trimmed;
+      return 'ziegler-alertearnaque-alertes.html';
+    }
+
     if (track){
       loadTicker().then(({ items, isDemo }) => {
         if (!items.length){
@@ -2649,9 +2683,13 @@
           if (tickerBar) tickerBar.style.display = 'none';
           return;
         }
-        const itemHtml = items.map(a =>
-          '<a class="ticker-item" href="' + (a.link || 'ziegler-alertearnaque-alertes.html') + '"' + (a.link && a.link.startsWith('http') ? ' target="_blank" rel="noopener"' : '') + '><span class="ti-tag" data-cat="' + categorySlug(a.tag) + '">' + a.tag + '</span><span class="ti-sep">·</span>' + a.entity + '<span class="ti-sep">·</span><span class="ti-when">' + a.when + '</span></a>'
-        ).join('');
+        const itemHtml = items.map(a => {
+          const safeLink = safeUrlTicker(a.link);
+          const safeTag = escapeHtmlTicker(a.tag);
+          const safeEntity = escapeHtmlTicker(a.entity);
+          const safeWhen = escapeHtmlTicker(a.when);
+          return '<a class="ticker-item" href="' + safeLink + '"' + (safeLink.startsWith('http') ? ' target="_blank" rel="noopener"' : '') + '><span class="ti-tag" data-cat="' + categorySlug(a.tag) + '">' + safeTag + '</span><span class="ti-sep">·</span>' + safeEntity + '<span class="ti-sep">·</span><span class="ti-when">' + safeWhen + '</span></a>';
+        }).join('');
         // Duplicated once for a seamless infinite scroll loop.
         track.innerHTML = itemHtml + itemHtml;
       });

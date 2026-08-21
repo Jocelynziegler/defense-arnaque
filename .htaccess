@@ -1,0 +1,73 @@
+# =============================================================================
+# En-têtes de sécurité — Ziegler Alerte Arnaque
+# =============================================================================
+
+<IfModule mod_headers.c>
+  # Empêche le site d'être affiché dans un <iframe> sur un autre domaine
+  # (protection contre le détournement de clic / clickjacking).
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Empêche le navigateur de deviner un type de fichier différent de celui
+  # réellement déclaré (protection contre certaines attaques par confusion de type MIME).
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Limite les informations envoyées au site de destination lors d'un clic
+  # sur un lien externe (n'envoie que le domaine, pas l'URL complète avec
+  # d'éventuels paramètres sensibles).
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Impose HTTPS pendant 1 an, y compris sur les sous-domaines, une fois le
+  # site visité une première fois en HTTPS (protection contre le
+  # dégradage forcé vers une connexion non chiffrée).
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # Désactive l'accès à la caméra, au micro et à la géolocalisation, qui ne
+  # sont utilisés nulle part sur ce site.
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+  # Content-Security-Policy : whitelist précise des domaines externes
+  # réellement appelés par le site (vérifié dans le code — fonts Google,
+  # Font Awesome, formulaires FormSubmit, vérification IBAN openiban.com,
+  # Google Analytics, API WordPress du cabinet, et le site lui-même).
+  #
+  # NOTE : 'unsafe-inline' est nécessaire pour script-src et style-src car
+  # tout le JavaScript et CSS du site est écrit en blocs <script>/<style>
+  # intégrés directement dans les pages (pas de fichiers .js/.css séparés).
+  # Une CSP sans 'unsafe-inline' demanderait de réécrire l'intégralité du
+  # site avec un système de nonces générés côté serveur — un chantier bien
+  # plus lourd que ce contrôle. Cette CSP reste toutefois utile : elle empêche
+  # le chargement de scripts/styles depuis un domaine EXTERNE non autorisé
+  # (ce qu'un XSS chercherait typiquement à faire pour exfiltrer des données
+  # vers un serveur contrôlé par l'attaquant), bloque les <object>/<embed>,
+  # et empêche l'affichage du site dans un cadre étranger.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://formsubmit.co https://openiban.com https://ziegler-associes.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co"
+</IfModule>
+
+# =============================================================================
+# Blocage de fichiers sensibles
+# =============================================================================
+
+# Empêche l'accès direct au jeton de cron, aux journaux, et aux fichiers
+# de configuration Git — même si un lien y menait par erreur.
+<FilesMatch "^(cron-secret\.php|cron-secret\.sample\.php|.*\.log)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Désactive le listage du contenu d'un dossier si aucun index.html n'y est présent.
+Options -Indexes

@@ -23,11 +23,18 @@
  * ---------------------------------------------------------------------
  */
 
-$SECRET_TOKEN = 'ziegler-cron-8f3a1c9d2b';
+// Le jeton réel est chargé depuis un fichier NON versionné (cron-secret.php),
+// jamais commité dans Git — voir cron-secret.sample.php pour la marche à suivre.
+$secretFile = __DIR__ . '/cron-secret.php';
+$SECRET_TOKEN = file_exists($secretFile) ? require $secretFile : null;
 
 $isCli = (php_sapi_name() === 'cli');
 if (!$isCli) {
-    if (!isset($_GET['token']) || $_GET['token'] !== $SECRET_TOKEN) {
+    // Accepte le jeton via en-tête HTTP (prioritaire, jamais journalisé dans
+    // les logs d'accès) ou via paramètre d'URL (compatibilité, journalisé —
+    // préférez l'en-tête quand possible).
+    $providedToken = $_SERVER['HTTP_X_CRON_TOKEN'] ?? ($_GET['token'] ?? '');
+    if (!$SECRET_TOKEN || !hash_equals($SECRET_TOKEN, $providedToken)) {
         http_response_code(403);
         die("Accès refusé.\n");
     }
