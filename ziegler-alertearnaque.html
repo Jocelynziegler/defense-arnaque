@@ -1093,6 +1093,21 @@
             <!-- STEP 2 -->
             <div class="rstep" data-step="2" hidden>
               <span class="step-label">Étape 2 / 4</span>
+              <h3 class="step-title">Vos coordonnées</h3>
+              <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:18px;">Pour que notre secrétariat juridique puisse vous recontacter. Ces informations restent strictement confidentielles.</p>
+              <div class="field-row">
+                <div class="field"><label for="prenom">Prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" required></div>
+                <div class="field"><label for="nom">Nom</label><input id="nom" name="nom" type="text" autocomplete="family-name" required></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+                <div class="field"><label for="telp">Téléphone</label><input id="telp" name="telephone" type="tel" autocomplete="tel" inputmode="tel" required></div>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="rstep" data-step="3" hidden>
+              <span class="step-label">Étape 3 / 4</span>
               <h3 class="step-title">L'interlocuteur ou la plateforme concernée</h3>
               <div class="field-row">
                 <div class="field"><label for="ent">Nom de la société / plateforme</label><input id="ent" name="entite" type="text" placeholder="Ex. : Capital Growth Invest" required></div>
@@ -1115,10 +1130,10 @@
               </div>
             </div>
 
-            <!-- STEP 3 -->
-            <div class="rstep" data-step="3" hidden>
-              <span class="step-label">Étape 3 / 4</span>
-              <h3 class="step-title">Montants versés</h3>
+            <!-- STEP 4 -->
+            <div class="rstep" data-step="4" hidden>
+              <span class="step-label">Étape 4 / 4</span>
+              <h3 class="step-title">Montants versés et description</h3>
               <div class="field-row">
                 <div class="field"><label for="montant">Montant total versé (€)</label><input id="montant" name="montant" type="number" min="0" placeholder="Ex. : 18 500" required></div>
                 <div class="field"><label for="datepremier">Date du premier versement</label><input id="datepremier" name="datepremier" type="date"></div>
@@ -1142,20 +1157,6 @@
                     <option>Non, pas encore essayé</option>
                   </select>
                 </div>
-              </div>
-            </div>
-
-            <!-- STEP 4 -->
-            <div class="rstep" data-step="4" hidden>
-              <span class="step-label">Étape 4 / 4</span>
-              <h3 class="step-title">Vos coordonnées</h3>
-              <div class="field-row">
-                <div class="field"><label for="prenom">Prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" required></div>
-                <div class="field"><label for="nom">Nom</label><input id="nom" name="nom" type="text" autocomplete="family-name" required></div>
-              </div>
-              <div class="field-row">
-                <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
-                <div class="field"><label for="telp">Téléphone</label><input id="telp" name="telephone" type="tel" autocomplete="tel" inputmode="tel" required></div>
               </div>
               <div class="field" style="margin-bottom:18px;">
                 <label for="explicatif">Décrivez votre situation et le préjudice subi</label>
