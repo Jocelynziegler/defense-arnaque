@@ -238,7 +238,7 @@
   .tel-link{font-family:var(--mono); font-size:13.5px; font-weight:500; color:var(--ink); text-decoration:none; letter-spacing:.01em; display:flex; align-items:center; gap:6px; white-space:nowrap; flex-shrink:0;}
   .tel-link::before{content:"\f095"; font-family:"Font Awesome 6 Free"; font-weight:900; font-size:12px; color:var(--purple);}
   .tel-link:hover{color:var(--purple);}
-  @media(max-width:1480px){.tel-link{display:none;}}
+  @media(max-width:1080px){.tel-link{display:none;}}
 
   .mobile-cta-bar{
     display:none; position:fixed; bottom:0; left:0; right:0; z-index:200; background:var(--ink);
@@ -1867,6 +1867,30 @@
       window.scrollTo({ top: document.getElementById('signaler').offsetTop - 90, behavior: 'smooth' });
     });
 
+    // Les cartes "Quel type d'arnaque avez-vous rencontré ?" présélectionnent le
+    // type ET replacent le formulaire sur l'étape 1, pour que le visiteur VOIE
+    // sa sélection (sinon elle était cochée en silence, invisible si le
+    // formulaire était déjà à une étape ultérieure ou masqué après un envoi).
+    document.querySelectorAll('.cat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const type = card.dataset.type;
+
+        // Si un signalement vient d'être envoyé, on repart sur un formulaire neuf.
+        if (resultCard.classList.contains('show')) {
+          form.reset();
+          form.style.display = 'block';
+          document.querySelector('.steps-track').style.display = 'flex';
+          resultCard.classList.remove('show');
+        }
+
+        const radios = document.querySelectorAll('input[name="type"]');
+        radios.forEach(r => { r.checked = (r.value === type); });
+
+        current = 1;
+        render();
+      });
+    });
+
     render();
   })();
 
@@ -2524,17 +2548,6 @@
         }).join('');
       })
       .catch(fallback);
-  })();
-
-  /* ---------------- CATEGORY GRID → PRESELECT REPORT TYPE ---------------- */
-  (function(){
-    document.querySelectorAll('.cat-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const type = card.dataset.type;
-        const radios = document.querySelectorAll('input[name="type"]');
-        radios.forEach(r => { if (r.value === type) r.checked = true; });
-      });
-    });
   })();
 
   /* ---------------- ALERTS TICKER ----------------
