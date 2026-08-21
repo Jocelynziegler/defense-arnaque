@@ -338,10 +338,20 @@
   .quick{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:-1px;}
   .quick a{
     background:var(--paper); padding:30px 26px; text-decoration:none; color:var(--ink); position:relative;
-    display:flex; flex-direction:column; gap:10px; transition:background .15s;
+    display:flex; flex-direction:column; gap:10px; transition:background .18s, transform .18s, box-shadow .18s; z-index:1;
   }
-  .quick a:hover{background:#fff;}
+  .quick a:hover{background:#fff; transform:translateY(-4px); box-shadow:0 14px 32px rgba(26,19,48,.14); z-index:2;}
+  .quick a .go{transition:gap .18s;}
+  .quick a:hover .go{gap:10px;}
   .quick .tag{font-family:var(--mono); font-size:11px; color:var(--purple); letter-spacing:.1em;}
+  .quick .qc-icon{font-size:26px; line-height:1; margin-bottom:2px;}
+  .hero-actions .cta-btn.gold{box-shadow:0 0 0 0 rgba(138,76,184,.55); animation:ctaPulse 2.6s ease-in-out infinite;}
+  .hero-actions .cta-btn.gold:hover{animation:none;}
+  @keyframes ctaPulse{
+    0%{box-shadow:0 0 0 0 rgba(138,76,184,.45);}
+    70%{box-shadow:0 0 0 12px rgba(138,76,184,0);}
+    100%{box-shadow:0 0 0 0 rgba(138,76,184,0);}
+  }
   .quick h2{font-size:19px;}
   .quick p{margin:0; font-size:14px; color:var(--ink-soft); line-height:1.5;}
   .quick .go{margin-top:6px; font-size:13px; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:6px;}
@@ -917,21 +927,30 @@
           <button class="btn gold" id="heroSearchBtn" type="button">Vérifier</button>
         </div>
       </div>
+
+      <div class="hero-meta">
+        <div><span class="num">4,8 / 5</span><span class="lbl">Note Google — 156 avis</span></div>
+        <div><span class="num">6</span><span class="lbl">Outils de vérification</span></div>
+        <div><span class="num">TF1 · Le Monde · BFM</span><span class="lbl">Cabinet cité dans la presse</span></div>
+      </div>
     </div>
     <div class="quick">
       <a href="#signaler">
+        <span class="qc-icon">🆘</span>
         <span class="tag">01 — Signalement</span>
         <h2>J'ai été victime</h2>
         <p>Décrivez votre situation en quelques minutes, notre secrétariat juridique organise votre mise en relation avec un avocat.</p>
         <span class="go">Signaler maintenant →</span>
       </a>
       <a href="#verifier">
+        <span class="qc-icon">🔍</span>
         <span class="tag">02 — Vérification</span>
         <h2>On me propose un placement</h2>
         <p>Vérifiez la fiabilité d'une société ou d'un placement avant d'investir un centime.</p>
         <span class="go">Lancer la vérification →</span>
       </a>
       <a href="ziegler-alertearnaque-alertes.html#publier">
+        <span class="qc-icon">📢</span>
         <span class="tag">03 — Alerter</span>
         <h2>Je veux prévenir les autres</h2>
         <p>Publiez une alerte anonyme sur la société ou la personne concernée, validée par le cabinet avant diffusion.</p>
