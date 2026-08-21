@@ -306,19 +306,19 @@
     background:radial-gradient(120% 140% at 85% -10%, #2E1E4A 0%, var(--ink) 55%, #0F0A18 100%);
     color:#EDE9DE; position:relative; overflow:hidden;
   }
-  .hero-inner{position:relative; padding:96px 28px 72px; max-width:1120px; margin:0 auto;}
+  .hero-inner{position:relative; padding:64px 28px 48px; max-width:1120px; margin:0 auto;}
   .hero .eyebrow{color:var(--purple-light);}
   .hero .eyebrow::before{background:var(--purple-light);}
   .hero h1{
-    font-size:clamp(34px, 5vw, 58px); line-height:1.06; max-width:16ch; color:#fff; font-weight:700;
+    font-size:clamp(30px, 4.4vw, 52px); line-height:1.08; max-width:19ch; color:#fff; font-weight:700;
   }
   .hero h1 em{font-style:normal; color:var(--purple-light); font-weight:700;}
   .hero p.lead{
-    max-width:56ch; font-size:18px; color:#C7CCD9; margin-top:22px; line-height:1.65;
+    max-width:56ch; font-size:17px; color:#C7CCD9; margin-top:14px; line-height:1.6;
   }
   .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:34px;}
   .hero-search{
-    margin-top:40px; padding:24px 26px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.16);
+    margin-top:22px; padding:24px 26px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.16);
     border-radius:var(--radius); max-width:640px;
   }
   .hero-search-label{display:block; font-size:14px; color:#C7CCD9; margin-bottom:14px; line-height:1.5;}
@@ -327,6 +327,16 @@
   .hero-search-row-main{margin-bottom:20px;}
   .hero-search-row-main input{padding:17px 20px; font-size:16px;}
   .hero-search-row-main .btn.gold{padding:0 26px; font-size:15px; font-weight:700;}
+
+  @media(max-width:640px){
+    .hero-inner{padding:36px 20px 32px;}
+    .hero h1{font-size:clamp(26px, 7.5vw, 36px); line-height:1.15; max-width:100%;}
+    .hero p.lead{font-size:15.5px; margin-top:10px;}
+    .hero-search{margin-top:18px; padding:18px 18px;}
+    .hero-search-label-main{font-size:14.5px; margin-bottom:12px;}
+    .hero-search-row-main{margin-bottom:14px;}
+    .hero-search-row-main input{padding:14px 16px; font-size:15px;}
+  }
 
   .hero-verify-pills{display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-bottom:0;}
   .hv-or{font-size:12.5px; color:#8A93A8; margin-right:2px; white-space:nowrap;}
@@ -337,6 +347,9 @@
   }
   .hv-pill span{font-size:14px; line-height:1;}
   .hv-pill:hover{background:var(--purple); border-color:var(--purple); color:#fff; transform:translateY(-2px) scale(1.03);}
+  @media(max-width:640px){
+    .hv-pill{padding:11px 16px; min-height:44px;}
+  }
   .hero-search-row{display:flex; gap:10px; flex-wrap:wrap;}
   .hero-search-row input{
     flex:1; min-width:220px; padding:13px 16px; border:1px solid rgba(255,255,255,.25); border-radius:var(--radius);
@@ -939,7 +952,7 @@
   <section class="hero">
     <div class="hero-inner">
       <h1>Victime d'une arnaque financière ? <em>Parlez-en à un avocat.</em></h1>
-      <p class="lead">Vérifiez en quelques secondes une <strong>société</strong>, un <strong>email</strong>, un <strong>numéro de téléphone</strong>, un <strong>IBAN</strong> ou un <strong>portefeuille crypto</strong> — la technologie du Cabinet d'Avocats Ziegler &amp; Associés, conçue pour repérer une arnaque avant qu'il ne soit trop tard. Déjà victime ? Un avocat du cabinet prend en charge votre dossier.</p>
+      <p class="lead">La technologie du Cabinet d'Avocats Ziegler &amp; Associés pour repérer une arnaque avant qu'il ne soit trop tard. Déjà victime ? Un avocat du cabinet prend en charge votre dossier.</p>
 
       <div class="hero-search">
         <label for="heroSearch" class="hero-search-label hero-search-label-main">Collez une société, un email, un numéro, un IBAN ou une adresse crypto — on s'occupe du reste.</label>
