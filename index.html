@@ -126,6 +126,23 @@
       "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-alertes.html"
     },
     {
+      "@type": "SoftwareApplication",
+      "name": "Moteur de vérification Ziegler Alerte Arnaque",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Web",
+      "description": "Ensemble d'outils de vérification anti-arnaque financière croisant des sources officielles et des technologies de sécurité reconnues, avec mise à jour automatique quotidienne.",
+      "featureList": [
+        "Vérification de société ou de site contre la liste noire officielle Banque de France / ACPR / AMF, récupérée et mise à jour automatiquement chaque nuit",
+        "Vérification d'adresse email contre la même liste noire officielle Banque de France / ACPR / AMF",
+        "Détection des préfixes de démarchage téléphonique officiels ARCEP et recherche dans une base d'alertes communautaires propre au cabinet",
+        "Validation d'IBAN selon la norme internationale ISO 7064 (clé de contrôle mod-97), avec décomposition du code banque pour la France",
+        "Identification automatique de l'établissement bancaire via un annuaire de plus de 2 300 établissements français, et via openiban.com pour 7 pays européens (Allemagne, Belgique, Pays-Bas, Luxembourg, Suisse, Autriche, Liechtenstein)",
+        "Détection d'adresse de portefeuille crypto-actifs malveillante via GoPlus Security, technologie de sécurité Web3 utilisée notamment par OKX et DexScreener",
+        "Auto-diagnostic en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur"
+      ],
+      "provider": { "@id": "https://ziegler-alertearnaque.com/#organization" }
+    },
+    {
       "@type": "FAQPage",
       "mainEntity": [
         { "@type": "Question", "name": "Que se passe-t-il après avoir décrit ma situation sur Ziegler Alerte Arnaque ?", "acceptedAnswer": { "@type": "Answer", "text": "Notre secrétariat juridique vous contacte pour organiser la suite de votre dossier avec un avocat du cabinet." } },
@@ -461,6 +478,19 @@
   @media(max-width:980px){.tools-overview{grid-template-columns:repeat(3,1fr);}}
   @media(max-width:560px){.tools-overview{grid-template-columns:repeat(2,1fr);}}
   .tool-card{background:#fff; border:1px solid var(--rule); border-radius:12px; padding:18px 14px; text-align:center; cursor:pointer; transition:border-color .15s, transform .15s;}
+
+  /* ---- Section technologie de vérification ---- */
+  .tech-section{background:#F7F4EE; border-radius:20px; padding:56px 48px; margin-top:56px;}
+  @media(max-width:640px){.tech-section{padding:34px 22px; border-radius:14px;}}
+  .tech-section .section-head{margin-bottom:38px;}
+  .tech-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  @media(max-width:900px){.tech-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:640px){.tech-grid{grid-template-columns:1fr;}}
+  .tech-card{background:#fff; border:1px solid var(--rule); border-radius:14px; padding:26px 24px;}
+  .tech-card .tech-icon{font-size:26px; margin-bottom:12px;}
+  .tech-card h3{font-size:16px; margin-bottom:8px; color:var(--ink);}
+  .tech-card p{font-size:13.5px; color:var(--ink-soft); line-height:1.6;}
+  .tech-card .tech-src{display:block; margin-top:10px; font-size:11.5px; font-family:var(--mono); text-transform:uppercase; letter-spacing:.05em; color:var(--purple); font-weight:700;}
   .tool-card:hover{border-color:var(--purple); transform:translateY(-2px);}
   .tool-card .tc-icon{font-size:22px; margin-bottom:8px;}
   .tool-card .tc-label{font-size:13px; font-weight:700; color:var(--ink);}
@@ -1246,6 +1276,53 @@
 
       </div>
       <p class="schema-src" style="margin-top:20px;">Signaux d'alerte adaptés des ressources de l'AMF (amf-france.org) et du ministère de l'Intérieur — <a href="https://www.masecurite.interieur.gouv.fr/fr/fiches-pratiques/numerique/arnaques-escroquerie-en-ligne-identifier-et-agir" target="_blank" rel="noopener">masecurite.interieur.gouv.fr</a>.</p>
+
+      <div class="tech-section">
+        <div class="section-head" style="margin-bottom:38px;">
+          <span class="eyebrow">Notre méthode</span>
+          <h2>Une vérification qui croise des sources officielles, pas de simples avis d'internautes</h2>
+          <p>La plupart des outils de vérification en ligne se limitent à un moteur de recherche ou à des avis non vérifiés. Le cabinet d'Avocats Ziegler &amp; Associés a construit une plateforme qui interroge directement les registres officiels et les technologies de sécurité reconnues du secteur, avec une mise à jour automatique quotidienne pour rester à jour en continu.</p>
+        </div>
+
+        <div class="tech-grid">
+          <div class="tech-card">
+            <div class="tech-icon">🏛️</div>
+            <h3>Liste noire officielle Banque de France</h3>
+            <p>Les sites et adresses email usurpant l'identité de professionnels autorisés, ou proposant des produits financiers sans agrément, sont récupérés automatiquement chaque nuit depuis le registre officiel de la Banque de France, de l'ACPR et de l'AMF — jamais un instantané figé.</p>
+            <span class="tech-src">Banque de France · ACPR · AMF</span>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">📡</div>
+            <h3>Préfixes officiels de démarchage</h3>
+            <p>Les tranches de numéros de téléphone réservées par l'ARCEP au démarchage commercial sont identifiées automatiquement, pour distinguer un signal de prospection d'un signal d'alerte plus sérieux.</p>
+            <span class="tech-src">ARCEP</span>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🔐</div>
+            <h3>Sécurité Web3 de référence</h3>
+            <p>La vérification des portefeuilles de crypto-actifs s'appuie sur GoPlus Security, la même technologie de détection d'adresses malveillantes (phishing, blanchiment, vol de fonds) utilisée par des acteurs comme OKX et DexScreener.</p>
+            <span class="tech-src">GoPlus Security</span>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🏦</div>
+            <h3>Contrôle bancaire international</h3>
+            <p>Chaque IBAN est validé selon la norme internationale ISO 7064 (clé de contrôle mod-97), avec un annuaire de plus de 2 300 établissements bancaires français pour identifier la banque à partir d'un code BIC, et une identification automatique pour 7 pays européens supplémentaires.</p>
+            <span class="tech-src">ISO 7064 · openiban.com</span>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">🤝</div>
+            <h3>Renseignement communautaire propre au cabinet</h3>
+            <p>Chaque signalement validé enrichit une base de numéros et d'emails suspects propre à Ziegler Alerte Arnaque, consultable directement par les futurs visiteurs confrontés au même interlocuteur.</p>
+            <span class="tech-src">Base communautaire du cabinet</span>
+          </div>
+          <div class="tech-card">
+            <div class="tech-icon">⚖️</div>
+            <h3>Regard d'avocats spécialisés</h3>
+            <p>Au-delà des outils automatisés, chaque situation signalée est étudiée par le cabinet d'Avocats Ziegler &amp; Associés, dont la pratique est exclusivement dédiée à la défense des victimes d'escroqueries financières.</p>
+            <span class="tech-src">Cabinet Ziegler &amp; Associés</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
