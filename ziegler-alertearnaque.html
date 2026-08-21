@@ -1622,7 +1622,19 @@
       return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + query + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
     }
 
-    async function searchZieglerPublications(query){
+    // Si un article du cabinet existe sur ce sujet, le score de démo générique
+    // ("absence de signal négatif") est écrasé par un message neutre : mieux vaut
+    // ne rien affirmer que de rassurer à tort à côté d'un article qui dit le contraire.
+    function overrideScoreWithPublicationFound(){
+      document.getElementById('scoreLevel').textContent = 'Publication du cabinet trouvée';
+      document.getElementById('scorePts').textContent = '';
+      const bar = document.getElementById('scoreBar');
+      bar.style.width = '100%';
+      bar.style.background = 'var(--purple)';
+      document.getElementById('scoreText').textContent = "Le cabinet a déjà publié sur ce sujet — lisez l'article ci-dessous avant toute décision. Ce score de démonstration n'a pas de valeur dans ce cas, une vérification manuelle prévaut toujours sur un score automatique.";
+    }
+
+    async function searchZieglerPublications(query, demoFlagged){
       const statusEl = document.getElementById('pubStatus');
       const resultsEl = document.getElementById('pubResults');
       statusEl.style.display = 'block';
@@ -1637,6 +1649,9 @@
         const data = await res.json();
         statusEl.style.display = 'none';
         if (Array.isArray(data) && data.length){
+          // Un article existe : si le score de démo n'avait rien signalé, ne pas
+          // laisser un message rassurant à côté d'un article potentiellement alarmant.
+          if (!demoFlagged) overrideScoreWithPublicationFound();
           resultsEl.innerHTML = data.slice(0, 3).map(post => {
             const title = decodeEntities((post.title && post.title.rendered) || 'Article du cabinet');
             const excerptRaw = (post.excerpt && post.excerpt.rendered) || '';
@@ -1683,7 +1698,7 @@
       document.getElementById('scoreText').textContent = text;
       out.classList.add('show');
 
-      searchZieglerPublications(val);
+      searchZieglerPublications(val, flagged);
     });
   })();
 
