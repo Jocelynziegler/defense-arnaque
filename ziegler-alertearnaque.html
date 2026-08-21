@@ -1153,6 +1153,30 @@
         </div>
       </div>
       <p class="schema-src" style="margin-top:20px;">Signaux d'alerte adaptés des ressources de l'AMF (amf-france.org) et du ministère de l'Intérieur — <a href="https://www.masecurite.interieur.gouv.fr/fr/fiches-pratiques/numerique/arnaques-escroquerie-en-ligne-identifier-et-agir" target="_blank" rel="noopener">masecurite.interieur.gouv.fr</a>.</p>
+
+      <div class="tool-panel" style="margin-top:32px;">
+        <div class="tool-tabbar">
+          <div class="tb">Vérifier un IBAN</div>
+          <div class="tb">Format, clé de contrôle et identification de la banque</div>
+        </div>
+        <div class="verify-col" style="max-width:none;">
+          <h3>Un IBAN vous a été communiqué pour un virement ?</h3>
+          <p class="sub">Vérifiez que le format et la clé de contrôle sont mathématiquement corrects, et retrouvez l'établissement bancaire à partir du code BIC/SWIFT s'il vous a aussi été communiqué (souvent indiqué sur le même RIB). Cela ne confirme pas que le compte existe ni qu'il appartient à la personne annoncée — seule votre banque peut le garantir.</p>
+          <div class="field-row">
+            <div class="field"><label for="vIban">IBAN</label><input id="vIban" type="text" placeholder="Ex. : FR76 3000 4000 0100 0000 0000 000"></div>
+            <div class="field"><label for="vBic">Code BIC / SWIFT <span class="opt">(si connu)</span></label><input id="vBic" type="text" placeholder="Ex. : BNPAFRPP"></div>
+          </div>
+          <button class="btn" id="ibanCheckBtn" type="button" style="margin-top:6px;">Vérifier l'IBAN</button>
+
+          <div class="verify-out" id="ibanOut">
+            <div class="score-readout"><span class="lvl" id="ibanLevel">—</span><span class="pts" id="ibanPts"></span></div>
+            <div class="score-gauge"><i id="ibanBar"></i></div>
+            <p id="ibanText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+            <div id="ibanBreakdown" style="margin-top:14px; font-size:13px; color:var(--ink-soft-2); font-family:var(--mono);"></div>
+            <div id="ibanBicResult" style="margin-top:14px;"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1888,6 +1912,118 @@
       bar.style.background = color;
       document.getElementById('scoreText').textContent = text;
       out.classList.add('show');
+    });
+  })();
+
+  /* ---------------- IBAN VERIFICATION (format + cle de controle + annuaire BIC) ---------------- */
+  (function(){
+    // Longueurs officielles par pays (norme IBAN Register) — liste des pays européens/SEPA les plus courants.
+    const IBAN_LENGTHS = {
+      AD:24, AT:20, BE:16, BG:22, CH:21, CY:28, CZ:24, DE:22, DK:18, EE:20,
+      ES:24, FI:18, FR:27, GB:22, GR:27, HR:21, HU:28, IE:22, IS:26, IT:27,
+      LI:21, LT:20, LU:20, LV:21, MC:27, MT:31, NL:18, NO:15, PL:28, PT:25,
+      RO:24, SE:24, SI:19, SK:24, SM:27
+    };
+
+    function ibanMod97Valid(cleaned){
+      const rearranged = cleaned.slice(4) + cleaned.slice(0, 4);
+      let numeric = '';
+      for (const ch of rearranged){
+        numeric += /[A-Z]/.test(ch) ? (ch.charCodeAt(0) - 55).toString() : ch;
+      }
+      let remainder = numeric;
+      while (remainder.length > 9){
+        const block = remainder.slice(0, 9);
+        remainder = (parseInt(block, 10) % 97).toString() + remainder.slice(block.length);
+      }
+      return parseInt(remainder, 10) % 97 === 1;
+    }
+
+    // Annuaire des établissements bancaires français (BIC -> nom), charge automatiquement
+    // depuis assets/bic-directory.json, genere chaque jour par update-bic-directory.php
+    // (tache planifiee cote serveur), a partir d'une source ouverte et structuree.
+    let BIC_DIRECTORY = [];
+    (async function loadBicDirectory(){
+      try {
+        const res = await fetch('/assets/bic-directory.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        if (Array.isArray(data.entries) && data.entries.length >= 500){
+          BIC_DIRECTORY = data.entries;
+        }
+      } catch (err){
+        console.warn('Annuaire BIC indisponible pour le moment.', err);
+      }
+    })();
+
+    const ibanBtn = document.getElementById('ibanCheckBtn');
+    if (!ibanBtn) return;
+
+    ibanBtn.addEventListener('click', () => {
+      const rawIban = document.getElementById('vIban').value.trim();
+      const rawBic = document.getElementById('vBic').value.trim().toUpperCase();
+      const out = document.getElementById('ibanOut');
+      const breakdownEl = document.getElementById('ibanBreakdown');
+      const bicResultEl = document.getElementById('ibanBicResult');
+      breakdownEl.innerHTML = '';
+      bicResultEl.innerHTML = '';
+
+      if (!rawIban){ document.getElementById('vIban').focus(); return; }
+
+      const cleaned = rawIban.replace(/\s/g, '').toUpperCase();
+      const formatOk = /^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(cleaned);
+      const country = cleaned.slice(0, 2);
+      const expectedLength = IBAN_LENGTHS[country];
+      const lengthOk = expectedLength ? cleaned.length === expectedLength : null;
+      const checksumOk = formatOk ? ibanMod97Valid(cleaned) : false;
+
+      let level, score, color, text;
+
+      if (!formatOk){
+        level = 'Format invalide'; score = 5; color = 'var(--danger)';
+        text = "Ce texte ne correspond pas au format d'un IBAN (2 lettres de pays + 2 chiffres de clé + caractères du compte). Vérifiez la saisie.";
+      } else if (!checksumOk){
+        level = 'Clé de contrôle invalide'; score = 8; color = 'var(--danger)';
+        text = "La clé de contrôle mathématique de cet IBAN est incorrecte — ce n'est PAS un IBAN valide. Il peut s'agir d'une erreur de saisie, ou d'un IBAN fabriqué de toutes pièces. Ne réalisez aucun virement vers ce numéro tant qu'il n'est pas corrigé.";
+      } else if (lengthOk === false){
+        level = 'Longueur incohérente avec le pays'; score = 30; color = 'var(--warn)';
+        text = "La clé de contrôle est mathématiquement correcte, mais la longueur ne correspond pas à celle attendue pour le pays " + country + " (" + expectedLength + " caractères attendus, " + cleaned.length + " fournis). À vérifier avec l'émetteur.";
+      } else {
+        level = 'Format et clé de contrôle valides'; score = 75; color = 'var(--ok)';
+        text = "Cet IBAN est mathématiquement valide (format et clé de contrôle corrects). Cela ne garantit ni que le compte existe, ni qu'il appartient à la personne ou société annoncée — seule votre banque peut le confirmer avant tout virement important.";
+      }
+
+      document.getElementById('ibanLevel').textContent = level;
+      document.getElementById('ibanPts').textContent = score + ' / 100';
+      const bar = document.getElementById('ibanBar');
+      bar.style.width = score + '%';
+      bar.style.background = color;
+      document.getElementById('ibanText').textContent = text;
+      out.classList.add('show');
+
+      // Décomposition visuelle pour la France
+      if (formatOk && country === 'FR' && cleaned.length === 27){
+        const bankCode = cleaned.slice(4, 9);
+        const branchCode = cleaned.slice(9, 14);
+        const account = cleaned.slice(14, 25);
+        const ribKey = cleaned.slice(25, 27);
+        breakdownEl.innerHTML = 'Code banque : <strong>' + bankCode + '</strong> — Code guichet : <strong>' + branchCode + '</strong> — N° de compte : <strong>' + account + '</strong> — Clé RIB : <strong>' + ribKey + '</strong>';
+      }
+
+      // Recherche dans l'annuaire BIC si un code a été fourni
+      if (rawBic){
+        const matches = BIC_DIRECTORY.filter(e => e.bic === rawBic || e.bic.startsWith(rawBic));
+        if (matches.length){
+          const m = matches[0];
+          bicResultEl.innerHTML = '<div class="pub-article" style="border-color:var(--ok);">'
+            + '<span class="pa-tag" style="color:var(--ok);">Établissement identifié</span>'
+            + '<span class="pa-title">' + m.name + '</span>'
+            + '<p class="pa-excerpt">Ville : ' + (m.city || 'non renseignée') + ' — Code BIC : ' + m.bic + '</p>'
+            + '</div>';
+        } else if (BIC_DIRECTORY.length) {
+          bicResultEl.innerHTML = '<p class="pub-empty">Ce code BIC n\'a pas été retrouvé dans notre annuaire des établissements français. Il peut s\'agir d\'une banque étrangère, ou d\'un code inexistant — vérifiez-le directement auprès de l\'émetteur.</p>';
+        }
+      }
     });
   })();
 
