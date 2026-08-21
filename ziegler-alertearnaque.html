@@ -332,6 +332,15 @@
     border-radius:var(--radius); max-width:640px;
   }
   .hero-search-label{display:block; font-size:14px; color:#C7CCD9; margin-bottom:14px; line-height:1.5;}
+
+  .hero-verify-pills{display:flex; flex-wrap:wrap; gap:9px; margin-bottom:16px;}
+  .hv-pill{
+    display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px; cursor:pointer;
+    background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.22); color:#fff;
+    font-size:13.5px; font-weight:700; font-family:var(--sans); transition:background .15s, border-color .15s, transform .15s;
+  }
+  .hv-pill span{font-size:15px; line-height:1;}
+  .hv-pill:hover{background:var(--purple); border-color:var(--purple); transform:translateY(-2px) scale(1.03);}
   .hero-search-row{display:flex; gap:10px; flex-wrap:wrap;}
   .hero-search-row input{
     flex:1; min-width:220px; padding:13px 16px; border:1px solid rgba(255,255,255,.25); border-radius:var(--radius);
@@ -940,7 +949,14 @@
       </div>
 
       <div class="hero-search">
-        <label for="heroSearch" class="hero-search-label">Un doute sur une société, un email ou un numéro de téléphone ? Vérifiez avant d'agir.</label>
+        <label for="heroSearch" class="hero-search-label">5 vérifications instantanées, avant d'agir :</label>
+        <div class="hero-verify-pills">
+          <button type="button" class="hv-pill" data-goto-tab="societe"><span>🏢</span> Société</button>
+          <button type="button" class="hv-pill" data-goto-tab="email"><span>✉️</span> Email</button>
+          <button type="button" class="hv-pill" data-goto-tab="telephone"><span>📞</span> Téléphone</button>
+          <button type="button" class="hv-pill" data-goto-tab="iban"><span>🏦</span> IBAN</button>
+          <button type="button" class="hv-pill" data-goto-tab="crypto"><span>🪙</span> Crypto</button>
+        </div>
         <div class="hero-search-row">
           <input id="heroSearch" type="text" placeholder="Société, email ou numéro de téléphone">
           <button class="btn gold" id="heroSearchBtn" type="button">Vérifier</button>
@@ -1325,7 +1341,7 @@
       <div class="tech-section">
         <div class="section-head" style="margin-bottom:38px;">
           <span class="eyebrow">Notre méthode</span>
-          <h2>Une vérification qui croise des sources officielles, pas de simples avis d'internautes</h2>
+          <h2>Une vérification qui croise des sources officielles reconnues</h2>
           <p>La plupart des outils de vérification en ligne se limitent à un moteur de recherche ou à des avis non vérifiés. Le cabinet d'Avocats Ziegler &amp; Associés a construit une plateforme qui interroge directement les registres officiels et les technologies de sécurité reconnues du secteur, avec une mise à jour automatique quotidienne pour rester à jour en continu.</p>
         </div>
 
@@ -1380,10 +1396,10 @@
           <h2>Une pratique exclusivement dédiée aux victimes d'arnaques financières</h2>
         </div>
         <div class="trust-list">
-          <div class="trust-item"><span class="ti-n">01</span><div><h3>Spécialisation exclusive</h3><p>Le cabinet d'Avocats Ziegler &amp; Associés ne traite que des dossiers de victimes d'escroqueries financières — pas de dispersion, une méthode éprouvée à chaque étape.</p></div></div>
+          <div class="trust-item"><span class="ti-n">01</span><div><h3>Pratique juridique exclusive</h3><p>Le cabinet d'Avocats Ziegler &amp; Associés ne traite que des dossiers de victimes d'escroqueries financières — pas de dispersion, une méthode éprouvée à chaque étape.</p></div></div>
           <div class="trust-item"><span class="ti-n">02</span><div><h3>Un parcours structuré</h3><p>Signalement puis vérification : chaque étape est cadrée, sans engagement automatique vers la suivante.</p></div></div>
           <div class="trust-item"><span class="ti-n">03</span><div><h3>Un premier échange sans détour</h3><p>Vous parlez directement à un avocat du cabinet, qui prend le temps de comprendre votre situation.</p></div></div>
-          <div class="trust-item"><span class="ti-n">04</span><div><h3>Cabinet parisien (AARPI)</h3><p>Ziegler &amp; Associés, cabinet d'avocats implanté dans le 16e arrondissement de Paris.</p></div></div>
+          <div class="trust-item"><span class="ti-n">04</span><div><h3>Cabinet d'avocats</h3><p>Ziegler &amp; Associés, cabinet d'avocats implanté dans le 16e arrondissement de Paris.</p></div></div>
         </div>
       </div>
       <div class="quote-card">
@@ -1899,8 +1915,9 @@
       });
     });
 
-    // Les badges de technologies dans le hero font de même.
-    document.querySelectorAll('.tech-badge').forEach(badge => {
+    // Les badges de technologies dans le hero, et les pastilles de vérification
+    // rapide, font tous deux basculer vers l'onglet correspondant.
+    document.querySelectorAll('.tech-badge, .hv-pill').forEach(badge => {
       badge.addEventListener('click', (e) => {
         e.preventDefault();
         const key = badge.dataset.gotoTab;
