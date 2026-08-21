@@ -856,9 +856,9 @@
       </div>
 
       <div class="hero-search">
-        <label for="heroSearch" class="hero-search-label">Un doute sur une société, un site ou un conseiller ? Vérifiez avant d'agir.</label>
+        <label for="heroSearch" class="hero-search-label">Un doute sur une société, un email ou un numéro de téléphone ? Vérifiez avant d'agir.</label>
         <div class="hero-search-row">
-          <input id="heroSearch" type="text" placeholder="Nom de la société, du site ou de l'interlocuteur">
+          <input id="heroSearch" type="text" placeholder="Société, email ou numéro de téléphone">
           <button class="btn gold" id="heroSearchBtn" type="button">Vérifier</button>
         </div>
       </div>
@@ -1091,8 +1091,8 @@
           <!-- Quick check -->
           <div class="verify-col">
             <h3>Vérification rapide d'une société</h3>
-            <p class="sub">Renseignez le nom ou le site du prestataire proposé. L'outil recherche simultanément dans notre base de démonstration et dans les publications déjà rédigées par le cabinet sur ce sujet.</p>
-            <div class="field"><label for="vname">Nom de la société ou du site</label><input id="vname" type="text" placeholder="Ex. : Global Crypto Invest"></div>
+            <p class="sub">Renseignez le nom d'une société, un email ou un numéro de téléphone. L'outil détecte automatiquement le type de recherche et interroge la liste noire officielle Banque de France / ACPR / AMF, les préfixes ARCEP, et les publications déjà rédigées par le cabinet.</p>
+            <div class="field"><label for="vname">Nom de société, email ou numéro de téléphone</label><input id="vname" type="text" placeholder="Ex. : Global Crypto Invest, contact@site.com ou 06 12 34 56 78"></div>
             <button class="btn" id="checkBtn" type="button" style="margin-top:16px;">Vérifier</button>
 
             <div class="verify-out" id="checkOut">
@@ -1106,12 +1106,20 @@
                 <div id="pubResults"></div>
               </div>
 
-              <div class="official-links">
+              <div class="official-links" id="officialLinksSite">
                 <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifications officielles recommandées</strong>
                 <a href="https://www.amf-france.org/fr/espace-epargnants/proteger-son-epargne/listes-noires-et-mises-en-garde" target="_blank" rel="noopener">Listes noires AMF — acteurs non autorisés</a>
+                <a href="https://www.abe-infoservice.fr/fr/liste-noire" target="_blank" rel="noopener">Listes noires officielles Banque de France / ACPR / AMF</a>
                 <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">Liste noire tenue par le cabinet d'Avocats Ziegler &amp; Associés</a>
                 <a href="https://fr.scamdoc.com/" target="_blank" rel="noopener">ScamDoc — score de confiance d'un site</a>
                 <a href="https://protectepargne.amf-france.org/verifier/suis-je-victime-dune-arnaque" target="_blank" rel="noopener">AMF — Suis-je victime d'une arnaque ? (diagnostic officiel)</a>
+              </div>
+
+              <div class="official-links" id="officialLinksPhone" hidden>
+                <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifier ce numéro sur des sites tiers spécialisés</strong>
+                <a id="tellowsLink" href="https://www.tellows.fr/" target="_blank" rel="noopener">Tellows — communauté de signalement de numéros</a>
+                <a id="franceverifLink" href="https://franceverif.fr/fr/verifier-numero-telephone" target="_blank" rel="noopener">France Verif — annuaire inversé et signalements</a>
+                <a href="https://www.33700.fr/signaler-form-pc/" target="_blank" rel="noopener">Signaler ce numéro au 33700 (spam/démarchage)</a>
               </div>
             </div>
           </div>
@@ -1606,10 +1614,44 @@
     render();
   })();
 
-  /* ---------------- QUICK CHECK (demo score + live search of the firm's own publications) ---------------- */
+  /* ---------------- QUICK CHECK (société / téléphone / email + live search of the firm's own publications) ---------------- */
   (function(){
     // Illustrative demo list only — not a live connection to AMF / official registries.
     const demoBlacklist = ['global crypto invest', 'capital growth invest', 'eurotrade wealth', 'vendome capital partners fx'];
+
+    // Instantané de la liste noire officielle Banque de France / ACPR / AMF (sites et emails
+    // usurpant l'identité de professionnels/autorités, ou non autorisés à proposer des produits
+    // financiers en France). Source : https://www.abe-infoservice.fr/fr/liste-noire
+    // Instantané du 21/08/2026 — à rafraîchir périodiquement, la vraie liste est mise à jour en continu.
+    const OFFICIAL_BLACKLIST_DATE = '21/08/2026';
+    const OFFICIAL_BLACKLIST = ["ACPRFR@OUTLOOK.FR","act-capital.cc","act-capital.io","advantcrest.com","alphaairobot.com","amf-mediation@financier.com","amf@departement-financier.com","amf@support-financial.com","amundi.cfd","amundi.sbs","amundi06.cfd","amundi06.click","amundi06.cyou","amundi06.forum","amundi06.homes","amundi06.lol","amundi06.sbs","amundi06.xyz","amundi05.click","amundi05.lol","amundic.sbs","amundiesr.com","annovazzi-credits.org","atlas-finance.org","audacia212.com","aura-epargne.com","aurum-foundation.com","aurum.foundation","banquedefrance@custcare.help","bfi-bk.com","bfigroupefr.fr","bgfieurope.socialegroup.org","blockchain@financialdepartemnt.com","blueforge.ltd","bpi-credit.com","bpi-particulares.com","bpi-particulares.net","bpi-platform.com","bpi-platform.net","bpibackup.com","bpibanks.com","bpibpi.com","bpifinancialhelpcenter.online","bpiplatform.com","bpiplatform.net","bpimanagement.de","bpimanagement.online","bpiviiiipp.com","cab.sigmainvestglobal.com","capitalpluspltd.com","capstellar.fr","cax-online.com","centralbureau51@gmail.com","client.corsokane.org","client.netixos.com","client.quantx-group.com","complaints@crypto-amf.com","conseiller@infofranceservice.fr","contact@aides-stop-fraude.com","contact@bdweurope.com","contact@bpi-credit.com","contact@courtage-dachuna.com","contact@dwsglobalinvest.info","contact@financiere-jln.com","contact@fibus-courtage.com","contact@fundsnordea.com","contact@groupsecuritiesdublin.com","contact@integrate-exchangep2p-live-custom.com","contact@mutelia.com","contact@partners.group-appswiss.com","contact@pretalia.com","contact@shell-france.fr","contact@truefinanse.com","contact@winvias.com","controle-banquedefrance@laposte.net","corsokane.org","courtage-dachuna.com","cryptover.org","darsvint.fr","departement.juridique-xtb@supportfinancenetwork.com","dominiontradex.fr","dynamictrevion.fr","ecxtrade.com","epargneia.com","escrow@heurofinancial.com","essorinvexaro.fr","extranet-mgi.com","fibus-courtage.com","financiere-de-grenelle.com","financiere-gfr.com","financiere-jln.com","financiere-st-gabriel.com","finance@bpandapm.com","firstprivate-finad.com","france.acpr@proton.me","fundsuri.com","fxtrading.com","gaveltrdltd.com","heurobank@finance-info.eu","heurosasbank.io","hevia.finance","hlf-gestion-or.com","hsbc@serice-gestions.com","infodesk@rapidrecovery.online","infoprolive.com","instantfundedaccount.com","investiraupays.com","isaloge-investissement.com","konilabs-courtage.com","laurent.fortuneo.credit","livpm.com","log.noelse-france.com","login.groupsecuritiesdublin.com","lp-harmonie.com","marketsview.io","mayfieldedu.com","mcafinances.com","miginvestgr.tiiny.site","mon-vaul.com","monetiscore.com","mustfinance9@gmail.com","mynco.com","netixos.com","noelse-france.com","noelse-international.com","nom.prénom@apptraderepublicgestion.com","nom.prénom@apptrepublicgestion.com","nom.prénom@info-regroup.com","online-nova.com","opti-nova.net","paris-titrisation.com","paristitrisation.com","paristitrisation.fr","paysofax.com","presse-actu.com","pretalia.com","proxtrend.com","pt-patrimoine.com","revexium.com","service.client@npb-france.com","service.orangebank@europe.com","servicefinancier@shell-france.fr","sigmainvestglobal.com","skalrett.com","slbaction.com","snfinancement@gmail.com","strath-well.com","sumeria.com","supportafmdefrancr@gmail.com","support.acpr.fr@gmail.com","support@amf-fr","support@amf-fr.com","support@antifraude-amf.com","support@capitalpluspltd.com","support@heurosasbank.io","support@sigmainvestglobal.com","swisscapitalhub.com","targetplusia.com","team.coinmarketcap@atomicmail.io","terremassif.com","tiercefortange.com","trading.corso-web.com","trxdynis.com","truefinanse.com","vantagemarkets.com","virement-lydia.fr","virementslydia.fr","virmtlydia.fr","vision-lonox-hex.net","vivaldi-park.com","vivaldiiparking.com","vivaldiparking.com","vuxocap.co","web.bdweurope.com","web.bpcebanxo.com","web.npbonline.app","webtrader.aptos-ai.net","webtrader.swisscapitalplatform.com","winvias.com","prénom.nom-revolut@rv-conseil.com","prénom.nom@accmanager.tech","prénom.nom@arokconseil.com","prénom.nom@bitpsolution.com","prénom.nom@clientbglprivee.com","prénom.nom@contact-sitir.com","prénom.nom@courtier-immo.fr","prénom.nom@crypto-gestion.com","prénom.nom@dwsglobalinvest.info","prénom.nom@financiere-de-grenelle.com","prénom.nom@fivearrows-gestion.com","prénom.nom@fivearrows-rothschild.com","prénom.nom@fivearrows.fr","prénom.nom@fortuneo.credit","prénom.nom@fundsnordea.com","prénom.nom@gestion-financiere-gfr.com","prénom.nom@hardimmo.com","prénom.nom@info-cgfinancia.com","prénom.nom@inter-parking.fr","prénom.nom@limmobiliere-cst.com","prénom.nom@limmobilierecastorama.com","prénom.nom@maestrimmo-gestion.com","prénom.nom@noelse-international.com","prénom.nom@noelsefrance.com","prénom.nom@opci-crystalpark.fr","prénom.nom@pmanager-finad.com","prénom.nom@polegestiondeblock.com","prénom.nom@portfoliomanager-finad.com","prénom.nom@rothschildcoam.com","prénom.nom@rvltsecurities.com","prénom.nom@sasruelaboetie-paris08.com","prénom.nom@serviceclientimmobilier.com","prénom.nom@sigma-invest.co","prénom.nom@support-lesfurets.com","prénom.nom@tradelive.info","prénom.nom@wise.com-gestionassets.app","prénomnom@meritumcapital-intl.com"];
+
+    // Préfixes officiels ARCEP réservés au démarchage téléphonique commercial en France.
+    // Un numéro dans ces tranches est légalement affecté au démarchage commercial — ce n'est
+    // PAS en soi une preuve d'arnaque, juste un signal de type d'appel probable.
+    const ARCEP_DEMARCHAGE_PREFIXES = ['0162','0163','0270','0271','0377','0378','0424','0425','0568','0569','0948','0949','09475','09476','09477','09478','09479'];
+
+    function normalizeDigits(str){ return str.replace(/[^\d]/g, ''); }
+
+    function toFrenchNational(digits){
+      // Convertit un +33XXXXXXXXX en 0XXXXXXXXX pour la comparaison de préfixes.
+      if (digits.startsWith('33') && digits.length === 11) return '0' + digits.slice(2);
+      return digits;
+    }
+
+    function isPhoneLike(val){
+      const digits = normalizeDigits(val);
+      return /^0[1-9]\d{8}$/.test(digits) || /^33[1-9]\d{8}$/.test(digits);
+    }
+
+    function isEmailLike(val){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+    }
+
+    function isDomainLike(val){
+      return /^[a-z0-9.-]+\.[a-z]{2,}(\/.*)?$/i.test(val.trim()) && !val.includes(' ');
+    }
+
     const checkBtn = document.getElementById('checkBtn');
     const out = document.getElementById('checkOut');
 
@@ -1682,19 +1724,78 @@
     checkBtn.addEventListener('click', () => {
       const val = document.getElementById('vname').value.trim();
       if (!val){ document.getElementById('vname').focus(); return; }
-      const normalized = val.toLowerCase();
+
+      const phoneLinksBox = document.getElementById('officialLinksPhone');
+      const siteLinksBox = document.getElementById('officialLinksSite');
       let score, level, text, color;
-      const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
-      if (flagged){
-        score = 12; level = 'Risque élevé'; color = 'var(--danger)';
-        text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle de l'AMF avant tout versement, et ne réalisez aucun paiement supplémentaire.";
-      } else if (normalized.length < 3){
-        score = 50; level = 'Indéterminé'; color = 'var(--warn)';
-        text = "Le nom saisi est trop court pour une estimation fiable. Complétez le nom exact de la société ou l'adresse du site.";
+
+      if (isPhoneLike(val)) {
+        // --- CAS 1 : numéro de téléphone ---
+        phoneLinksBox.style.display = 'flex';
+        siteLinksBox.style.display = 'none';
+        document.getElementById('pubResults').innerHTML = '';
+        document.getElementById('pubStatus').style.display = 'none';
+        document.querySelector('.pub-check').style.display = 'none';
+
+        const digits = toFrenchNational(normalizeDigits(val));
+        const isArcepDemarchage = ARCEP_DEMARCHAGE_PREFIXES.some(p => digits.startsWith(p));
+
+        const q = encodeURIComponent(val);
+        document.getElementById('tellowsLink').href = 'https://www.tellows.fr/num/' + digits;
+        document.getElementById('franceverifLink').href = 'https://franceverif.fr/fr/verifier-numero-telephone?number=' + q;
+
+        if (isArcepDemarchage) {
+          score = 40; level = 'Démarchage commercial (préfixe ARCEP)'; color = 'var(--warn)';
+          text = "Ce numéro appartient à une tranche officiellement réservée par l'ARCEP au démarchage commercial. Cela signifie que l'appel est probablement de la prospection commerciale — pas nécessairement une arnaque, mais restez vigilant si l'on vous propose un placement financier.";
+        } else {
+          score = 50; level = 'Indéterminé — aucune base officielle disponible'; color = 'var(--warn)';
+          text = "Il n'existe pas de liste officielle et gratuite des numéros frauduleux en France. Ce numéro n'est ni confirmé ni écarté par notre outil. Consultez les sites spécialisés ci-dessous, qui s'appuient sur des signalements communautaires.";
+        }
+
+      } else if (isEmailLike(val) || isDomainLike(val)) {
+        // --- CAS 2 : email ou nom de domaine ---
+        phoneLinksBox.style.display = 'none';
+        siteLinksBox.style.display = 'flex';
+        document.querySelector('.pub-check').style.display = 'block';
+
+        const normalized = val.toLowerCase().trim();
+        const officialHit = OFFICIAL_BLACKLIST.some(entry => entry.toLowerCase() === normalized || normalized.includes(entry.toLowerCase()) || entry.toLowerCase().includes(normalized));
+
+        if (officialHit) {
+          score = 5; level = 'Sur liste noire officielle'; color = 'var(--danger)';
+          text = "Cet email ou ce site figure sur la liste noire officielle de la Banque de France / ACPR / AMF (usurpation d'identité ou activité non autorisée en France). Ne réalisez aucun versement et ne communiquez aucune information à cet interlocuteur.";
+        } else {
+          const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
+          if (flagged) {
+            score = 12; level = 'Risque élevé (démo)'; color = 'var(--danger)';
+            text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle avant tout versement.";
+          } else {
+            score = 68; level = 'Absence sur la liste noire officielle'; color = 'var(--warn)';
+            text = "Cet email/site n'apparaît pas sur la liste noire officielle Banque de France / ACPR / AMF (instantané du " + OFFICIAL_BLACKLIST_DATE + ") — cela ne garantit pas sa fiabilité, une entité peut ne pas encore avoir été recensée. Consultez systématiquement ScamDoc et les listes AMF avant d'investir.";
+          }
+        }
+        searchZieglerPublications(val, officialHit);
+
       } else {
-        score = 68; level = 'Absence de signal négatif (démo)'; color = 'var(--warn)';
-        text = "Aucune correspondance trouvée dans notre base de démonstration — cela ne signifie pas que l'acteur est fiable. Consultez systématiquement les listes noires AMF et ScamDoc avant d'investir.";
+        // --- CAS 3 : nom de société (comportement d'origine) ---
+        phoneLinksBox.style.display = 'none';
+        siteLinksBox.style.display = 'flex';
+        document.querySelector('.pub-check').style.display = 'block';
+        const normalized = val.toLowerCase();
+        const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
+        if (flagged){
+          score = 12; level = 'Risque élevé'; color = 'var(--danger)';
+          text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle de l'AMF avant tout versement, et ne réalisez aucun paiement supplémentaire.";
+        } else if (normalized.length < 3){
+          score = 50; level = 'Indéterminé'; color = 'var(--warn)';
+          text = "Le nom saisi est trop court pour une estimation fiable. Complétez le nom exact de la société ou l'adresse du site.";
+        } else {
+          score = 68; level = 'Absence de signal négatif (démo)'; color = 'var(--warn)';
+          text = "Aucune correspondance trouvée dans notre base de démonstration — cela ne signifie pas que l'acteur est fiable. Consultez systématiquement les listes noires AMF et ScamDoc avant d'investir.";
+        }
+        searchZieglerPublications(val, flagged);
       }
+
       document.getElementById('scoreLevel').textContent = level;
       document.getElementById('scorePts').textContent = score + ' / 100';
       const bar = document.getElementById('scoreBar');
@@ -1702,8 +1803,6 @@
       bar.style.background = color;
       document.getElementById('scoreText').textContent = text;
       out.classList.add('show');
-
-      searchZieglerPublications(val, flagged);
     });
   })();
 
