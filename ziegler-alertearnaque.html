@@ -35,6 +35,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -248,7 +249,7 @@
   .burger{display:none; background:none; border:none; padding:6px;}
   .burger span{display:block; width:22px; height:2px; background:var(--ink); margin:5px 0;}
   .tel-link{font-family:var(--mono); font-size:13.5px; font-weight:500; color:var(--ink); text-decoration:none; letter-spacing:.01em; display:flex; align-items:center; gap:6px; white-space:nowrap; flex-shrink:0;}
-  .tel-link::before{content:"☎"; font-size:13px; color:var(--purple);}
+  .tel-link::before{content:"\f095"; font-family:"Font Awesome 6 Free"; font-weight:900; font-size:12px; color:var(--purple);}
   .tel-link:hover{color:var(--purple);}
   @media(max-width:1340px){.tel-link{display:none;}}
 
@@ -962,11 +963,11 @@
         </div>
         <div class="hero-verify-pills">
           <span class="hv-or">ou directement :</span>
-          <button type="button" class="hv-pill" data-goto-tab="societe"><span>🏢</span> Société</button>
-          <button type="button" class="hv-pill" data-goto-tab="email"><span>✉️</span> Email</button>
-          <button type="button" class="hv-pill" data-goto-tab="telephone"><span>📞</span> Téléphone</button>
-          <button type="button" class="hv-pill" data-goto-tab="iban"><span>🏦</span> IBAN</button>
-          <button type="button" class="hv-pill" data-goto-tab="crypto"><span>🪙</span> Crypto</button>
+          <button type="button" class="hv-pill" data-goto-tab="societe"><span><i class="fa-solid fa-building"></i></span> Société</button>
+          <button type="button" class="hv-pill" data-goto-tab="email"><span><i class="fa-solid fa-envelope"></i></span> Email</button>
+          <button type="button" class="hv-pill" data-goto-tab="telephone"><span><i class="fa-solid fa-phone"></i></span> Téléphone</button>
+          <button type="button" class="hv-pill" data-goto-tab="iban"><span><i class="fa-solid fa-building-columns"></i></span> IBAN</button>
+          <button type="button" class="hv-pill" data-goto-tab="crypto"><span><i class="fa-solid fa-coins"></i></span> Crypto</button>
         </div>
       </div>
 
@@ -990,21 +991,21 @@
     </div>
     <div class="quick">
       <a href="#signaler">
-        <span class="qc-icon">🆘</span>
+        <span class="qc-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
         <span class="tag">01 — Signalement</span>
         <h2>J'ai été victime</h2>
         <p>Décrivez votre situation en quelques minutes, notre secrétariat juridique organise votre mise en relation avec un avocat.</p>
         <span class="go">Signaler maintenant →</span>
       </a>
       <a href="#verifier">
-        <span class="qc-icon">🔍</span>
+        <span class="qc-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
         <span class="tag">02 — Vérification</span>
         <h2>On me propose un placement</h2>
         <p>Vérifiez la fiabilité d'une société ou d'un placement avant d'investir un centime.</p>
         <span class="go">Lancer la vérification →</span>
       </a>
       <a href="ziegler-alertearnaque-alertes.html#publier">
-        <span class="qc-icon">📢</span>
+        <span class="qc-icon"><i class="fa-solid fa-bullhorn"></i></span>
         <span class="tag">03 — Alerter</span>
         <h2>Je veux prévenir les autres</h2>
         <p>Publiez une alerte anonyme sur la société ou la personne concernée, validée par le cabinet avant diffusion.</p>
@@ -1210,12 +1211,12 @@
       </div>
 
       <div class="tools-overview">
-        <div class="tool-card" data-goto="societe"><div class="tc-icon">🏢</div><div class="tc-label">Société</div><div class="tc-sub">Liste noire officielle</div></div>
-        <div class="tool-card" data-goto="telephone"><div class="tc-icon">📞</div><div class="tc-label">Téléphone</div><div class="tc-sub">Préfixes ARCEP + communauté</div></div>
-        <div class="tool-card" data-goto="email"><div class="tc-icon">✉️</div><div class="tc-label">Email</div><div class="tc-sub">Banque de France / ACPR / AMF</div></div>
-        <div class="tool-card" data-goto="iban"><div class="tc-icon">🏦</div><div class="tc-label">IBAN</div><div class="tc-sub">Format + identification banque</div></div>
-        <div class="tool-card" data-goto="crypto"><div class="tc-icon">🪙</div><div class="tc-label">Crypto</div><div class="tc-sub">GoPlus Security</div></div>
-        <div class="tool-card" data-goto="quiz"><div class="tc-icon">🧭</div><div class="tc-label">Auto-diagnostic</div><div class="tc-sub">6 questions, 1 minute</div></div>
+        <div class="tool-card" data-goto="societe"><div class="tc-icon"><i class="fa-solid fa-building"></i></div><div class="tc-label">Société</div><div class="tc-sub">Liste noire officielle</div></div>
+        <div class="tool-card" data-goto="telephone"><div class="tc-icon"><i class="fa-solid fa-phone"></i></div><div class="tc-label">Téléphone</div><div class="tc-sub">Préfixes ARCEP + communauté</div></div>
+        <div class="tool-card" data-goto="email"><div class="tc-icon"><i class="fa-solid fa-envelope"></i></div><div class="tc-label">Email</div><div class="tc-sub">Banque de France / ACPR / AMF</div></div>
+        <div class="tool-card" data-goto="iban"><div class="tc-icon"><i class="fa-solid fa-building-columns"></i></div><div class="tc-label">IBAN</div><div class="tc-sub">Format + identification banque</div></div>
+        <div class="tool-card" data-goto="crypto"><div class="tc-icon"><i class="fa-solid fa-coins"></i></div><div class="tc-label">Crypto</div><div class="tc-sub">GoPlus Security</div></div>
+        <div class="tool-card" data-goto="quiz"><div class="tc-icon"><i class="fa-solid fa-compass"></i></div><div class="tc-label">Auto-diagnostic</div><div class="tc-sub">6 questions, 1 minute</div></div>
       </div>
 
       <div class="tool-panel verify-tabbed">
@@ -1359,37 +1360,37 @@
 
         <div class="tech-grid">
           <div class="tech-card">
-            <div class="tech-icon">🏛️</div>
+            <div class="tech-icon"><i class="fa-solid fa-landmark"></i></div>
             <h3>Liste noire officielle Banque de France</h3>
             <p>Les sites et adresses email usurpant l'identité de professionnels autorisés, ou proposant des produits financiers sans agrément, sont récupérés automatiquement chaque nuit depuis le registre officiel de la Banque de France, de l'ACPR et de l'AMF — jamais un instantané figé.</p>
             <span class="tech-src">Banque de France · ACPR · AMF</span>
           </div>
           <div class="tech-card">
-            <div class="tech-icon">📡</div>
+            <div class="tech-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
             <h3>Préfixes officiels de démarchage</h3>
             <p>Les tranches de numéros de téléphone réservées par l'ARCEP au démarchage commercial sont identifiées automatiquement, pour distinguer un signal de prospection d'un signal d'alerte plus sérieux.</p>
             <span class="tech-src">ARCEP</span>
           </div>
           <div class="tech-card">
-            <div class="tech-icon">🔐</div>
+            <div class="tech-icon"><i class="fa-solid fa-shield-halved"></i></div>
             <h3>Sécurité Web3 de référence</h3>
             <p>La vérification des portefeuilles de crypto-actifs s'appuie sur GoPlus Security, la même technologie de détection d'adresses malveillantes (phishing, blanchiment, vol de fonds) utilisée par des acteurs comme OKX et DexScreener.</p>
             <span class="tech-src">GoPlus Security</span>
           </div>
           <div class="tech-card">
-            <div class="tech-icon">🏦</div>
+            <div class="tech-icon"><i class="fa-solid fa-building-columns"></i></div>
             <h3>Contrôle bancaire international</h3>
             <p>Chaque IBAN est validé selon la norme internationale ISO 7064 (clé de contrôle mod-97), avec un annuaire de plus de 2 300 établissements bancaires français pour identifier la banque à partir d'un code BIC, et une identification automatique pour 7 pays européens supplémentaires.</p>
             <span class="tech-src">ISO 7064 · openiban.com</span>
           </div>
           <div class="tech-card">
-            <div class="tech-icon">🤝</div>
+            <div class="tech-icon"><i class="fa-solid fa-handshake"></i></div>
             <h3>Renseignement communautaire propre au cabinet</h3>
             <p>Chaque signalement validé enrichit une base de numéros et d'emails suspects propre à Ziegler Alerte Arnaque, consultable directement par les futurs visiteurs confrontés au même interlocuteur.</p>
             <span class="tech-src">Base communautaire du cabinet</span>
           </div>
           <div class="tech-card">
-            <div class="tech-icon">⚖️</div>
+            <div class="tech-icon"><i class="fa-solid fa-scale-balanced"></i></div>
             <h3>Regard d'avocats spécialisés</h3>
             <p>Au-delà des outils automatisés, chaque situation signalée est étudiée par le cabinet d'Avocats Ziegler &amp; Associés, dont la pratique est exclusivement dédiée à la défense des victimes d'escroqueries financières.</p>
             <span class="tech-src">Cabinet Ziegler &amp; Associés</span>
@@ -1667,7 +1668,7 @@
 </main>
 
 <div class="mobile-cta-bar" aria-label="Actions rapides">
-  <a class="mc-call" href="tel:+33188314592">☎ Appeler</a>
+  <a class="mc-call" href="tel:+33188314592"><i class="fa-solid fa-phone"></i> Appeler</a>
   <a class="mc-report" href="#signaler">Signaler une arnaque</a>
 </div>
 
@@ -2677,7 +2678,7 @@
 <!-- EXIT-INTENT POPUP -->
 <div class="exit-overlay" id="exitOverlay" aria-hidden="true">
   <div class="exit-modal" role="dialog" aria-labelledby="exitTitle">
-    <button class="exit-close" id="exitClose" aria-label="Fermer">✕</button>
+    <button class="exit-close" id="exitClose" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
     <span class="exit-eyebrow">Cabinet d'Avocats Ziegler &amp; Associés</span>
     <h3 id="exitTitle">Un avocat peut examiner votre situation</h3>
     <p>Transmettez vos coordonnées au secrétariat juridique.</p>
@@ -2691,20 +2692,20 @@
       <button type="submit" class="btn gold" id="exitSubmitBtn">Demander à être rappelé(e)</button>
     </form>
     <div class="exit-success" id="exitSuccess" hidden>
-      ✅ Merci. Le secrétariat juridique vous recontacte prochainement, en toute confidentialité.
+      <i class="fa-solid fa-circle-check" style="color:var(--ok); margin-right:6px;"></i>Merci. Le secrétariat juridique vous recontacte prochainement, en toute confidentialité.
     </div>
   </div>
 </div>
 
 <!-- CHATBOT WIDGET -->
 <div class="chatbot-teaser" id="chatbotTeaser">
-  Une question ? Nous pouvons vous aider en 2 minutes 👋
-  <button class="ct-close" id="chatbotTeaserClose" aria-label="Fermer">✕</button>
+  Une question ? Nous pouvons vous aider en 2 minutes
+  <button class="ct-close" id="chatbotTeaserClose" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
 </div>
 
 <button class="chatbot-launcher" id="chatbotLauncher" aria-label="Ouvrir le Secrétaire numérique">
-  <span class="cl-icon cl-icon-chat">💬</span>
-  <span class="cl-icon cl-icon-close">✕</span>
+  <span class="cl-icon cl-icon-chat"><i class="fa-solid fa-comment-dots"></i></span>
+  <span class="cl-icon cl-icon-close"><i class="fa-solid fa-xmark"></i></span>
 </button>
 
 <div class="chatbot-panel" id="chatbotPanel" aria-hidden="true">
@@ -2714,7 +2715,7 @@
       <strong>Secrétaire numérique</strong>
       <span><i class="cb-dot"></i> En ligne</span>
     </div>
-    <button class="cb-header-close" id="chatbotHeaderClose" aria-label="Fermer">✕</button>
+    <button class="cb-header-close" id="chatbotHeaderClose" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="cb-messages" id="chatbotMessages"></div>
   <div class="cb-composer" id="chatbotComposer"></div>
