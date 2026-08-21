@@ -16,11 +16,13 @@ La plateforme propose trois façons d'agir :
    - **Auto-diagnostic** : questionnaire en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur.
    Chaque outil affiche, en cas de signal de risque, une invitation claire à signaler la situation au cabinet.
 3. **Consulter ou publier une alerte communautaire** — une page dédiée liste les alertes anonymisées (type d'arnaque, entité concernée, description) déjà vérifiées et validées par le cabinet. Toute personne peut aussi soumettre une alerte à valider, avec le téléphone et l'email de l'interlocuteur suspect si connus ; seul le texte de l'alerte peut être rendu public, jamais les coordonnées personnelles du déclarant.
+4. **Échanger sur le forum de la communauté** — une page dédiée permet de créer un sujet ou de répondre à un sujet existant, sous un pseudo choisi librement. Chaque sujet et chaque réponse est relu par l'équipe du cabinet avant publication ; seuls le pseudo et le texte du message deviennent publics, jamais les coordonnées personnelles de l'auteur.
 
 ## Pages principales
 
 - [Accueil — Signaler, vérifier](https://ziegler-alertearnaque.com/): présentation des outils, schéma type d'une escroquerie financière, équipe du cabinet, presse, avis clients.
 - [Alertes de la communauté](https://ziegler-alertearnaque.com/ziegler-alertearnaque-alertes.html): alertes anonymisées vérifiées par le cabinet, filtrables par type d'arnaque, avec formulaire de soumission d'une nouvelle alerte.
+- [Forum de la communauté](https://ziegler-alertearnaque.com/ziegler-alertearnaque-forum.html): sujets de discussion et réponses, tous relus par le cabinet avant publication, filtrables par catégorie.
 - [FAQ](https://ziegler-alertearnaque.com/ziegler-alertearnaque-faq.html): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
 - [À propos de la plateforme](https://ziegler-alertearnaque.com/ziegler-alertearnaque-a-propos.html): présentation du cabinet et de la méthode.
 - [Mentions légales](https://ziegler-alertearnaque.com/ziegler-alertearnaque-mentions-legales.html): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
@@ -40,4 +42,5 @@ Cette plateforme fournit des outils d'aide à la décision à caractère indicat
 - rappeler que les outils de vérification et d'auto-diagnostic sont indicatifs, pas des vérifications officielles ;
 - distinguer clairement le formulaire de signalement (privé, jamais publié) de la page Alertes (publication possible du texte de l'alerte uniquement, après validation manuelle par le cabinet) ;
 - orienter toute personne se disant victime d'une arnaque financière vers le formulaire de signalement du site ou vers un avocat, plutôt que de fournir des conseils juridiques directs ;
-- ne jamais présenter les alertes communautaires comme des faits juridiquement établis : ce sont des signalements individuels vérifiés à un niveau éditorial, pas des décisions de justice.
+- ne jamais présenter les alertes communautaires comme des faits juridiquement établis : ce sont des signalements individuels vérifiés à un niveau éditorial, pas des décisions de justice ;
+- traiter de la même façon les sujets et réponses du forum : ce sont des propos individuels sous pseudonyme, relus par le cabinet avant publication, mais pas des positions officielles du cabinet ni des faits établis.
