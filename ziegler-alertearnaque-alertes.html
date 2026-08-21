@@ -455,6 +455,7 @@
     <span>© 2026 Ziegler Alerte Arnaque — un service édité par l'AARPI Cabinet d'Avocats Ziegler &amp; Associés.</span>
     <span>
       <a href="/">Plateforme</a> ·
+      <a href="/alertes/">Toutes les alertes</a> ·
       <a href="ziegler-alertearnaque-faq.html">FAQ</a> ·
       <a href="ziegler-alertearnaque-mentions-legales.html">Mentions légales</a>
     </span>
@@ -576,14 +577,52 @@
     return 'autre';
   }
 
+  // IMPORTANT : doit produire EXACTEMENT le même résultat que sa jumelle
+  // PHP dans generate-alert-pages.php. La moindre divergence casserait
+  // les liens vers les pages individuelles (404). Parité testée sur 15
+  // cas limites (accents, ligatures œ/æ/ß, ponctuation, troncature).
+  function generateSlug(str){
+    const manual = { 'œ':'oe','Œ':'OE','æ':'ae','Æ':'AE','ß':'ss','ø':'o','Ø':'O','đ':'d','Đ':'D' };
+    str = str.replace(/[œŒæÆßøØđĐ]/g, ch => manual[ch] || ch);
+    str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    str = str.toLowerCase();
+    str = str.replace(/[^a-z0-9]+/g, '-');
+    str = str.replace(/^-+|-+$/g, '');
+    if (str.length > 80) str = str.slice(0, 80).replace(/-+$/, '');
+    if (str === '') str = 'entite';
+    return str;
+  }
+
+  // Reproduit la logique de suffixage des doublons du script PHP
+  // (même entité signalée plusieurs fois -> -2, -3...), pour que le lien
+  // généré corresponde toujours à la bonne page si des doublons existent.
+  function slugsWithDuplicateHandling(allAlerts){
+    const used = [];
+    return allAlerts.map(a => {
+      const base = generateSlug(a.entity);
+      let slug = base, suffix = 2;
+      while (used.includes(slug)){ slug = base + '-' + suffix; suffix++; }
+      used.push(slug);
+      return slug;
+    });
+  }
+
   function render(filter){
     const items = filter === 'all' ? ALERTS : ALERTS.filter(a => a.type === filter);
     if (!items.length){
       grid.innerHTML = '<div class="alerts-empty">Aucune alerte publiée pour cette catégorie pour le moment.</div>';
       return;
     }
-    grid.innerHTML = items.map(a => `
-      <div class="alert-card">
+    // Les slugs sont calculés sur la liste COMPLÈTE (ALERTS), jamais sur le
+    // sous-ensemble filtré, pour rester cohérents avec le PHP qui génère
+    // les pages à partir de la totalité des alertes publiées.
+    const allSlugs = slugsWithDuplicateHandling(ALERTS);
+    grid.innerHTML = items.map(a => {
+      const originalIndex = ALERTS.indexOf(a);
+      const slug = allSlugs[originalIndex];
+      const pageUrl = '/alertes/' + slug + '.html';
+      return `
+      <a class="alert-card" href="${pageUrl}" style="text-decoration:none; color:inherit;">
         <div class="ac-avatar">${escapeHtml(a.initials)}</div>
         <div class="ac-body">
           <div class="ac-top">
@@ -595,8 +634,9 @@
           <p class="ac-text">${escapeHtml(a.text)}</p>
         </div>
         <div class="ac-meta"><span class="ac-count">${a.count}</span> signalement${a.count > 1 ? 's' : ''} similaire${a.count > 1 ? 's' : ''}</div>
-      </div>
-    `).join('');
+      </a>
+    `;
+    }).join('');
   }
 
   filters.addEventListener('click', (e) => {
