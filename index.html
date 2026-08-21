@@ -448,6 +448,24 @@
   /* ---------- VERIFY TOOL ---------- */
   .verify-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule);}
   @media(max-width:860px){.verify-grid{grid-template-columns:1fr;}}
+
+  /* ---- Aperçu des outils (cartes) ---- */
+  .tools-overview{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:28px;}
+  @media(max-width:980px){.tools-overview{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:560px){.tools-overview{grid-template-columns:repeat(2,1fr);}}
+  .tool-card{background:#fff; border:1px solid var(--rule); border-radius:12px; padding:18px 14px; text-align:center; cursor:pointer; transition:border-color .15s, transform .15s;}
+  .tool-card:hover{border-color:var(--purple); transform:translateY(-2px);}
+  .tool-card .tc-icon{font-size:22px; margin-bottom:8px;}
+  .tool-card .tc-label{font-size:13px; font-weight:700; color:var(--ink);}
+  .tool-card .tc-sub{font-size:11px; color:var(--ink-soft); margin-top:3px; line-height:1.3;}
+
+  /* ---- Onglets de vérification ---- */
+  .vtabs{display:flex; flex-wrap:wrap; gap:0; border-bottom:1px solid var(--rule); background:#fbfaf8;}
+  .vtab{flex:1 1 auto; min-width:110px; padding:16px 12px; font-family:var(--mono); font-size:12.5px; text-transform:uppercase; letter-spacing:.05em; font-weight:700; color:var(--ink-soft-2); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:color .15s, border-color .15s;}
+  .vtab:hover{color:var(--ink);}
+  .vtab.active{color:var(--purple); border-bottom-color:var(--purple); background:#fff;}
+  .vpanel{padding:40px;}
+  @media(max-width:640px){.vpanel{padding:26px 20px;} .vtab{font-size:11px; padding:12px 8px; min-width:90px;}}
   .verify-col{background:#fff; padding:40px;}
   @media(max-width:640px){.verify-col{padding:26px 20px;}}
   .verify-col h3{font-size:20px; margin-bottom:6px;}
@@ -1077,22 +1095,34 @@
     <div class="wrap reveal">
       <div class="section-head">
         <span class="eyebrow">Étape 2 — Vérification</span>
-        <h2>Vérifiez un placement avant d'investir</h2>
-        <p>Deux outils d'aide à la décision proposés par le cabinet. La vérification croise trois sources : notre base de démonstration, les publications déjà rédigées par le cabinet sur des cas similaires, et les listes officielles (AMF, ScamDoc). Ils ne remplacent pas les vérifications officielles, dont les liens figurent ci-dessous.</p>
+        <h2>6 outils gratuits pour vérifier avant d'agir</h2>
+        <p>Société, téléphone, email, IBAN, portefeuille crypto ou auto-diagnostic : choisissez l'outil adapté à votre situation. Chacun croise des sources officielles ou reconnues (Banque de France, ARCEP, GoPlus Security...). Ils ne remplacent pas les vérifications officielles, dont les liens figurent dans chaque résultat.</p>
       </div>
 
-      <div class="tool-panel">
-        <div class="tool-tabbar">
-          <div class="tb">Outils de vérification</div>
-          <div class="tb">Non contractuel — indicatif</div>
-        </div>
-        <div class="verify-grid">
+      <div class="tools-overview">
+        <div class="tool-card" data-goto="societe"><div class="tc-icon">🏢</div><div class="tc-label">Société</div><div class="tc-sub">Liste noire officielle</div></div>
+        <div class="tool-card" data-goto="telephone"><div class="tc-icon">📞</div><div class="tc-label">Téléphone</div><div class="tc-sub">Préfixes ARCEP + communauté</div></div>
+        <div class="tool-card" data-goto="email"><div class="tc-icon">✉️</div><div class="tc-label">Email</div><div class="tc-sub">Banque de France / ACPR / AMF</div></div>
+        <div class="tool-card" data-goto="iban"><div class="tc-icon">🏦</div><div class="tc-label">IBAN</div><div class="tc-sub">Format + identification banque</div></div>
+        <div class="tool-card" data-goto="crypto"><div class="tc-icon">🪙</div><div class="tc-label">Crypto</div><div class="tc-sub">GoPlus Security</div></div>
+        <div class="tool-card" data-goto="quiz"><div class="tc-icon">🧭</div><div class="tc-label">Auto-diagnostic</div><div class="tc-sub">6 questions, 1 minute</div></div>
+      </div>
 
-          <!-- Quick check -->
-          <div class="verify-col">
-            <h3>Vérification rapide d'une société</h3>
-            <p class="sub">Renseignez le nom d'une société, un email ou un numéro de téléphone. L'outil détecte automatiquement le type de recherche et interroge la liste noire officielle Banque de France / ACPR / AMF, les préfixes ARCEP, et les publications déjà rédigées par le cabinet.</p>
-            <div class="field"><label for="vname">Nom de société, email ou numéro de téléphone</label><input id="vname" type="text" placeholder="Ex. : Global Crypto Invest, contact@site.com ou 06 12 34 56 78"></div>
+      <div class="tool-panel verify-tabbed">
+        <div class="vtabs" role="tablist">
+          <button class="vtab active" data-tab="societe" type="button">Société</button>
+          <button class="vtab" data-tab="telephone" type="button">Téléphone</button>
+          <button class="vtab" data-tab="email" type="button">Email</button>
+          <button class="vtab" data-tab="iban" type="button">IBAN</button>
+          <button class="vtab" data-tab="crypto" type="button">Crypto</button>
+          <button class="vtab" data-tab="quiz" type="button">Auto-diagnostic</button>
+        </div>
+
+        <div class="vpanel" data-panel="societe">
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3 id="comboTitle">Vérifier une société ou un site</h3>
+            <p class="sub" id="comboSub">Renseignez le nom d'une société ou d'un site. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF et les publications déjà rédigées par le cabinet.</p>
+            <div class="field"><label for="vname" id="comboLabel">Nom de la société ou du site</label><input id="vname" type="text" placeholder="Ex. : Global Crypto Invest"></div>
             <button class="btn" id="checkBtn" type="button" style="margin-top:16px;">Vérifier</button>
 
             <div class="verify-out" id="checkOut">
@@ -1128,9 +1158,61 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Quiz -->
-          <div class="verify-col">
+        <div class="vpanel" data-panel="iban" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>Un IBAN vous a été communiqué pour un virement ?</h3>
+            <p class="sub">Vérifiez que le format et la clé de contrôle sont mathématiquement corrects, et retrouvez l'établissement bancaire à partir du code BIC/SWIFT s'il vous a aussi été communiqué (souvent indiqué sur le même RIB). Cela ne confirme pas que le compte existe ni qu'il appartient à la personne annoncée — seule votre banque peut le garantir.</p>
+            <div class="field-row">
+              <div class="field"><label for="vIban">IBAN</label><input id="vIban" type="text" placeholder="Ex. : FR76 3000 4000 0100 0000 0000 000"></div>
+              <div class="field"><label for="vBic">Code BIC / SWIFT <span class="opt">(si connu)</span></label><input id="vBic" type="text" placeholder="Ex. : BNPAFRPP"></div>
+            </div>
+            <button class="btn" id="ibanCheckBtn" type="button" style="margin-top:6px;">Vérifier l'IBAN</button>
+
+            <div class="verify-out" id="ibanOut">
+              <div class="score-readout"><span class="lvl" id="ibanLevel">—</span><span class="pts" id="ibanPts"></span></div>
+              <div class="score-gauge"><i id="ibanBar"></i></div>
+              <p id="ibanText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+              <div id="ibanBreakdown" style="margin-top:14px; font-size:13px; color:var(--ink-soft-2); font-family:var(--mono);"></div>
+              <div id="ibanBicResult" style="margin-top:14px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="crypto" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>On vous a communiqué une adresse pour un paiement en crypto-actifs ?</h3>
+            <p class="sub">Vérifiez le format de l'adresse, et si elle a déjà été identifiée comme malveillante (phishing, blanchiment, arnaque connue) par GoPlus Security, un service de sécurité Web3 reconnu utilisé notamment par OKX et DexScreener. Cela ne garantit pas la fiabilité d'une adresse non signalée — de nouvelles adresses d'arnaque apparaissent chaque jour.</p>
+            <div class="field-row">
+              <div class="field"><label for="vCrypto">Adresse du portefeuille</label><input id="vCrypto" type="text" placeholder="Ex. : 0x742d35Cc... ou bc1q..."></div>
+              <div class="field"><label for="vCryptoChain">Blockchain</label>
+                <select id="vCryptoChain">
+                  <option value="1">Ethereum</option>
+                  <option value="56">BNB Chain (BSC)</option>
+                  <option value="137">Polygon</option>
+                  <option value="42161">Arbitrum</option>
+                  <option value="8453">Base</option>
+                  <option value="10">Optimism</option>
+                  <option value="43114">Avalanche</option>
+                  <option value="solana">Solana</option>
+                  <option value="tron">Tron</option>
+                  <option value="bitcoin">Bitcoin</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn" id="cryptoCheckBtn" type="button" style="margin-top:6px;">Vérifier l'adresse</button>
+
+            <div class="verify-out" id="cryptoOut">
+              <div class="score-readout"><span class="lvl" id="cryptoLevel">—</span><span class="pts" id="cryptoPts"></span></div>
+              <div class="score-gauge"><i id="cryptoBar"></i></div>
+              <p id="cryptoText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="quiz" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
             <h3>Auto-diagnostic en 6 questions</h3>
             <p class="sub">Inspiré des signaux d'alerte identifiés par l'AMF et le ministère de l'Intérieur. <strong>Cochez toutes les situations qui correspondent à votre cas</strong> — vous pouvez en sélectionner plusieurs.</p>
             <div id="quizList">
@@ -1149,69 +1231,10 @@
               <a class="btn" style="margin-top:10px; display:none;" id="quizCta" href="#signaler">Signaler ma situation au cabinet</a>
             </div>
           </div>
-
         </div>
+
       </div>
       <p class="schema-src" style="margin-top:20px;">Signaux d'alerte adaptés des ressources de l'AMF (amf-france.org) et du ministère de l'Intérieur — <a href="https://www.masecurite.interieur.gouv.fr/fr/fiches-pratiques/numerique/arnaques-escroquerie-en-ligne-identifier-et-agir" target="_blank" rel="noopener">masecurite.interieur.gouv.fr</a>.</p>
-
-      <div class="tool-panel" style="margin-top:32px;">
-        <div class="tool-tabbar">
-          <div class="tb">Vérifier un IBAN</div>
-          <div class="tb">Format, clé de contrôle et identification de la banque</div>
-        </div>
-        <div class="verify-col" style="max-width:none;">
-          <h3>Un IBAN vous a été communiqué pour un virement ?</h3>
-          <p class="sub">Vérifiez que le format et la clé de contrôle sont mathématiquement corrects, et retrouvez l'établissement bancaire à partir du code BIC/SWIFT s'il vous a aussi été communiqué (souvent indiqué sur le même RIB). Cela ne confirme pas que le compte existe ni qu'il appartient à la personne annoncée — seule votre banque peut le garantir.</p>
-          <div class="field-row">
-            <div class="field"><label for="vIban">IBAN</label><input id="vIban" type="text" placeholder="Ex. : FR76 3000 4000 0100 0000 0000 000"></div>
-            <div class="field"><label for="vBic">Code BIC / SWIFT <span class="opt">(si connu)</span></label><input id="vBic" type="text" placeholder="Ex. : BNPAFRPP"></div>
-          </div>
-          <button class="btn" id="ibanCheckBtn" type="button" style="margin-top:6px;">Vérifier l'IBAN</button>
-
-          <div class="verify-out" id="ibanOut">
-            <div class="score-readout"><span class="lvl" id="ibanLevel">—</span><span class="pts" id="ibanPts"></span></div>
-            <div class="score-gauge"><i id="ibanBar"></i></div>
-            <p id="ibanText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
-            <div id="ibanBreakdown" style="margin-top:14px; font-size:13px; color:var(--ink-soft-2); font-family:var(--mono);"></div>
-            <div id="ibanBicResult" style="margin-top:14px;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tool-panel" style="margin-top:32px;">
-        <div class="tool-tabbar">
-          <div class="tb">Vérifier un portefeuille crypto</div>
-          <div class="tb">Format et détection d'adresse malveillante</div>
-        </div>
-        <div class="verify-col" style="max-width:none;">
-          <h3>On vous a communiqué une adresse pour un paiement en crypto-actifs ?</h3>
-          <p class="sub">Vérifiez le format de l'adresse, et si elle a déjà été identifiée comme malveillante (phishing, blanchiment, arnaque connue) par GoPlus Security, un service de sécurité Web3 reconnu utilisé notamment par OKX et DexScreener. Cela ne garantit pas la fiabilité d'une adresse non signalée — de nouvelles adresses d'arnaque apparaissent chaque jour.</p>
-          <div class="field-row">
-            <div class="field"><label for="vCrypto">Adresse du portefeuille</label><input id="vCrypto" type="text" placeholder="Ex. : 0x742d35Cc... ou bc1q..."></div>
-            <div class="field"><label for="vCryptoChain">Blockchain</label>
-              <select id="vCryptoChain">
-                <option value="1">Ethereum</option>
-                <option value="56">BNB Chain (BSC)</option>
-                <option value="137">Polygon</option>
-                <option value="42161">Arbitrum</option>
-                <option value="8453">Base</option>
-                <option value="10">Optimism</option>
-                <option value="43114">Avalanche</option>
-                <option value="solana">Solana</option>
-                <option value="tron">Tron</option>
-                <option value="bitcoin">Bitcoin</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn" id="cryptoCheckBtn" type="button" style="margin-top:6px;">Vérifier l'adresse</button>
-
-          <div class="verify-out" id="cryptoOut">
-            <div class="score-readout"><span class="lvl" id="cryptoLevel">—</span><span class="pts" id="cryptoPts"></span></div>
-            <div class="score-gauge"><i id="cryptoBar"></i></div>
-            <p id="cryptoText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -1676,6 +1699,72 @@
     });
 
     render();
+  })();
+
+  /* ---------------- VERIFICATION TABS (societe/telephone/email/iban/crypto/quiz) ---------------- */
+  (function(){
+    const tabs = document.querySelectorAll('.vtab');
+    const panels = document.querySelectorAll('.vpanel');
+    if (!tabs.length) return;
+
+    // Textes adaptés selon l'onglet actif, pour le panneau combiné société/téléphone/email
+    // (un seul outil intelligent en coulisses, mais un cadrage différent par onglet).
+    const COMBO_TEXTS = {
+      societe: {
+        title: 'Vérifier une société ou un site',
+        sub: "Renseignez le nom d'une société ou d'un site. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF et les publications déjà rédigées par le cabinet.",
+        label: 'Nom de la société ou du site',
+        placeholder: 'Ex. : Global Crypto Invest'
+      },
+      telephone: {
+        title: 'Vérifier un numéro de téléphone',
+        sub: "Renseignez le numéro qui vous a contacté. L'outil identifie les préfixes de démarchage commercial (ARCEP), recherche dans les alertes publiées par d'autres visiteurs, et propose des liens vers des sites spécialisés.",
+        label: 'Numéro de téléphone',
+        placeholder: 'Ex. : 06 12 34 56 78'
+      },
+      email: {
+        title: 'Vérifier une adresse email',
+        sub: "Renseignez l'adresse email de votre interlocuteur. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF (usurpations, sites non autorisés) et vos alertes communautaires.",
+        label: 'Adresse email',
+        placeholder: 'Ex. : contact@site-suspect.com'
+      }
+    };
+
+    function applyComboText(key){
+      const t = COMBO_TEXTS[key];
+      if (!t) return;
+      const titleEl = document.getElementById('comboTitle');
+      const subEl = document.getElementById('comboSub');
+      const labelEl = document.getElementById('comboLabel');
+      const inputEl = document.getElementById('vname');
+      if (titleEl) titleEl.textContent = t.title;
+      if (subEl) subEl.textContent = t.sub;
+      if (labelEl) labelEl.textContent = t.label;
+      if (inputEl) inputEl.placeholder = t.placeholder;
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.tab;
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const targetPanelKey = (key === 'telephone' || key === 'email') ? 'societe' : key;
+        panels.forEach(p => { p.hidden = (p.dataset.panel !== targetPanelKey); });
+
+        if (COMBO_TEXTS[key]) applyComboText(key);
+      });
+    });
+
+    // Les cartes d'aperçu tout en haut renvoient directement vers l'onglet correspondant.
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const key = card.dataset.goto;
+        const targetTab = document.querySelector('.vtab[data-tab="' + key + '"]');
+        if (targetTab) targetTab.click();
+        document.querySelector('.verify-tabbed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
   })();
 
   /* ---------------- QUICK CHECK (société / téléphone / email + live search of the firm's own publications) ---------------- */
