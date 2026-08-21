@@ -1106,6 +1106,11 @@
                 <div id="pubResults"></div>
               </div>
 
+              <div class="pub-check" id="communityCheck" hidden>
+                <strong class="pub-heading">Signalé par d'autres visiteurs ?</strong>
+                <div id="communityResults"></div>
+              </div>
+
               <div class="official-links" id="officialLinksSite">
                 <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifications officielles recommandées</strong>
                 <a href="https://www.amf-france.org/fr/espace-epargnants/proteger-son-epargne/listes-noires-et-mises-en-garde" target="_blank" rel="noopener">Listes noires AMF — acteurs non autorisés</a>
@@ -1681,6 +1686,51 @@
     const checkBtn = document.getElementById('checkBtn');
     const out = document.getElementById('checkOut');
 
+    // Recherche dans VOS PROPRES alertes publiées (Airtable) si un numéro ou un email
+    // signalé par la communauté correspond à celui recherché. C'est la seule vraie
+    // base "anti-arnaque téléphonique" gratuite et légale disponible : celle que le
+    // cabinet construit lui-même via les signalements de ses visiteurs.
+    const COMMUNITY_AIRTABLE_BASE_ID = 'app1WwAYj5IBAoa3X';
+    const COMMUNITY_AIRTABLE_TABLE_NAME = 'Alertes';
+    const COMMUNITY_AIRTABLE_TOKEN = '';
+
+    async function searchCommunityAlerts(query, field){
+      // field vaut 'Téléphone concerné' ou 'Email concerné'
+      const resultsEl = document.getElementById('communityResults');
+      if (!resultsEl) return;
+      if (!COMMUNITY_AIRTABLE_BASE_ID || !COMMUNITY_AIRTABLE_TOKEN){
+        resultsEl.innerHTML = '';
+        return;
+      }
+      const digitsQuery = normalizeDigits(query);
+      try {
+        const url = 'https://api.airtable.com/v0/' + COMMUNITY_AIRTABLE_BASE_ID + '/' + encodeURIComponent(COMMUNITY_AIRTABLE_TABLE_NAME)
+          + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()') + '&maxRecords=100';
+        const res = await fetch(url, { headers: { Authorization: 'Bearer ' + COMMUNITY_AIRTABLE_TOKEN } });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        const matches = (data.records || []).filter(r => {
+          const val = (r.fields[field] || '').toString();
+          if (!val) return false;
+          if (field === 'Téléphone concerné') return normalizeDigits(val) === digitsQuery && digitsQuery.length >= 8;
+          return val.toLowerCase().trim() === query.toLowerCase().trim();
+        });
+        if (matches.length){
+          resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
+            + '<span class="pa-tag" style="color:var(--danger);">Signalé par la communauté</span>'
+            + '<span class="pa-title">' + matches.length + ' alerte' + (matches.length > 1 ? 's' : '') + ' publiée' + (matches.length > 1 ? 's' : '') + (matches.length > 1 ? ' mentionnent' : ' mentionne') + ' ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + '</span>'
+            + '<p class="pa-excerpt">' + (matches[0].fields['Texte de l\'alerte'] || '').toString().slice(0, 160) + (matches[0].fields['Texte de l\'alerte'] && matches[0].fields['Texte de l\'alerte'].length > 160 ? '…' : '') + '</p>'
+            + '<a class="pa-link" href="ziegler-alertearnaque-alertes.html" target="_blank" rel="noopener">Voir les alertes de la communauté →</a>'
+            + '</div>';
+        } else {
+          resultsEl.innerHTML = '<p class="pub-empty">Aucune alerte communautaire publiée ne mentionne ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + ' pour le moment. Vous pouvez <a href="ziegler-alertearnaque-alertes.html#publier" target="_blank" rel="noopener">consulter ou publier une alerte</a> si vous êtes concerné.</p>';
+        }
+      } catch (err){
+        resultsEl.innerHTML = '';
+      }
+    }
+
+
     function decodeEntities(str){
       const ta = document.createElement('textarea');
       ta.innerHTML = str;
@@ -1762,6 +1812,8 @@
         document.getElementById('pubResults').innerHTML = '';
         document.getElementById('pubStatus').style.display = 'none';
         document.querySelector('.pub-check').style.display = 'none';
+        document.getElementById('communityCheck').hidden = false;
+        document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
 
         const digits = toFrenchNational(normalizeDigits(val));
         const isArcepDemarchage = ARCEP_DEMARCHAGE_PREFIXES.some(p => digits.startsWith(p));
@@ -1777,6 +1829,7 @@
           score = 50; level = 'Indéterminé — aucune base officielle disponible'; color = 'var(--warn)';
           text = "Il n'existe pas de liste officielle et gratuite des numéros frauduleux en France. Ce numéro n'est ni confirmé ni écarté par notre outil. Consultez les sites spécialisés ci-dessous, qui s'appuient sur des signalements communautaires.";
         }
+        searchCommunityAlerts(val, 'Téléphone concerné');
 
       } else if (isEmailLike(val) || isDomainLike(val)) {
         // --- CAS 2 : email ou nom de domaine ---
@@ -1801,12 +1854,18 @@
           }
         }
         searchZieglerPublications(val, officialHit);
+        document.getElementById('communityCheck').hidden = !isEmailLike(val);
+        if (isEmailLike(val)) {
+          document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
+          searchCommunityAlerts(val, 'Email concerné');
+        }
 
       } else {
         // --- CAS 3 : nom de société (comportement d'origine) ---
         phoneLinksBox.style.display = 'none';
         siteLinksBox.style.display = 'flex';
         document.querySelector('.pub-check').style.display = 'block';
+        document.getElementById('communityCheck').hidden = true;
         const normalized = val.toLowerCase();
         const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
         if (flagged){
