@@ -7,7 +7,7 @@ Le Cabinet d'Avocats Ziegler & Associés, fondé par Jocelyn Ziegler et associé
 La plateforme propose trois façons d'agir :
 
 1. **Signaler sa situation** — un formulaire en 4 étapes ou un assistant conversationnel (chatbot) pour décrire une arnaque financière. Les coordonnées transmises restent strictement confidentielles ; le secrétariat juridique du cabinet recontacte la personne pour organiser la suite avec un avocat. Aucune publication n'est faite depuis ce canal.
-2. **Vérifier avant d'agir** — six outils gratuits, organisés en onglets sur la page d'accueil (section "Vérifier un placement avant d'investir") :
+2. **Vérifier avant d'agir** — six outils, organisés en onglets sur la page d'accueil (section "Vérifier un placement avant d'investir") :
    - **Société / site** : recherche contre la liste noire officielle Banque de France / ACPR / AMF (mise à jour automatique quotidienne) et les publications du cabinet.
    - **Téléphone** : détection des préfixes de démarchage commercial officiels ARCEP, et recherche dans les alertes communautaires publiées par d'autres visiteurs.
    - **Email** : recherche contre la même liste noire officielle Banque de France / ACPR / AMF (usurpations d'identité, sites non autorisés).
