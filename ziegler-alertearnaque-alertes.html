@@ -482,12 +482,12 @@
    *     alimentent l'outil de vérification téléphone/email de la page
    *     d'accueil, en plus de l'affichage classique des alertes).
    *
-   * 1. Remplissez AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME et AIRTABLE_TOKEN
-   *    ci-dessous une fois votre base créée (voir le guide fourni).
-   * 2. Tant que ces valeurs ne sont pas renseignées (ou si Airtable est
-   *    injoignable), la page affiche automatiquement des EXEMPLES
-   *    illustratifs de repli, clairement plus bas dans ce fichier —
-   *    le site ne reste donc jamais vide ni cassé.
+   * 1. Les identifiants Airtable (jeton, base) sont désormais gérés
+   *    exclusivement côté serveur, dans airtable-proxy.php — plus jamais
+   *    visibles dans ce fichier ni dans le code source de la page.
+   * 2. Si le relais est momentanément injoignable, la page affiche
+   *    automatiquement des EXEMPLES illustratifs de repli, clairement
+   *    plus bas dans ce fichier — le site ne reste donc jamais vide ni cassé.
    * 3. IMPORTANT — SÉCURITÉ, bien distinguer deux choses différentes :
    *    - Les coordonnées de la PERSONNE QUI SIGNALE (nom, email,
    *      téléphone du déclarant) ne doivent JAMAIS entrer dans cette
@@ -498,12 +498,8 @@
    *      du déclarant — ces deux colonnes sont volontairement publiques,
    *      c'est tout l'intérêt de l'outil de vérification.
    * ===================================================================== */
-  const AIRTABLE_BASE_ID = 'app1WwAYj5IBAoa3X';        // ex. 'appXXXXXXXXXXXXXX'
-  const AIRTABLE_TABLE_NAME = 'Alertes';
-  const AIRTABLE_TOKEN = '';          // token Airtable en lecture seule (PAT)
-
-  // Exemples de repli — utilisés uniquement si Airtable n'est pas configuré
-  // ou momentanément injoignable. À ne pas modifier : servent de filet de
+  // Exemples de repli — utilisés uniquement si le relais Airtable est
+  // momentanément injoignable. À ne pas modifier : servent de filet de
   // sécurité, pas de contenu réel.
   const FALLBACK_ALERTS = [
     { initials: "M.D.", type: "Crypto-actifs", entity: "Plateforme de trading crypto non régulée", date: "2026-07-02",
@@ -524,15 +520,8 @@
   const filters = document.getElementById('filters');
 
   async function loadAlerts(){
-    if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN){
-      statusEl.textContent = "Alertes d'exemple — connectez Airtable pour afficher les vraies alertes validées (voir le guide).";
-      return FALLBACK_ALERTS;
-    }
     try {
-      const url = 'https://api.airtable.com/v0/' + AIRTABLE_BASE_ID + '/' + encodeURIComponent(AIRTABLE_TABLE_NAME)
-        + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()')
-        + '&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc';
-      const res = await fetch(url, { headers: { Authorization: 'Bearer ' + AIRTABLE_TOKEN } });
+      const res = await fetch('/airtable-proxy.php?action=alerts_list');
       if (!res.ok) throw new Error('http ' + res.status);
       const data = await res.json();
       const records = (data.records || []).map(r => ({
@@ -552,7 +541,7 @@
       statusEl.textContent = '';
       return records;
     } catch (err){
-      console.error('Alertes : Airtable injoignable, repli sur les exemples.', err);
+      console.error('Alertes : relais Airtable injoignable, repli sur les exemples.', err);
       statusEl.textContent = "Alertes d'exemple — connexion à la base en direct momentanément indisponible.";
       return FALLBACK_ALERTS;
     }

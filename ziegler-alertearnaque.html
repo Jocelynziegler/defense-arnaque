@@ -2013,27 +2013,17 @@
     const checkBtn = document.getElementById('checkBtn');
     const out = document.getElementById('checkOut');
 
-    // Recherche dans VOS PROPRES alertes publiées (Airtable) si un numéro ou un email
+    // Recherche dans VOS PROPRES alertes publiées si un numéro ou un email
     // signalé par la communauté correspond à celui recherché. C'est la seule vraie
     // base "anti-arnaque téléphonique" légale disponible : celle que le
     // cabinet construit lui-même via les signalements de ses visiteurs.
-    const COMMUNITY_AIRTABLE_BASE_ID = 'app1WwAYj5IBAoa3X';
-    const COMMUNITY_AIRTABLE_TABLE_NAME = 'Alertes';
-    const COMMUNITY_AIRTABLE_TOKEN = '';
-
     async function searchCommunityAlerts(query, field){
       // field vaut 'Téléphone concerné' ou 'Email concerné'
       const resultsEl = document.getElementById('communityResults');
       if (!resultsEl) return;
-      if (!COMMUNITY_AIRTABLE_BASE_ID || !COMMUNITY_AIRTABLE_TOKEN){
-        resultsEl.innerHTML = '';
-        return;
-      }
       const digitsQuery = normalizeDigits(query);
       try {
-        const url = 'https://api.airtable.com/v0/' + COMMUNITY_AIRTABLE_BASE_ID + '/' + encodeURIComponent(COMMUNITY_AIRTABLE_TABLE_NAME)
-          + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()') + '&maxRecords=100';
-        const res = await fetch(url, { headers: { Authorization: 'Bearer ' + COMMUNITY_AIRTABLE_TOKEN } });
+        const res = await fetch('/airtable-proxy.php?action=alerts_list');
         if (!res.ok) throw new Error('http ' + res.status);
         const data = await res.json();
         const matches = (data.records || []).filter(r => {
@@ -2539,10 +2529,6 @@
    * mêmes données, sans double saisie.
    */
   (function(){
-    const AIRTABLE_BASE_ID = 'app1WwAYj5IBAoa3X';        // ex. 'appXXXXXXXXXXXXXX' — identique à celui de la page Alertes
-    const AIRTABLE_TABLE_NAME = 'Alertes';
-    const AIRTABLE_TOKEN = '';          // identique à celui de la page Alertes
-
     const FALLBACK_TICKER = [
       { tag: "Crypto-actifs", entity: "Plateforme de trading crypto non régulée", when: "il y a 2 semaines", link: "ziegler-alertearnaque-alertes.html" },
       { tag: "Faux conseiller", entity: "Faux conseiller se présentant comme mandataire d'une banque", when: "il y a 1 mois", link: "ziegler-alertearnaque-alertes.html" },
@@ -2580,27 +2566,22 @@
     }
 
     async function loadTicker(){
-      // 1. Priorité aux alertes communautaires publiées (Airtable) : ce sont les
-      // signalements des visiteurs eux-mêmes, la source la plus pertinente.
-      if (AIRTABLE_BASE_ID && AIRTABLE_TOKEN) {
-        try {
-          const url = 'https://api.airtable.com/v0/' + AIRTABLE_BASE_ID + '/' + encodeURIComponent(AIRTABLE_TABLE_NAME)
-            + '?filterByFormula=' + encodeURIComponent('{Publié}=TRUE()')
-            + '&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=8';
-          const res = await fetch(url, { headers: { Authorization: 'Bearer ' + AIRTABLE_TOKEN } });
-          if (res.ok) {
-            const data = await res.json();
-            const records = (data.records || []).map(r => ({
-              tag: r.fields['Type'] || 'Autre',
-              entity: r.fields['Entité concernée'] || '',
-              when: r.fields['Date'] ? timeAgo(r.fields['Date']) : '',
-              link: 'ziegler-alertearnaque-alertes.html'
-            }));
-            if (records.length) return { items: records, isDemo: false };
-          }
-        } catch (err){
-          console.warn('Ticker : Airtable injoignable, tentative avec les publications du cabinet.', err);
+      // 1. Priorité aux alertes communautaires publiées, via le relais serveur
+      // sécurisé (le jeton Airtable ne quitte jamais le serveur).
+      try {
+        const res = await fetch('/airtable-proxy.php?action=ticker');
+        if (res.ok) {
+          const data = await res.json();
+          const records = (data.records || []).map(r => ({
+            tag: r.fields['Type'] || 'Autre',
+            entity: r.fields['Entité concernée'] || '',
+            when: r.fields['Date'] ? timeAgo(r.fields['Date']) : '',
+            link: 'ziegler-alertearnaque-alertes.html'
+          }));
+          if (records.length) return { items: records, isDemo: false };
         }
+      } catch (err){
+        console.warn('Ticker : relais Airtable injoignable, tentative avec les publications du cabinet.', err);
       }
 
       // 2. À défaut (aucune alerte communautaire publiée pour l'instant), on

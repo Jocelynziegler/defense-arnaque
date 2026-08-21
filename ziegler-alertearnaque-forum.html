@@ -526,13 +526,13 @@
    * (nom, email, téléphone) ne doivent JAMAIS entrer dans cette table
    * Airtable — elles restent uniquement dans les emails reçus par le
    * secrétariat. Seuls Pseudo et Texte sont destinés à devenir publics.
+   *
+   * Les identifiants Airtable (jeton, base) sont gérés exclusivement
+   * côté serveur, dans airtable-proxy.php — jamais visibles ici.
    * ===================================================================== */
-  const AIRTABLE_BASE_ID = 'app1WwAYj5IBAoa3X';
-  const AIRTABLE_TABLE_NAME = 'Forum';
-  const AIRTABLE_TOKEN = '';
 
-  // Exemples de repli — utilisés uniquement si Airtable n'est pas configuré
-  // ou momentanément injoignable pour cette table.
+  // Exemples de repli — utilisés uniquement si le relais est momentanément
+  // injoignable pour cette table.
   const FALLBACK_THREADS = [
     { pseudo: "Marie_P", type: "Crypto-actifs", titre: "Quelqu'un a déjà entendu parler de cette plateforme de trading crypto ?", date: "2026-08-10",
       text: "On m'a contactée sur Instagram pour un investissement crypto avec 15% de rendement garanti par mois. Ça me semble trop beau, quelqu'un a un avis ?" },
@@ -564,24 +564,12 @@
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  async function airtableFetch(formula){
-    const url = 'https://api.airtable.com/v0/' + AIRTABLE_BASE_ID + '/' + encodeURIComponent(AIRTABLE_TABLE_NAME)
-      + '?filterByFormula=' + encodeURIComponent(formula)
-      + '&sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=desc';
-    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + AIRTABLE_TOKEN } });
-    if (!res.ok) throw new Error('http ' + res.status);
-    const data = await res.json();
-    return data.records || [];
-  }
-
   async function loadThreads(){
-    if (!AIRTABLE_BASE_ID || !AIRTABLE_TOKEN){
-      statusEl.textContent = "Sujets d'exemple — connectez la table Airtable \"Forum\" pour afficher les vrais sujets validés.";
-      return FALLBACK_THREADS;
-    }
     try {
-      const records = await airtableFetch("AND({Type}='Sujet',{Publié}=TRUE())");
-      const items = records.map(r => ({
+      const res = await fetch('/airtable-proxy.php?action=forum_threads');
+      if (!res.ok) throw new Error('http ' + res.status);
+      const data = await res.json();
+      const items = (data.records || []).map(r => ({
         id: r.id,
         pseudo: r.fields['Pseudo'] || 'Anonyme',
         type: r.fields['Categorie'] || 'Autre',
@@ -596,7 +584,7 @@
       statusEl.textContent = '';
       return items;
     } catch (err){
-      console.error('Forum : Airtable injoignable, repli sur les exemples.', err);
+      console.error('Forum : relais injoignable, repli sur les exemples.', err);
       statusEl.textContent = "Sujets d'exemple — connexion à la base en direct momentanément indisponible.";
       return FALLBACK_THREADS;
     }
@@ -665,17 +653,17 @@
 
     let replies = [];
     try {
-      if (AIRTABLE_BASE_ID && AIRTABLE_TOKEN){
-        const safeTitle = thread.titre.replace(/'/g, "\\'");
-        const records = await airtableFetch("AND({Type}='Réponse',{Sujet lié}='" + safeTitle + "',{Publié}=TRUE())");
-        replies = records.map(r => ({
+      const res = await fetch('/airtable-proxy.php?action=forum_replies&thread=' + encodeURIComponent(thread.titre));
+      if (res.ok) {
+        const data = await res.json();
+        replies = (data.records || []).map(r => ({
           pseudo: r.fields['Pseudo'] || 'Anonyme',
           text: r.fields['Texte'] || '',
           date: r.fields['Date'] || new Date().toISOString().slice(0, 10)
         }));
       }
     } catch (err){
-      console.error('Réponses : Airtable injoignable.', err);
+      console.error('Réponses : relais injoignable.', err);
     }
 
     if (!replies.length){
