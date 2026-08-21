@@ -132,9 +132,15 @@
   .ac-who{font-weight:700; font-size:14px;}
   .ac-date{font-size:12px; color:var(--ink-soft-2);}
   .ac-badge{
-    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:3px 10px; border-radius:999px;
-    background:var(--paper); color:var(--purple);
+    font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:4px 11px; border-radius:999px;
+    background:var(--purple); color:#fff;
   }
+  .ac-badge[data-cat="crypto"]{background:#D97A2E;}
+  .ac-badge[data-cat="conseiller"]{background:#C4392E;}
+  .ac-badge[data-cat="trading"]{background:#2D6FBF;}
+  .ac-badge[data-cat="placement"]{background:#1E8F76;}
+  .ac-badge[data-cat="livret"]{background:#B0508A;}
+  .ac-badge[data-cat="autre"]{background:#5B5568;}
   .ac-entity{font-family:var(--serif); font-weight:700; font-size:16px; margin-bottom:6px;}
   .ac-text{font-size:14px; color:var(--ink-soft); line-height:1.6;}
   .ac-meta{font-size:12px; color:var(--ink-soft-2); text-align:right; white-space:nowrap;}
@@ -545,6 +551,16 @@
     return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
+  function categorySlug(tag){
+    const t = (tag || '').toLowerCase();
+    if (t.includes('crypto')) return 'crypto';
+    if (t.includes('conseiller')) return 'conseiller';
+    if (t.includes('trading') || t.includes('forex') || t.includes('cfd')) return 'trading';
+    if (t.includes('placement')) return 'placement';
+    if (t.includes('livret')) return 'livret';
+    return 'autre';
+  }
+
   function render(filter){
     const items = filter === 'all' ? ALERTS : ALERTS.filter(a => a.type === filter);
     if (!items.length){
@@ -557,7 +573,7 @@
         <div class="ac-body">
           <div class="ac-top">
             <span class="ac-who">${a.initials}</span>
-            <span class="ac-badge">${a.type}</span>
+            <span class="ac-badge" data-cat="${categorySlug(a.type)}">${a.type}</span>
             <span class="ac-date">${formatDate(a.date)}</span>
           </div>
           <div class="ac-entity">${a.entity}</div>
