@@ -781,10 +781,10 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Envoi en cours…';
 
-      // Sends the signalement by email to juridique@ziegler-associes.com via FormSubmit
-      // (no backend required). On first use, FormSubmit sends a one-time confirmation
-      // email to this address that must be validated before delivery starts working.
-      fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+      // Sends the signalement by email to juridique@ziegler-associes.com via send-mail.php,
+      // which relays it directly through the cabinet's own SMTP server (Hostinger) --
+      // no third-party service ever sees the data.
+      fetch('/send-mail.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload)

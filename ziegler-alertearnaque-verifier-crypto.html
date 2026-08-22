@@ -744,7 +744,7 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Envoi en cours…';
 
-    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+    fetch('/send-mail.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
@@ -1033,7 +1033,7 @@
       'Source': 'Secrétaire numérique (chatbot)'
     };
 
-    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+    fetch('/send-mail.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)

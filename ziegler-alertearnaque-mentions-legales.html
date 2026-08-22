@@ -409,10 +409,10 @@
         <h3>8.3 Sous-traitants et destinataires des données</h3>
         <p>Les données collectées sur ce site sont transmises aux prestataires techniques suivants, pour les seuls besoins du fonctionnement des services concernés :</p>
         <ul>
-          <li><strong>FormSubmit</strong> (Royaume-Uni) : achemine par email les données saisies dans le formulaire de signalement et les autres formulaires du site ;</li>
           <li><strong>Airtable</strong> (États-Unis) : héberge les alertes communautaires et les échanges du forum publiés sur la plateforme, après validation par le cabinet ;</li>
           <li><strong>Google Analytics</strong> (Google Ireland Limited) : mesure d'audience anonymisée du site.</li>
         </ul>
+        <p>Les données saisies dans le formulaire de signalement et les autres formulaires du site sont acheminées directement par email depuis le serveur du cabinet, sans transiter par un prestataire tiers.</p>
         <p>Certains de ces prestataires peuvent être établis ou traiter des données hors de l'Union européenne. Le cabinet veille à ce que ces transferts s'effectuent dans le cadre des garanties prévues par le RGPD (clauses contractuelles types ou décision d'adéquation, selon le prestataire).</p>
         <h3>8.4 Durée de conservation</h3>
         <p>Les données relatives à un signalement sont conservées pendant la durée nécessaire à l'examen du dossier par le cabinet, puis pendant les délais de prescription légale applicables aux actions susceptibles d'être engagées à raison des faits signalés. Les données de navigation sont conservées pour une durée conforme aux recommandations de la CNIL en la matière.</p>
@@ -534,7 +534,7 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Envoi en cours…';
 
-    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+    fetch('/send-mail.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
@@ -823,7 +823,7 @@
       'Source': 'Secrétaire numérique (chatbot)'
     };
 
-    fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+    fetch('/send-mail.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
