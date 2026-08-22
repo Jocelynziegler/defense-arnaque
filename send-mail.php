@@ -61,7 +61,7 @@ foreach ($data as $key => $value) {
         . nl2br(escapeForEmail($value)) . '</td></tr>';
 }
 
-$subject = (string)$data['_subject'];
+$subject = str_replace(["\r", "\n"], ' ', (string)$data['_subject']);
 $htmlBody = '<html><body style="font-family:sans-serif; font-size:14px; color:#1A1330;">'
     . '<h2 style="color:#8A4CB8;">' . escapeForEmail($subject) . '</h2>'
     . '<table style="border-collapse:collapse; width:100%; max-width:640px;">' . $rows . '</table>'
