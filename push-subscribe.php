@@ -18,13 +18,31 @@ header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: https://ziegler-alertearnaque.com');
 
 $STORE_FILE = __DIR__ . '/push-subscribers.json';
+$MAX_SUBSCRIBERS = 50000; // plafond de securite contre une croissance non bornee du fichier
 
-$raw = file_get_contents('php://input');
+// Un vrai objet d'abonnement push fait quelques centaines d'octets — rejette
+// toute charge anormalement grande avant meme de la parser (protection contre
+// un flot de requetes visant a faire grossir le fichier de stockage).
+if (isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > 8192) {
+    http_response_code(413);
+    echo json_encode(['error' => 'Charge utile trop volumineuse']);
+    exit;
+}
+
+$raw = file_get_contents('php://input', false, null, 0, 8192);
 $data = json_decode($raw, true);
 
 if (!is_array($data) || empty($data['endpoint']) || empty($data['keys']['p256dh']) || empty($data['keys']['auth'])) {
     http_response_code(400);
     echo json_encode(['error' => "Objet d'abonnement invalide"]);
+    exit;
+}
+
+// L'URL de point de terminaison doit ressembler a une vraie URL de service
+// push (toujours HTTPS chez tous les navigateurs).
+if (!preg_match('#^https://#i', $data['endpoint']) || strlen($data['endpoint']) > 512) {
+    http_response_code(400);
+    echo json_encode(['error' => "Point de terminaison invalide"]);
     exit;
 }
 
@@ -45,6 +63,15 @@ $subscribers = array_filter($subscribers, function($s) use ($data) {
     return ($s['endpoint'] ?? null) !== $data['endpoint'];
 });
 $subscribers = array_values($subscribers);
+
+if (count($subscribers) >= $MAX_SUBSCRIBERS) {
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    http_response_code(503);
+    echo json_encode(['error' => 'Capacité maximale atteinte, contactez le cabinet']);
+    exit;
+}
+
 $subscribers[] = [
     'endpoint' => $data['endpoint'],
     'keys' => ['p256dh' => $data['keys']['p256dh'], 'auth' => $data['keys']['auth']],
