@@ -419,9 +419,6 @@
     box-shadow:0 -4px 16px rgba(0,0,0,.2);
   }
   .cookie-banner[hidden]{display:none;}
-  @media(max-width:900px){
-    .cookie-banner{bottom:72px;}
-  }
   .cookie-banner p{margin:0; font-size:13.5px; line-height:1.5; flex:1 1 auto; min-width:240px;}
   .cookie-banner a{color:var(--purple-light); text-decoration:underline;}
   .cookie-banner-actions{display:flex; gap:10px; flex-shrink:0;}
@@ -1362,6 +1359,18 @@ document.addEventListener('click', (e) => {
       var consent;
       try { consent = localStorage.getItem('ga_consent'); } catch(e) { consent = null; }
       if (!consent) banner.hidden = false;
+
+      function positionBanner(){
+        var bar = document.querySelector('.mobile-cta-bar');
+        if (bar && getComputedStyle(bar).display !== 'none') {
+          banner.style.bottom = bar.getBoundingClientRect().height + 'px';
+        } else {
+          banner.style.bottom = '';
+        }
+      }
+      positionBanner();
+      window.addEventListener('resize', positionBanner);
+
       document.getElementById('cookieAccept').addEventListener('click', function(){
         try { localStorage.setItem('ga_consent', 'accepted'); } catch(e) {}
         banner.hidden = true;
