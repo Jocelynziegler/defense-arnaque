@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ziegler Alerte Arnaque</title>
+<meta name="description" content="Vérifiez une arnaque, signalez votre situation et contactez le Cabinet d'Avocats Ziegler & Associés.">
+<meta name="theme-color" content="#1A1330">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ziegler Alerte">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<style>
+  :root{
+    --ink:#1A1330; --ink-2:#241A3A; --parchment:#FFFFFF; --paper:#F6F3FA;
+    --purple:#8A4CB8; --purple-light:#C9A6E8; --rule:#E6E1EE; --ink-soft:#58536A; --ink-soft-2:#8B8699;
+    --danger:#B8433A; --ok:#2E8B57;
+    --radius:14px; --serif:'Poppins', sans-serif; --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:'Inter', -apple-system, sans-serif;
+    --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0; height:100%; overscroll-behavior-y:none;}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--paper);
+    display:flex; flex-direction:column; min-height:100vh;
+  }
+  button, input, select, textarea{font-family:inherit;}
+  a{color:inherit;}
+
+  /* ---------- BARRE SUPERIEURE ---------- */
+  .app-top{
+    background:var(--ink); color:#fff; padding:calc(14px + var(--safe-top)) 18px 14px;
+    display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:50;
+  }
+  .app-top .mark{
+    width:34px; height:34px; border-radius:10px; background:var(--purple); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:700; font-size:13px; flex-shrink:0;
+  }
+  .app-top .title{font-family:var(--serif); font-weight:700; font-size:15px;}
+  .app-top .sub{font-size:11px; color:var(--purple-light); margin-top:1px;}
+
+  /* ---------- ZONE DE CONTENU ---------- */
+  .app-views{flex:1; overflow-y:auto; padding-bottom:calc(78px + var(--safe-bottom));}
+  .app-view{display:none; padding:20px 18px 32px; max-width:640px; margin:0 auto;}
+  .app-view.active{display:block;}
+
+  /* ---------- NAV DU BAS ---------- */
+  .app-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:60;
+    background:#fff; border-top:1px solid var(--rule);
+    display:flex; padding:6px 6px calc(6px + var(--safe-bottom));
+    box-shadow:0 -4px 16px rgba(26,19,48,.06);
+  }
+  .app-nav button{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; border:none; padding:8px 4px 7px; color:var(--ink-soft-2); cursor:pointer; border-radius:10px;
+  }
+  .app-nav button i{font-size:19px;}
+  .app-nav button span{font-size:10.5px; font-weight:600;}
+  .app-nav button.active{color:var(--purple);}
+  .app-nav button.active i{transform:translateY(-1px);}
+
+  /* ---------- ACCUEIL DE L'APP ---------- */
+  .home-greeting{font-family:var(--serif); font-size:22px; font-weight:700; margin:4px 0 4px;}
+  .home-sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:22px; line-height:1.5;}
+  .home-actions{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px;}
+  .home-action{
+    background:#fff; border:1px solid var(--rule); border-radius:var(--radius); padding:20px 16px;
+    display:flex; flex-direction:column; gap:10px; text-decoration:none; color:var(--ink);
+    transition:.15s; cursor:pointer;
+  }
+  .home-action:active{transform:scale(.97);}
+  .home-action.primary{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .home-action .ha-icon{
+    width:38px; height:38px; border-radius:10px; background:var(--paper); color:var(--purple);
+    display:flex; align-items:center; justify-content:center; font-size:17px;
+  }
+  .home-action.primary .ha-icon{background:rgba(255,255,255,.12); color:#fff;}
+  .home-action .ha-label{font-family:var(--serif); font-weight:700; font-size:14.5px;}
+  .home-action .ha-sub{font-size:12px; color:var(--ink-soft-2); line-height:1.4;}
+  .home-action.primary .ha-sub{color:var(--purple-light);}
+
+  .home-card{background:#fff; border:1px solid var(--rule); border-radius:var(--radius); padding:18px; margin-bottom:14px;}
+  .home-card h3{font-family:var(--serif); font-size:14.5px; margin:0 0 6px;}
+  .home-card p{font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0 0 12px;}
+  .home-card .btn-line{
+    display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--purple); text-decoration:none;
+  }
+
+  /* ---------- BOUTONS GENERIQUES ---------- */
+  .btn{
+    padding:13px 22px; border-radius:999px; font-size:14.5px; font-weight:700; border:1px solid var(--ink);
+    background:var(--ink); color:#fff; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
+    gap:8px; cursor:pointer; width:100%;
+  }
+  .btn.gold{background:var(--purple); border-color:var(--purple);}
+  .btn.ghost{background:transparent; color:var(--ink);}
+
+  /* ---------- EN-TETE DE VUE ---------- */
+  .view-header{margin-bottom:18px;}
+  .view-header h2{font-family:var(--serif); font-size:19px; margin:0 0 4px;}
+  .view-header p{font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5;}
+
+  .tool-panel{
+    background:#fff; border:1px solid var(--rule); border-radius:var(--radius);
+    box-shadow:0 1px 0 var(--rule);
+  }
+  .tool-tabbar{display:flex; border-bottom:1px solid var(--rule); background:var(--paper);}
+  .tool-tabbar .tb{
+    padding:14px 20px; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--ink-soft-2);
+    border-right:1px solid var(--rule); text-transform:uppercase;
+  }
+  .tool-body{padding:40px;}
+  @media(max-width:640px){.tool-body{padding:26px 20px;}}
+
+  /* wizard */
+  .steps-track{display:flex; gap:6px; margin-bottom:36px;}
+  .steps-track .dot{flex:1; height:3px; background:var(--rule); position:relative; overflow:hidden;}
+  .steps-track .dot.active{background:var(--purple);}
+  .steps-track .dot.done{background:var(--ink);}
+  .step-label{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft-2); letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; display:block;}
+  .step-title{font-size:22px; margin-bottom:22px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;}
+  @media(max-width:640px){.field-row{grid-template-columns:1fr;}}
+  .field{display:flex; flex-direction:column; gap:7px;}
+  .field label{font-size:13px; font-weight:600; color:var(--ink);}
+  .field label .opt{font-weight:400; color:var(--ink-soft-2); font-style:italic;}
+  .field input, .field select, .field textarea{
+    border:1px solid var(--rule); border-radius:var(--radius); padding:11px 13px; background:var(--parchment); color:var(--ink);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--purple); background:#fff;}
+  .choice-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:8px;}
+  @media(max-width:760px){.choice-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.choice-grid{grid-template-columns:1fr;}}
+  .choice{
+    border:1px solid var(--rule); border-radius:var(--radius); padding:16px; cursor:pointer; background:var(--parchment);
+    transition:border-color .15s, background .15s;
+  }
+  .choice input{position:absolute; opacity:0; pointer-events:none;}
+  .choice .ct{font-weight:600; font-size:14.5px; display:flex; align-items:center; justify-content:space-between;}
+  .choice .cd{font-size:12.5px; color:var(--ink-soft); margin-top:5px; line-height:1.4;}
+  .choice .mark{width:15px; height:15px; border:1.5px solid var(--ink-soft-2); border-radius:50%; flex-shrink:0;}
+  .choice:has(input:checked){border-color:var(--purple); background:#FBF8FE;}
+  .choice:has(input:checked) .mark{border-color:var(--purple); background:var(--purple);}
+  .choice:hover{border-color:var(--ink-soft-2);}
+
+  .wizard-nav{display:flex; justify-content:space-between; align-items:center; margin-top:30px; border-top:1px solid var(--rule); padding-top:24px;}
+  .btn{
+    padding:12px 22px; border-radius:var(--radius); font-size:14px; font-weight:600; border:1px solid var(--ink);
+    background:var(--ink); color:#fff; transition:.15s;
+  }
+  .btn:hover{background:transparent; color:var(--ink);}
+  .btn.gold{background:var(--purple); border-color:var(--purple); color:#fff;}
+  .btn.gold:hover{background:transparent; color:var(--purple);}
+  .btn.secondary{background:transparent; color:var(--ink-soft); border-color:var(--rule);}
+  .btn.secondary:hover{border-color:var(--ink); color:var(--ink); background:transparent;}
+  .btn:disabled{opacity:.35; cursor:not-allowed;}
+  .btn[hidden]{display:none;}
+
+  .disclaimer{
+    font-size:12.8px; color:var(--ink-soft); background:var(--paper); border-left:2px solid var(--purple);
+    padding:12px 16px; margin-top:24px; line-height:1.55;
+  }
+  .disclaimer a{color:var(--ink); text-decoration:underline;}
+
+  .summary-box{border:1px solid var(--rule); background:var(--paper); padding:22px; margin-bottom:20px;}
+  .summary-box dl{display:grid; grid-template-columns:1fr 1.4fr; gap:9px 16px; margin:0; font-size:14px;}
+  .summary-box dt{color:var(--ink-soft-2); font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; align-self:start; padding-top:2px;}
+  .summary-box dd{margin:0; color:var(--ink);}
+
+  .result-card{
+    border:1px solid var(--ink); padding:28px; text-align:center; display:none;
+  }
+  .result-card.show{display:block;}
+  .result-card .stamp{
+    font-family:var(--mono); font-size:12px; letter-spacing:.1em; color:var(--purple); text-transform:uppercase; margin-bottom:10px;
+  }
+  .result-card .ref{font-family:var(--mono); font-size:26px; margin:8px 0 4px;}
+  .result-card p{color:var(--ink-soft); font-size:14.5px; max-width:46ch; margin:14px auto 0;}
+  .result-actions{margin-top:22px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+  .result-cross-sell{
+    margin-top:26px; padding-top:24px; border-top:1px dashed var(--rule); display:flex; flex-direction:column; align-items:center; gap:14px;
+  }
+  .result-cross-sell p{margin:0; max-width:44ch;}
+  .result-cross-sell strong{color:var(--ink);}
+  .result-urgent{
+    margin-top:22px; padding:16px 20px; background:var(--paper); border:1px solid var(--rule); border-radius:var(--radius);
+  }
+  .result-urgent p{margin:0 0 8px; font-size:13.5px; max-width:none;}
+  .result-urgent strong{color:var(--ink);}
+  .result-urgent-phones{display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+  .result-urgent-phones a{
+    font-family:var(--serif); font-weight:700; font-size:16px; color:var(--purple); text-decoration:none;
+  }
+  .result-urgent-phones a:hover{text-decoration:underline;}
+  .ru-sep{color:var(--ink-soft-2);}
+
+  /* ---------- VERIFY TOOL ---------- */
+  .verify-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule); border:1px solid var(--rule);}
+  @media(max-width:860px){.verify-grid{grid-template-columns:1fr;}}
+
+  /* ---- Aperçu des outils (cartes) ---- */
+  .tools-overview{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:28px;}
+  .tools-overview .tool-card{flex:0 1 calc(25% - 9px); min-width:140px;}
+  @media(max-width:980px){.tools-overview .tool-card{flex:0 1 calc(33.333% - 8px);}}
+  @media(max-width:560px){.tools-overview .tool-card{flex:0 1 calc(50% - 6px);}}
+  .tool-card{background:#fff; border:1px solid var(--rule); border-radius:12px; padding:18px 14px; text-align:center; cursor:pointer; transition:border-color .15s, transform .15s;}
+
+  /* ---- Section technologie de vérification ---- */
+  .tech-section{background:#F7F4EE; border-radius:20px; padding:56px 48px; margin-top:56px;}
+  @media(max-width:640px){.tech-section{padding:34px 22px; border-radius:14px;}}
+  .tech-section .section-head{margin-bottom:38px;}
+  .tech-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  @media(max-width:900px){.tech-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:640px){.tech-grid{grid-template-columns:1fr;}}
+  .tech-card{background:#fff; border:1px solid var(--rule); border-radius:14px; padding:26px 24px;}
+  .tech-card .tech-icon{font-size:26px; margin-bottom:12px;}
+  .tech-card h3{font-size:16px; margin-bottom:8px; color:var(--ink);}
+  .tech-card p{font-size:13.5px; color:var(--ink-soft); line-height:1.6;}
+  .tech-card .tech-src{display:block; margin-top:10px; font-size:11.5px; font-family:var(--mono); text-transform:uppercase; letter-spacing:.05em; color:var(--purple); font-weight:700;}
+  .tool-card:hover{border-color:var(--purple); transform:translateY(-2px);}
+  .tool-card .tc-icon{font-size:22px; margin-bottom:8px;}
+  .tool-card .tc-label{font-size:13px; font-weight:700; color:var(--ink);}
+  .tool-card .tc-sub{font-size:11px; color:var(--ink-soft); margin-top:3px; line-height:1.3;}
+
+  /* ---- Onglets de vérification ---- */
+  .vtabs{display:flex; flex-wrap:wrap; gap:0; border-bottom:1px solid var(--rule); background:#fbfaf8;}
+  .vtab{flex:1 1 auto; min-width:110px; padding:16px 12px; font-family:var(--mono); font-size:12.5px; text-transform:uppercase; letter-spacing:.05em; font-weight:700; color:var(--ink-soft-2); background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; transition:color .15s, border-color .15s;}
+  .vtab:hover{color:var(--ink);}
+  .vtab.active{color:var(--purple); border-bottom-color:var(--purple); background:#fff;}
+  .vpanel{padding:40px;}
+  @media(max-width:640px){.vpanel{padding:26px 20px;} .vtab{font-size:11px; padding:12px 8px; min-width:90px;}}
+  .verify-col{background:#fff; padding:40px;}
+  @media(max-width:640px){.verify-col{padding:26px 20px;}}
+  .verify-col h3{font-size:20px; margin-bottom:6px;}
+  .verify-col .sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:26px;}
+  .verify-col .sub strong{color:var(--ink); font-weight:700;}
+  .score-gauge{
+    height:10px; border-radius:6px; background:var(--rule); overflow:hidden; margin:18px 0 10px;
+  }
+  .score-gauge > i{display:block; height:100%; width:0%; background:var(--ok); transition:width .5s ease, background .5s ease;}
+  .score-readout{display:flex; justify-content:space-between; align-items:baseline;}
+  .score-readout .lvl{font-family:var(--serif); font-size:22px;}
+  .score-readout .pts{font-family:var(--mono); font-size:13px; color:var(--ink-soft-2);}
+  .verify-out{display:none; margin-top:22px; border-top:1px solid var(--rule); padding-top:20px;}
+  .verify-out.show{display:block;}
+  .quiz-item{
+    display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid var(--rule);
+  }
+  .quiz-item:last-of-type{border-bottom:none;}
+  .quiz-item input{margin-top:3px; width:16px; height:16px; accent-color:var(--purple);}
+  .quiz-item label{font-size:14.3px; line-height:1.5; cursor:pointer;}
+  .official-links{margin-top:18px; display:flex; flex-direction:column; gap:6px;}
+  .official-links a{font-size:13px; color:var(--ink-soft); text-decoration:underline; text-underline-offset:2px;}
+
+  .pub-check{margin-top:22px; border-top:1px solid var(--rule); padding-top:18px;}
+  .pub-heading{font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono); display:block; margin-bottom:10px;}
+  .pub-status{font-size:13.5px; color:var(--ink-soft-2); font-style:italic;}
+  .pub-article{border:1px solid var(--rule); background:var(--paper); padding:14px 16px; margin-top:10px;}
+  .pub-article .pa-tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--purple);}
+  .pub-article .pa-title{font-family:var(--serif); font-size:15.5px; margin:5px 0 6px; display:block; color:var(--ink);}
+  .pub-article .pa-excerpt{font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0 0 8px;}
+  .pub-article a.pa-link{font-size:12.5px; font-weight:600; color:var(--ink); text-decoration:underline; text-underline-offset:2px;}
+  .pub-empty{font-size:13.5px; color:var(--ink-soft); margin:4px 0 0; line-height:1.55;}
+
+  @media(prefers-reduced-motion:reduce){ *{transition:none !important;} }
+</style>
+</head>
+<body>
+
+  <div class="app-top">
+    <span class="mark">ZA</span>
+    <div>
+      <div class="title">Ziegler Alerte Arnaque</div>
+      <div class="sub" id="appTopSub">Cabinet d'Avocats Ziegler &amp; Associés</div>
+    </div>
+  </div>
+
+  <div class="app-views">
+
+    <!-- ACCUEIL -->
+    <section class="app-view active" data-view="home">
+      <p class="home-greeting">Bonjour 👋</p>
+      <p class="home-sub">Que souhaitez-vous faire ?</p>
+
+      <div class="home-actions">
+        <div class="home-action primary" data-goto="verifier">
+          <span class="ha-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span class="ha-label">Vérifier</span>
+          <span class="ha-sub">Société, IBAN, crypto…</span>
+        </div>
+        <div class="home-action" data-goto="signaler">
+          <span class="ha-icon"><i class="fa-solid fa-flag"></i></span>
+          <span class="ha-label">Signaler</span>
+          <span class="ha-sub">Décrire ma situation</span>
+        </div>
+        <div class="home-action" data-goto="contact">
+          <span class="ha-icon"><i class="fa-solid fa-comment"></i></span>
+          <span class="ha-label">Contacter</span>
+          <span class="ha-sub">Téléphone, email</span>
+        </div>
+        <div class="home-action" id="homeRdvBtn">
+          <span class="ha-icon"><i class="fa-solid fa-calendar-check"></i></span>
+          <span class="ha-label">Prendre RDV</span>
+          <span class="ha-sub">Consultation avec un avocat</span>
+        </div>
+      </div>
+
+      <div class="home-card" id="notifCard">
+        <h3>Recevoir les nouvelles alertes</h3>
+        <p>Soyez averti dès qu'une nouvelle arnaque est signalée par la communauté ou qu'un article est publié par le cabinet.</p>
+        <button type="button" class="btn-line" id="enableNotifBtn" style="background:none; border:none; padding:0; cursor:pointer;">Activer les notifications <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </section>
+
+    <!-- VERIFIER -->
+    <section class="app-view" data-view="verifier">
+      <div class="view-header">
+        <h2>Vérifier</h2>
+        <p>Société, téléphone, email, IBAN, domaine, crypto — sept outils en un seul endroit.</p>
+      </div>
+      <div id="verifierToolsMount">
+<div class="tool-panel verify-tabbed">
+        <div class="vtabs" role="tablist">
+          <button class="vtab active" data-tab="societe" type="button" role="tab" aria-selected="true">Société</button>
+          <button class="vtab" data-tab="telephone" type="button" role="tab" aria-selected="false">Téléphone</button>
+          <button class="vtab" data-tab="email" type="button" role="tab" aria-selected="false">Email</button>
+          <button class="vtab" data-tab="iban" type="button" role="tab" aria-selected="false">IBAN</button>
+          <button class="vtab" data-tab="domaine" type="button" role="tab" aria-selected="false">Domaine</button>
+          <button class="vtab" data-tab="crypto" type="button" role="tab" aria-selected="false">Crypto</button>
+          <button class="vtab" data-tab="quiz" type="button" role="tab" aria-selected="false">Auto-diagnostic</button>
+        </div>
+
+        <div class="vpanel" data-panel="societe">
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3 id="comboTitle">Vérifier une société ou un site</h3>
+            <p class="sub" id="comboSub">Renseignez le nom d'une société ou d'un site. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF et les publications déjà rédigées par le cabinet.</p>
+            <div class="field"><label for="vname" id="comboLabel">Nom de la société ou du site</label><input id="vname" type="text" placeholder="Ex. : Global Crypto Invest"></div>
+            <button class="btn" id="checkBtn" type="button" style="margin-top:16px;">Vérifier</button>
+            <p style="margin-top:10px; font-size:12.5px;"><a href="/ziegler-alertearnaque-verifier-societe.html" style="color:var(--ink-soft-2);">En savoir plus sur la vérification d'une société →</a> · <a href="/ziegler-alertearnaque-verifier-telephone.html" style="color:var(--ink-soft-2);">téléphone →</a> · <a href="/ziegler-alertearnaque-verifier-email.html" style="color:var(--ink-soft-2);">email →</a></p>
+
+            <div class="verify-out" id="checkOut">
+              <div class="score-readout"><span class="lvl" id="scoreLevel">—</span><span class="pts" id="scorePts">0 / 100</span></div>
+              <div class="score-gauge"><i id="scoreBar"></i></div>
+              <p id="scoreText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+
+              <div class="pub-check" id="domainAgeCheck" hidden>
+                <strong class="pub-heading">Depuis quand ce site existe-t-il ?</strong>
+                <div id="domainAgeResults"></div>
+              </div>
+
+              <div class="pub-check">
+                <strong class="pub-heading">Le cabinet a-t-il déjà écrit sur ce sujet ?</strong>
+                <div class="pub-status" id="pubStatus">Recherche dans nos publications…</div>
+                <div id="pubResults"></div>
+              </div>
+
+              <div class="pub-check" id="communityCheck" hidden>
+                <strong class="pub-heading">Signalé par d'autres visiteurs ?</strong>
+                <div id="communityResults"></div>
+              </div>
+
+              <div class="official-links" id="officialLinksSite">
+                <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifications officielles recommandées</strong>
+                <a href="https://www.amf-france.org/fr/espace-epargnants/proteger-son-epargne/listes-noires-et-mises-en-garde" target="_blank" rel="noopener">Listes noires AMF — acteurs non autorisés</a>
+                <a href="https://www.abe-infoservice.fr/fr/liste-noire" target="_blank" rel="noopener">Listes noires officielles Banque de France / ACPR / AMF</a>
+                <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">Liste noire tenue par le cabinet d'Avocats Ziegler &amp; Associés</a>
+                <a href="https://fr.scamdoc.com/" target="_blank" rel="noopener">ScamDoc — score de confiance d'un site</a>
+                <a href="https://protectepargne.amf-france.org/verifier/suis-je-victime-dune-arnaque" target="_blank" rel="noopener">AMF — Suis-je victime d'une arnaque ? (diagnostic officiel)</a>
+              </div>
+
+              <div class="official-links" id="officialLinksPhone" hidden>
+                <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifier ce numéro sur des sites tiers spécialisés</strong>
+                <a id="tellowsLink" href="https://www.tellows.fr/" target="_blank" rel="noopener">Tellows — communauté de signalement de numéros</a>
+                <a id="franceverifLink" href="https://franceverif.fr/fr/verifier-numero-telephone" target="_blank" rel="noopener">France Verif — annuaire inversé et signalements</a>
+                <a href="https://www.33700.fr/signaler-form-pc/" target="_blank" rel="noopener">Signaler ce numéro au 33700 (spam/démarchage)</a>
+              </div>
+
+              <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="comboCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="iban" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>Un IBAN vous a été communiqué pour un virement ?</h3>
+            <p class="sub">Vérifiez que le format et la clé de contrôle sont mathématiquement corrects, et retrouvez l'établissement bancaire à partir du code BIC/SWIFT s'il vous a aussi été communiqué (souvent indiqué sur le même RIB). Cela ne confirme pas que le compte existe ni qu'il appartient à la personne annoncée — seule votre banque peut le garantir.</p>
+            <div class="field-row">
+              <div class="field"><label for="vIban">IBAN</label><input id="vIban" type="text" placeholder="Ex. : FR76 3000 4000 0100 0000 0000 000"></div>
+              <div class="field"><label for="vBic">Code BIC / SWIFT <span class="opt">(si connu)</span></label><input id="vBic" type="text" placeholder="Ex. : BNPAFRPP"></div>
+            </div>
+            <button class="btn" id="ibanCheckBtn" type="button" style="margin-top:6px;">Vérifier l'IBAN</button>
+            <p style="margin-top:10px; font-size:12.5px;"><a href="/ziegler-alertearnaque-verifier-iban.html" style="color:var(--ink-soft-2);">En savoir plus sur la vérification d'un IBAN →</a></p>
+
+
+            <div class="verify-out" id="ibanOut">
+              <div class="score-readout"><span class="lvl" id="ibanLevel">—</span><span class="pts" id="ibanPts"></span></div>
+              <div class="score-gauge"><i id="ibanBar"></i></div>
+              <p id="ibanText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+              <div id="ibanBreakdown" style="margin-top:14px; font-size:13px; color:var(--ink-soft-2); font-family:var(--mono);"></div>
+              <div id="ibanBicResult" style="margin-top:14px;"></div>
+              <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="ibanCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="domaine" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>Depuis quand ce site existe-t-il ?</h3>
+            <p class="sub">Un nom de domaine créé il y a quelques jours ou semaines pour une société qui prétend être établie de longue date est l'un des signaux d'arnaque les plus fiables. Renseignez le site à vérifier.</p>
+            <div class="field"><label for="vDomaine">Nom de domaine ou adresse du site</label><input id="vDomaine" type="text" placeholder="Ex. : capital-growth-invest.com"></div>
+            <button class="btn" id="domaineCheckBtn" type="button" style="margin-top:16px;">Vérifier le domaine</button>
+            <p style="margin-top:10px; font-size:12.5px;"><a href="/ziegler-alertearnaque-verifier-domaine.html" style="color:var(--ink-soft-2);">En savoir plus sur la vérification d'un nom de domaine →</a></p>
+
+            <div class="verify-out" id="domaineOut">
+              <div id="domaineStandaloneResults" style="margin-top:4px;"></div>
+              <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="domaineCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+
+            <div class="tool-source-note" style="font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);">Vérification basée sur les données d'enregistrement publiques du domaine (WHOIS), via WhoisJSON. Ne remplace pas une vérification officielle de l'agrément de la société.</div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="crypto" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>On vous a communiqué une adresse pour un paiement en crypto-actifs ?</h3>
+            <p class="sub">Vérifiez le format de l'adresse, et si elle a déjà été identifiée comme malveillante (phishing, blanchiment, arnaque connue) par GoPlus Security, un service de sécurité Web3 reconnu utilisé notamment par OKX et DexScreener. Cela ne garantit pas la fiabilité d'une adresse non signalée — de nouvelles adresses d'arnaque apparaissent chaque jour.</p>
+            <div class="field-row">
+              <div class="field"><label for="vCrypto">Adresse du portefeuille</label><input id="vCrypto" type="text" placeholder="Ex. : 0x742d35Cc... ou bc1q..."></div>
+              <div class="field"><label for="vCryptoChain">Blockchain</label>
+                <select id="vCryptoChain">
+                  <option value="1">Ethereum</option>
+                  <option value="56">BNB Chain (BSC)</option>
+                  <option value="137">Polygon</option>
+                  <option value="42161">Arbitrum</option>
+                  <option value="8453">Base</option>
+                  <option value="10">Optimism</option>
+                  <option value="43114">Avalanche</option>
+                  <option value="solana">Solana</option>
+                  <option value="tron">Tron</option>
+                  <option value="bitcoin">Bitcoin</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn" id="cryptoCheckBtn" type="button" style="margin-top:6px;">Vérifier l'adresse</button>
+            <p style="margin-top:10px; font-size:12.5px;"><a href="/ziegler-alertearnaque-verifier-crypto.html" style="color:var(--ink-soft-2);">En savoir plus sur la vérification d'un portefeuille crypto →</a></p>
+
+            <div class="verify-out" id="cryptoOut">
+              <div class="score-readout"><span class="lvl" id="cryptoLevel">—</span><span class="pts" id="cryptoPts"></span></div>
+              <div class="score-gauge"><i id="cryptoBar"></i></div>
+              <p id="cryptoText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+              <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="cryptoCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="quiz" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>Auto-diagnostic en 6 questions</h3>
+            <p class="sub">Inspiré des signaux d'alerte identifiés par l'AMF et le ministère de l'Intérieur. <strong>Cochez toutes les situations qui correspondent à votre cas</strong> — vous pouvez en sélectionner plusieurs.</p>
+            <div id="quizList">
+              <div class="quiz-item"><input type="checkbox" id="q1"><label for="q1">On vous a promis un rendement garanti, élevé et sans risque.</label></div>
+              <div class="quiz-item"><input type="checkbox" id="q2"><label for="q2">On vous a mis sous pression pour investir rapidement.</label></div>
+              <div class="quiz-item"><input type="checkbox" id="q3"><label for="q3">Le contact initial n'était pas sollicité (réseaux sociaux, rencontre en ligne, démarchage).</label></div>
+              <div class="quiz-item"><input type="checkbox" id="q4"><label for="q4">Vous rencontrez des difficultés pour retirer vos fonds.</label></div>
+              <div class="quiz-item"><input type="checkbox" id="q5"><label for="q5">On vous réclame des frais ou taxes supplémentaires pour débloquer un retrait.</label></div>
+              <div class="quiz-item"><input type="checkbox" id="q6"><label for="q6">Vous ne trouvez pas cet acteur sur les listes officielles (AMF / ACPR / Registre des agents financiers).</label></div>
+            </div>
+            <button class="btn" id="quizBtn" type="button" style="margin-top:20px;">Voir mon résultat</button>
+            <p style="margin-top:10px; font-size:12.5px;"><a href="/ziegler-alertearnaque-auto-diagnostic.html" style="color:var(--ink-soft-2);">En savoir plus sur cet auto-diagnostic →</a></p>
+            <div class="verify-out" id="quizOut">
+              <div class="score-readout"><span class="lvl" id="quizLevel">—</span><span class="pts" id="quizPts">0 / 6</span></div>
+              <div class="score-gauge"><i id="quizBar"></i></div>
+              <p id="quizText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
+              <a class="btn" style="margin-top:10px; display:none;" id="quizCta" href="#signaler">Signaler ma situation au cabinet</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+</div>
+    </section>
+
+    <!-- SIGNALER -->
+    <section class="app-view" data-view="signaler">
+      <div class="view-header">
+        <h2>Signaler une arnaque</h2>
+        <p>Décrivez votre situation en quelques étapes rapides. Un avocat du cabinet l'examine ensuite.</p>
+      </div>
+      <div id="signalerMount">
+<div class="tool-panel">
+        <div class="tool-body">
+
+          <div class="steps-track">
+            <div class="dot active" data-step="1"></div>
+            <div class="dot" data-step="2"></div>
+            <div class="dot" data-step="3"></div>
+            <div class="dot" data-step="4"></div>
+          </div>
+
+          <form id="reportForm">
+            <!-- STEP 1 -->
+            <div class="rstep" data-step="1">
+              <span class="step-label">Étape 1 / 4</span>
+              <h3 class="step-title">Quel type d'arnaque avez-vous subi ?</h3>
+              <div class="choice-grid" role="radiogroup" aria-label="Type d'arnaque">
+                <label class="choice"><input type="radio" name="type" value="Faux conseiller / démarcheur" required><span class="ct">Faux conseiller<span class="mark"></span></span><span class="cd">Contact non sollicité, démarchage téléphonique ou réseaux sociaux</span></label>
+                <label class="choice"><input type="radio" name="type" value="Crypto-actifs frauduleux"><span class="ct">Crypto-actifs<span class="mark"></span></span><span class="cd">Plateforme de trading crypto non régulée</span></label>
+                <label class="choice"><input type="radio" name="type" value="Trading / Forex / CFD"><span class="ct">Trading, Forex, CFD<span class="mark"></span></span><span class="cd">Options binaires, forex, produits dérivés</span></label>
+                <label class="choice"><input type="radio" name="type" value="Placement atypique"><span class="ct">Placement atypique<span class="mark"></span></span><span class="cd">Vin, forêt, or, œuvres d'art, diamants…</span></label>
+                <label class="choice"><input type="radio" name="type" value="Livret / épargne fictive"><span class="ct">Livret fictif<span class="mark"></span></span><span class="cd">Faux livret d'épargne à haut rendement</span></label>
+                <label class="choice"><input type="radio" name="type" value="Autre"><span class="ct">Autre situation<span class="mark"></span></span><span class="cd">Je ne sais pas encore comment la qualifier</span></label>
+              </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="rstep" data-step="2" hidden>
+              <span class="step-label">Étape 2 / 4</span>
+              <h3 class="step-title">Vos coordonnées</h3>
+              <p style="font-size:13.5px; color:var(--ink-soft); margin-bottom:18px;">Pour que notre secrétariat juridique puisse vous recontacter. Ces informations restent strictement confidentielles.</p>
+              <div class="field-row">
+                <div class="field"><label for="prenom">Prénom</label><input id="prenom" name="prenom" type="text" autocomplete="given-name" required></div>
+                <div class="field"><label for="nom">Nom</label><input id="nom" name="nom" type="text" autocomplete="family-name" required></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+                <div class="field"><label for="telp">Téléphone</label><input id="telp" name="telephone" type="tel" autocomplete="tel" inputmode="tel" required></div>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="rstep" data-step="3" hidden>
+              <span class="step-label">Étape 3 / 4</span>
+              <h3 class="step-title">L'interlocuteur ou la plateforme concernée</h3>
+              <div class="field-row">
+                <div class="field"><label for="ent">Nom de la société / plateforme</label><input id="ent" name="entite" type="text" placeholder="Ex. : Capital Growth Invest" required></div>
+                <div class="field"><label for="site">Site web / application <span class="opt">(si connu)</span></label><input id="site" name="site" type="text" placeholder="www.exemple.com"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label for="tel">Téléphone de contact</label><input id="tel" name="telcontact" type="text" placeholder="Numéro utilisé par l'interlocuteur"></div>
+                <div class="field"><label for="pays">Pays / localisation apparente</label><input id="pays" name="pays" type="text" placeholder="France, étranger, inconnu…"></div>
+              </div>
+              <div class="field"><label for="canal">Comment le contact a-t-il été établi ? <span class="opt">(optionnel)</span></label>
+                <select id="canal" name="canal">
+                  <option value="">Sélectionner…</option>
+                  <option>Réseaux sociaux</option>
+                  <option>Site de rencontre</option>
+                  <option>Publicité en ligne</option>
+                  <option>Démarchage téléphonique</option>
+                  <option>Recommandation d'un proche</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="rstep" data-step="4" hidden>
+              <span class="step-label">Étape 4 / 4</span>
+              <h3 class="step-title">Montants versés et description</h3>
+              <div class="field-row">
+                <div class="field"><label for="montant">Montant total versé (€)</label><input id="montant" name="montant" type="number" min="0" placeholder="Ex. : 18 500" required></div>
+                <div class="field"><label for="datepremier">Date du premier versement</label><input id="datepremier" name="datepremier" type="date"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label for="moyen">Moyen de paiement utilisé</label>
+                  <select id="moyen" name="moyen">
+                    <option value="">Sélectionner…</option>
+                    <option>Virement bancaire</option>
+                    <option>Carte bancaire</option>
+                    <option>Crypto-monnaies</option>
+                    <option>Espèces</option>
+                    <option>Plusieurs moyens</option>
+                  </select>
+                </div>
+                <div class="field"><label for="retrait">Avez-vous tenté un retrait ?</label>
+                  <select id="retrait" name="retrait">
+                    <option value="">Sélectionner…</option>
+                    <option>Oui, refusé ou bloqué</option>
+                    <option>Oui, des frais m'ont été réclamés</option>
+                    <option>Non, pas encore essayé</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:18px;">
+                <label for="explicatif">Décrivez votre situation et le préjudice subi</label>
+                <textarea id="explicatif" name="explicatif" rows="5" placeholder="Expliquez ce qui s'est passé, vos échanges avec l'interlocuteur, et le préjudice (financier, moral…) que vous estimez avoir subi." required></textarea>
+              </div>
+              <div class="disclaimer">
+                Vos informations sont transmises à notre secrétariat juridique, qui vous contacte pour organiser la suite avec un avocat du cabinet. Elles restent strictement confidentielles et ne font l'objet d'aucune publication. Nous vous recommandons également de signaler officiellement votre situation auprès de l'<a href="https://www.amf-france.org/fr/espace-epargnants/proteger-son-epargne/listes-noires-et-mises-en-garde" target="_blank" rel="noopener">AMF</a>, de <a href="https://signal.conso.gouv.fr/fr" target="_blank" rel="noopener">Signal Conso</a> et de la plateforme <a href="https://internet-signalement.gouv.fr/etape/escroquerie" target="_blank" rel="noopener">internet-signalement.gouv.fr</a> (Pharos).
+              </div>
+            </div>
+
+            <div class="wizard-nav">
+              <button type="button" class="btn secondary" id="prevBtn" disabled>← Précédent</button>
+              <button type="button" class="btn" id="nextBtn">Continuer →</button>
+              <button type="submit" class="btn" id="submitBtn" hidden>Envoyer mon signalement</button>
+            </div>
+          </form>
+
+          <div class="result-card" id="reportResult">
+            <div class="stamp">Dossier transmis</div>
+            <div class="ref" id="refNumber">N° DOSS-2026-00000</div>
+            <h3>Votre situation a bien été transmise</h3>
+            <p>Votre dossier a bien été transmis au Cabinet d'Avocats Ziegler &amp; Associés. Notre secrétariat juridique va vous contacter prochainement pour organiser la suite avec un avocat du cabinet.</p>
+            <div class="result-urgent">
+              <p>⚡ <strong>Situation urgente ?</strong> Contactez directement notre standard juridique par téléphone :</p>
+              <div class="result-urgent-phones">
+                <a href="tel:+33188314592">01 88 31 45 92</a>
+                <span class="ru-sep">·</span>
+                <a href="tel:+33752076032">07 52 07 60 32</a>
+              </div>
+            </div>
+            <div class="result-cross-sell">
+              <p><strong>Vous pouvez aussi aider d'autres victimes potentielles.</strong> Publiez une alerte anonyme sur la société ou la personne concernée — seul le texte de l'alerte sera visible, jamais vos coordonnées.</p>
+              <a class="btn gold" href="ziegler-alertearnaque-alertes.html#publier">Publier une alerte →</a>
+            </div>
+            <div class="result-actions">
+              <button class="btn secondary" id="newReportBtn" type="button">Nouveau signalement</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+</div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="app-view" data-view="contact">
+      <div class="view-header">
+        <h2>Contacter le cabinet</h2>
+        <p>Cabinet d'Avocats Ziegler &amp; Associés — Paris 16e.</p>
+      </div>
+
+      <div class="home-card">
+        <h3><i class="fa-solid fa-phone" style="color:var(--purple);"></i> Par téléphone</h3>
+        <p>Du lundi au vendredi, 9h-18h.</p>
+        <a class="btn" href="tel:+33188314592">01 88 31 45 92</a>
+      </div>
+
+      <div class="home-card">
+        <h3><i class="fa-solid fa-envelope" style="color:var(--purple);"></i> Par email</h3>
+        <p>Notre secrétariat juridique vous répond sous 24h ouvrées.</p>
+        <a class="btn ghost" style="border:1px solid var(--rule);" href="mailto:juridique@ziegler-associes.com">juridique@ziegler-associes.com</a>
+      </div>
+
+      <div class="home-card">
+        <h3><i class="fa-solid fa-calendar-check" style="color:var(--purple);"></i> Consultation juridique</h3>
+        <p>Prenez rendez-vous directement avec un avocat du cabinet, en visio ou au cabinet.</p>
+        <a class="btn gold" href="https://calendly.com/ziegler-associes" target="_blank" rel="noopener">Prendre rendez-vous</a>
+      </div>
+
+      <div class="home-card">
+        <h3><i class="fa-solid fa-location-dot" style="color:var(--purple);"></i> Adresse</h3>
+        <p style="margin-bottom:0;">Cabinet d'Avocats Ziegler &amp; Associés<br>Paris 16e</p>
+      </div>
+    </section>
+
+  </div>
+
+  <nav class="app-nav">
+    <button type="button" class="nav-btn active" data-goto="home"><i class="fa-solid fa-house"></i><span>Accueil</span></button>
+    <button type="button" class="nav-btn" data-goto="verifier"><i class="fa-solid fa-magnifying-glass"></i><span>Vérifier</span></button>
+    <button type="button" class="nav-btn" data-goto="signaler"><i class="fa-solid fa-flag"></i><span>Signaler</span></button>
+    <button type="button" class="nav-btn" data-goto="contact"><i class="fa-solid fa-comment"></i><span>Contact</span></button>
+  </nav>
+
+<script>
+  /* ---------------- NAVIGATION ENTRE VUES ---------------- */
+  (function(){
+    const views = document.querySelectorAll('.app-view');
+    const navBtns = document.querySelectorAll('.app-nav .nav-btn');
+    const topSub = document.getElementById('appTopSub');
+    const subtitles = {
+      home: "Cabinet d'Avocats Ziegler & Associés",
+      verifier: 'Vérification anti-arnaque',
+      signaler: 'Signalement au cabinet',
+      contact: 'Nous contacter',
+    };
+
+    function goto(view){
+      views.forEach(v => v.classList.toggle('active', v.dataset.view === view));
+      navBtns.forEach(b => b.classList.toggle('active', b.dataset.goto === view));
+      topSub.textContent = subtitles[view] || subtitles.home;
+      document.querySelector('.app-views').scrollTop = 0;
+    }
+
+    document.querySelectorAll('[data-goto]').forEach(el => {
+      el.addEventListener('click', () => goto(el.dataset.goto));
+    });
+
+    document.getElementById('homeRdvBtn').addEventListener('click', () => {
+      window.open('https://calendly.com/ziegler-associes', '_blank', 'noopener');
+    });
+  })();
+
+  /* ---------------- REPORT WIZARD ---------------- */
+  (function(){
+    const steps = Array.from(document.querySelectorAll('.rstep'));
+    const dots = Array.from(document.querySelectorAll('.steps-track .dot'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('reportForm');
+    const resultCard = document.getElementById('reportResult');
+    let current = 1;
+
+    function render(){
+      steps.forEach(s => s.hidden = Number(s.dataset.step) !== current);
+      dots.forEach(d => {
+        const n = Number(d.dataset.step);
+        d.classList.toggle('active', n === current);
+        d.classList.toggle('done', n < current);
+      });
+      prevBtn.disabled = current === 1;
+      nextBtn.hidden = current === steps.length;
+      submitBtn.hidden = current !== steps.length;
+    }
+
+    function validCurrent(){
+      const step = steps.find(s => Number(s.dataset.step) === current);
+      const required = Array.from(step.querySelectorAll('[required]'));
+      for (const field of required){
+        if (field.type === 'radio'){
+          const group = step.querySelectorAll(`input[name="${field.name}"]`);
+          if (![...group].some(r => r.checked)){ alert('Merci de sélectionner une option.'); return false; }
+        } else if (!field.value){
+          field.focus(); alert('Merci de compléter ce champ avant de continuer.'); return false;
+        }
+      }
+      return true;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (!validCurrent()) return;
+      current = Math.min(current + 1, steps.length);
+      render();
+    });
+    prevBtn.addEventListener('click', () => { current = Math.max(current - 1, 1); render(); });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validCurrent()) return;
+
+      const ref = 'DOSS-2026-' + String(Math.floor(10000 + Math.random()*89999));
+      document.getElementById('refNumber').textContent = 'N° ' + ref;
+
+      const fd = new FormData(form);
+      const get = (k) => (fd.get(k) || '').toString().trim();
+
+      // The 6 required fields (nom, prénom, email, téléphone, explicatif, nom de l'arnaque)
+      // plus the contextual fields collected earlier in the wizard.
+      const payload = {
+        _subject: 'Nouveau signalement Ziegler Alerte Arnaque — ' + (get('entite') || 'sans nom renseigné'),
+        _template: 'table',
+        _captcha: 'false',
+        'Numéro de dossier': ref,
+        'Prénom': get('prenom'),
+        'Nom': get('nom'),
+        'Email': get('email'),
+        'Téléphone': get('telephone'),
+        "Nom de l'arnaque / société": get('entite'),
+        'Explicatif du problème et préjudice': get('explicatif'),
+        "Type d'arnaque": get('type'),
+        'Site web': get('site'),
+        "Téléphone de l'interlocuteur": get('telcontact'),
+        'Pays / localisation': get('pays'),
+        'Canal de contact': get('canal'),
+        'Montant versé (€)': get('montant'),
+        'Date du premier versement': get('datepremier'),
+        'Moyen de paiement': get('moyen'),
+        'Tentative de retrait': get('retrait')
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi en cours…';
+
+      // Sends the signalement by email to juridique@ziegler-associes.com via FormSubmit
+      // (no backend required). On first use, FormSubmit sends a one-time confirmation
+      // email to this address that must be validated before delivery starts working.
+      fetch('https://formsubmit.co/ajax/juridique@ziegler-associes.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
+      .then(() => { if (window.gtag) gtag('event', 'signalement_envoye', { 'event_category': 'conversion', 'event_label': 'Formulaire de signalement' }); })
+      .catch(err => {
+        console.error("Échec de l'envoi automatique du signalement :", err);
+        // Fallback so the lead is never silently lost: open a pre-filled email draft.
+        const body = Object.entries(payload)
+          .filter(([k]) => !k.startsWith('_'))
+          .map(([k, v]) => k + ' : ' + (v || '—'))
+          .join('\n');
+        window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Envoyer mon signalement';
+        form.style.display = 'none';
+        document.querySelector('.steps-track').style.display = 'none';
+        resultCard.classList.add('show');
+      });
+    });
+
+    document.getElementById('newReportBtn').addEventListener('click', () => {
+      form.reset();
+      current = 1;
+      render();
+      form.style.display = 'block';
+      document.querySelector('.steps-track').style.display = 'flex';
+      resultCard.classList.remove('show');
+      window.scrollTo({ top: document.getElementById('signaler').offsetTop - 90, behavior: 'smooth' });
+    });
+
+    // Les cartes "Quel type d'arnaque avez-vous rencontré ?" présélectionnent le
+    // type ET replacent le formulaire sur l'étape 1, pour que le visiteur VOIE
+    // sa sélection (sinon elle était cochée en silence, invisible si le
+    // formulaire était déjà à une étape ultérieure ou masqué après un envoi).
+    document.querySelectorAll('.cat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const type = card.dataset.type;
+
+        // Si un signalement vient d'être envoyé, on repart sur un formulaire neuf.
+        if (resultCard.classList.contains('show')) {
+          form.reset();
+          form.style.display = 'block';
+          document.querySelector('.steps-track').style.display = 'flex';
+          resultCard.classList.remove('show');
+        }
+
+        const radios = document.querySelectorAll('input[name="type"]');
+        radios.forEach(r => { r.checked = (r.value === type); });
+
+        current = 1;
+        render();
+      });
+    });
+
+    render();
+  })();
+
+  /* ---------------- VERIFICATION TABS (societe/telephone/email/iban/crypto/quiz) ---------------- */
+  (function(){
+    const tabs = document.querySelectorAll('.vtab');
+    const panels = document.querySelectorAll('.vpanel');
+    if (!tabs.length) return;
+
+    // Textes adaptés selon l'onglet actif, pour le panneau combiné société/téléphone/email
+    // (un seul outil intelligent en coulisses, mais un cadrage différent par onglet).
+    const COMBO_TEXTS = {
+      societe: {
+        title: 'Vérifier une société ou un site',
+        sub: "Renseignez le nom d'une société ou d'un site. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF et les publications déjà rédigées par le cabinet.",
+        label: 'Nom de la société ou du site',
+        placeholder: 'Ex. : Global Crypto Invest'
+      },
+      telephone: {
+        title: 'Vérifier un numéro de téléphone',
+        sub: "Renseignez le numéro qui vous a contacté. L'outil identifie les préfixes de démarchage commercial (ARCEP), recherche dans les alertes publiées par d'autres visiteurs, et propose des liens vers des sites spécialisés.",
+        label: 'Numéro de téléphone',
+        placeholder: 'Ex. : 06 12 34 56 78'
+      },
+      email: {
+        title: 'Vérifier une adresse email',
+        sub: "Renseignez l'adresse email de votre interlocuteur. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF (usurpations, sites non autorisés) et vos alertes communautaires.",
+        label: 'Adresse email',
+        placeholder: 'Ex. : contact@site-suspect.com'
+      }
+    };
+
+    function applyComboText(key){
+      const t = COMBO_TEXTS[key];
+      if (!t) return;
+      const titleEl = document.getElementById('comboTitle');
+      const subEl = document.getElementById('comboSub');
+      const labelEl = document.getElementById('comboLabel');
+      const inputEl = document.getElementById('vname');
+      if (titleEl) titleEl.textContent = t.title;
+      if (subEl) subEl.textContent = t.sub;
+      if (labelEl) labelEl.textContent = t.label;
+      if (inputEl) inputEl.placeholder = t.placeholder;
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.tab;
+        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const targetPanelKey = (key === 'telephone' || key === 'email') ? 'societe' : key;
+        panels.forEach(p => { p.hidden = (p.dataset.panel !== targetPanelKey); });
+
+        if (COMBO_TEXTS[key]) applyComboText(key);
+      });
+    });
+
+    // Les cartes d'aperçu tout en haut renvoient directement vers l'onglet correspondant.
+    document.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const key = card.dataset.goto;
+        const targetTab = document.querySelector('.vtab[data-tab="' + key + '"]');
+        if (targetTab) targetTab.click();
+        document.querySelector('.verify-tabbed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Les badges de technologies dans le hero, et les pastilles de vérification
+    // rapide, font tous deux basculer vers l'onglet correspondant.
+    document.querySelectorAll('.tech-badge, .hv-pill').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.preventDefault();
+        const key = badge.dataset.gotoTab;
+        const targetTab = document.querySelector('.vtab[data-tab="' + key + '"]');
+        if (targetTab) targetTab.click();
+        document.querySelector('.verify-tabbed').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  })();
+
+  /* ---------------- QUICK CHECK (société / téléphone / email + live search of the firm's own publications) ---------------- */
+  (function(){
+    // Illustrative demo list only — not a live connection to AMF / official registries.
+    const demoBlacklist = ['global crypto invest', 'capital growth invest', 'eurotrade wealth', 'vendome capital partners fx'];
+
+    // Instantané de la liste noire officielle Banque de France / ACPR / AMF (sites et emails
+    // usurpant l'identité de professionnels/autorités, ou non autorisés à proposer des produits
+    // financiers en France). Source : https://www.abe-infoservice.fr/fr/liste-noire
+    // Instantané du 21/08/2026 — à rafraîchir périodiquement, la vraie liste est mise à jour en continu.
+    const OFFICIAL_BLACKLIST_DATE = '21/08/2026';
+    // Filet de sécurité : utilisé tant que le fichier auto-généré assets/blacklist.json
+    // n'a pas encore été récupéré (ou si sa récupération échoue). Ce fichier est mis à
+    // jour automatiquement chaque jour par update-blacklist.php via une tâche planifiée
+    // (cron) côté serveur — voir les instructions de configuration fournies séparément.
+    let OFFICIAL_BLACKLIST_UPDATED_AT = null; // renseigné dynamiquement si le fetch réussit
+    let OFFICIAL_BLACKLIST = ["ACPRFR@OUTLOOK.FR","act-capital.cc","act-capital.io","advantcrest.com","alphaairobot.com","amf-mediation@financier.com","amf@departement-financier.com","amf@support-financial.com","amundi.cfd","amundi.sbs","amundi06.cfd","amundi06.click","amundi06.cyou","amundi06.forum","amundi06.homes","amundi06.lol","amundi06.sbs","amundi06.xyz","amundi05.click","amundi05.lol","amundic.sbs","amundiesr.com","annovazzi-credits.org","atlas-finance.org","audacia212.com","aura-epargne.com","aurum-foundation.com","aurum.foundation","banquedefrance@custcare.help","bfi-bk.com","bfigroupefr.fr","bgfieurope.socialegroup.org","blockchain@financialdepartemnt.com","blueforge.ltd","bpi-credit.com","bpi-particulares.com","bpi-particulares.net","bpi-platform.com","bpi-platform.net","bpibackup.com","bpibanks.com","bpibpi.com","bpifinancialhelpcenter.online","bpiplatform.com","bpiplatform.net","bpimanagement.de","bpimanagement.online","bpiviiiipp.com","cab.sigmainvestglobal.com","capitalpluspltd.com","capstellar.fr","cax-online.com","centralbureau51@gmail.com","client.corsokane.org","client.netixos.com","client.quantx-group.com","complaints@crypto-amf.com","conseiller@infofranceservice.fr","contact@aides-stop-fraude.com","contact@bdweurope.com","contact@bpi-credit.com","contact@courtage-dachuna.com","contact@dwsglobalinvest.info","contact@financiere-jln.com","contact@fibus-courtage.com","contact@fundsnordea.com","contact@groupsecuritiesdublin.com","contact@integrate-exchangep2p-live-custom.com","contact@mutelia.com","contact@partners.group-appswiss.com","contact@pretalia.com","contact@shell-france.fr","contact@truefinanse.com","contact@winvias.com","controle-banquedefrance@laposte.net","corsokane.org","courtage-dachuna.com","cryptover.org","darsvint.fr","departement.juridique-xtb@supportfinancenetwork.com","dominiontradex.fr","dynamictrevion.fr","ecxtrade.com","epargneia.com","escrow@heurofinancial.com","essorinvexaro.fr","extranet-mgi.com","fibus-courtage.com","financiere-de-grenelle.com","financiere-gfr.com","financiere-jln.com","financiere-st-gabriel.com","finance@bpandapm.com","firstprivate-finad.com","france.acpr@proton.me","fundsuri.com","fxtrading.com","gaveltrdltd.com","heurobank@finance-info.eu","heurosasbank.io","hevia.finance","hlf-gestion-or.com","hsbc@serice-gestions.com","infodesk@rapidrecovery.online","infoprolive.com","instantfundedaccount.com","investiraupays.com","isaloge-investissement.com","konilabs-courtage.com","laurent.fortuneo.credit","livpm.com","log.noelse-france.com","login.groupsecuritiesdublin.com","lp-harmonie.com","marketsview.io","mayfieldedu.com","mcafinances.com","miginvestgr.tiiny.site","mon-vaul.com","monetiscore.com","mustfinance9@gmail.com","mynco.com","netixos.com","noelse-france.com","noelse-international.com","nom.prénom@apptraderepublicgestion.com","nom.prénom@apptrepublicgestion.com","nom.prénom@info-regroup.com","online-nova.com","opti-nova.net","paris-titrisation.com","paristitrisation.com","paristitrisation.fr","paysofax.com","presse-actu.com","pretalia.com","proxtrend.com","pt-patrimoine.com","revexium.com","service.client@npb-france.com","service.orangebank@europe.com","servicefinancier@shell-france.fr","sigmainvestglobal.com","skalrett.com","slbaction.com","snfinancement@gmail.com","strath-well.com","sumeria.com","supportafmdefrancr@gmail.com","support.acpr.fr@gmail.com","support@amf-fr","support@amf-fr.com","support@antifraude-amf.com","support@capitalpluspltd.com","support@heurosasbank.io","support@sigmainvestglobal.com","swisscapitalhub.com","targetplusia.com","team.coinmarketcap@atomicmail.io","terremassif.com","tiercefortange.com","trading.corso-web.com","trxdynis.com","truefinanse.com","vantagemarkets.com","virement-lydia.fr","virementslydia.fr","virmtlydia.fr","vision-lonox-hex.net","vivaldi-park.com","vivaldiiparking.com","vivaldiparking.com","vuxocap.co","web.bdweurope.com","web.bpcebanxo.com","web.npbonline.app","webtrader.aptos-ai.net","webtrader.swisscapitalplatform.com","winvias.com","prénom.nom-revolut@rv-conseil.com","prénom.nom@accmanager.tech","prénom.nom@arokconseil.com","prénom.nom@bitpsolution.com","prénom.nom@clientbglprivee.com","prénom.nom@contact-sitir.com","prénom.nom@courtier-immo.fr","prénom.nom@crypto-gestion.com","prénom.nom@dwsglobalinvest.info","prénom.nom@financiere-de-grenelle.com","prénom.nom@fivearrows-gestion.com","prénom.nom@fivearrows-rothschild.com","prénom.nom@fivearrows.fr","prénom.nom@fortuneo.credit","prénom.nom@fundsnordea.com","prénom.nom@gestion-financiere-gfr.com","prénom.nom@hardimmo.com","prénom.nom@info-cgfinancia.com","prénom.nom@inter-parking.fr","prénom.nom@limmobiliere-cst.com","prénom.nom@limmobilierecastorama.com","prénom.nom@maestrimmo-gestion.com","prénom.nom@noelse-international.com","prénom.nom@noelsefrance.com","prénom.nom@opci-crystalpark.fr","prénom.nom@pmanager-finad.com","prénom.nom@polegestiondeblock.com","prénom.nom@portfoliomanager-finad.com","prénom.nom@rothschildcoam.com","prénom.nom@rvltsecurities.com","prénom.nom@sasruelaboetie-paris08.com","prénom.nom@serviceclientimmobilier.com","prénom.nom@sigma-invest.co","prénom.nom@support-lesfurets.com","prénom.nom@tradelive.info","prénom.nom@wise.com-gestionassets.app","prénomnom@meritumcapital-intl.com"];
+
+    // Préfixes officiels ARCEP réservés au démarchage téléphonique commercial en France.
+    // Un numéro dans ces tranches est légalement affecté au démarchage commercial — ce n'est
+    // PAS en soi une preuve d'arnaque, juste un signal de type d'appel probable.
+    const ARCEP_DEMARCHAGE_PREFIXES = ['0162','0163','0270','0271','0377','0378','0424','0425','0568','0569','0948','0949','09475','09476','09477','09478','09479'];
+
+    function normalizeDigits(str){ return str.replace(/[^\d]/g, ''); }
+
+    function toFrenchNational(digits){
+      // Convertit un +33XXXXXXXXX en 0XXXXXXXXX pour la comparaison de préfixes.
+      if (digits.startsWith('33') && digits.length === 11) return '0' + digits.slice(2);
+      return digits;
+    }
+
+    function isPhoneLike(val){
+      const digits = normalizeDigits(val);
+      return /^0[1-9]\d{8}$/.test(digits) || /^33[1-9]\d{8}$/.test(digits);
+    }
+
+    function isEmailLike(val){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+    }
+
+    function isDomainLike(val){
+      return /^[a-z0-9.-]+\.[a-z]{2,}(\/.*)?$/i.test(val.trim()) && !val.includes(' ');
+    }
+
+    // Vérifie depuis quand un nom de domaine existe. Un site créé il y a
+    // quelques jours ou semaines pour une société qui prétend être établie
+    // depuis longtemps est l'un des signaux d'arnaque les plus fiables.
+    async function checkDomainAge(rawInput){
+      const box = document.getElementById('domainAgeCheck');
+      const resultsEl = document.getElementById('domainAgeResults');
+      box.hidden = false;
+      resultsEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Vérification en cours…</p>';
+      try {
+        const res = await fetch('/whois-check.php?domain=' + encodeURIComponent(rawInput));
+        const data = await res.json();
+        if (!res.ok || data.error){
+          box.hidden = true; // service indisponible : on masque plutôt que d'afficher une erreur technique
+          return;
+        }
+        const ageDays = data.ageDays;
+        const dateStr = data.created ? new Date(data.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+        if (data.isNewlyRegistered) {
+          resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
+            + '<span class="pa-tag" style="color:var(--danger);">Signal d\'alerte</span>'
+            + '<span class="pa-title">Nom de domaine créé il y a ' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + (dateStr ? ' (' + escapeHtml(dateStr) + ')' : '') + '</span>'
+            + '<p class="pa-excerpt">Un domaine aussi récent pour une société qui se présente comme établie de longue date est un signal fréquent d\'arnaque. Redoublez de prudence.</p>'
+            + '</div>';
+        } else if (ageDays !== null) {
+          resultsEl.innerHTML = '<p class="pub-empty">Domaine enregistré ' + (dateStr ? 'le ' + escapeHtml(dateStr) : 'il y a ' + Math.floor(ageDays / 365) + ' an(s)') + (data.registrar ? ' auprès de ' + escapeHtml(data.registrar) : '') + '. Cela ne garantit pas la fiabilité du site, mais l\'absence de création très récente est un point rassurant parmi d\'autres.</p>';
+        } else {
+          box.hidden = true;
+        }
+      } catch (err){
+        box.hidden = true;
+      }
+    }
+
+    // Récupère la version à jour de la liste noire officielle, générée automatiquement
+    // chaque jour par update-blacklist.php (tâche planifiée côté serveur). Comme ce
+    // fichier est sur le même domaine que le site, aucun blocage CORS ne s'applique
+    // (contrairement à une tentative de récupération directe depuis abe-infoservice.fr).
+    // En cas d'échec (fichier pas encore généré, etc.), la liste figée ci-dessus reste
+    // utilisée : le site ne casse jamais, il utilise simplement une version un peu plus
+    // ancienne en attendant.
+    (async function loadLiveBlacklist(){
+      try {
+        const res = await fetch('/assets/blacklist.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        if (Array.isArray(data.entries) && data.entries.length >= 50) {
+          OFFICIAL_BLACKLIST = data.entries;
+          OFFICIAL_BLACKLIST_UPDATED_AT = data.updated_at || null;
+        }
+      } catch (err) {
+        console.warn('Liste noire officielle : fichier auto-généré indisponible, utilisation de la version figée du ' + OFFICIAL_BLACKLIST_DATE + '.', err);
+      }
+    })();
+
+    const checkBtn = document.getElementById('checkBtn');
+    const out = document.getElementById('checkOut');
+
+    // Recherche dans VOS PROPRES alertes publiées si un numéro ou un email
+    // signalé par la communauté correspond à celui recherché. C'est la seule vraie
+    // base "anti-arnaque téléphonique" légale disponible : celle que le
+    // cabinet construit lui-même via les signalements de ses visiteurs.
+    // Échappe les caractères HTML sensibles avant insertion dans le DOM.
+    // Indispensable pour tout texte provenant de la communauté (faille XSS sinon).
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    // N'autorise que des liens http(s) — bloque explicitement javascript: et
+    // autres schémas dangereux avant insertion dans un attribut href.
+    function safeUrl(url){
+      if (!url) return '#';
+      const cleaned = String(url).replace(/[\s\x00-\x1F]/g, '');
+      if (/^https?:\/\//i.test(cleaned)) return escapeHtml(String(url).trim());
+      return '#';
+    }
+
+    async function searchCommunityAlerts(query, field){
+      // field vaut 'Téléphone concerné' ou 'Email concerné'
+      const resultsEl = document.getElementById('communityResults');
+      if (!resultsEl) return;
+      const digitsQuery = normalizeDigits(query);
+      try {
+        const res = await fetch('/airtable-proxy.php?action=alerts_list');
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        const matches = (data.records || []).filter(r => {
+          const val = (r.fields[field] || '').toString();
+          if (!val) return false;
+          if (field === 'Téléphone concerné') return normalizeDigits(val) === digitsQuery && digitsQuery.length >= 8;
+          return val.toLowerCase().trim() === query.toLowerCase().trim();
+        });
+        if (matches.length){
+          const excerpt = (matches[0].fields['Texte de l\'alerte'] || '').toString().slice(0, 160);
+          const excerptSuffix = matches[0].fields['Texte de l\'alerte'] && matches[0].fields['Texte de l\'alerte'].length > 160 ? '…' : '';
+          resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
+            + '<span class="pa-tag" style="color:var(--danger);">Signalé par la communauté</span>'
+            + '<span class="pa-title">' + matches.length + ' alerte' + (matches.length > 1 ? 's' : '') + ' publiée' + (matches.length > 1 ? 's' : '') + (matches.length > 1 ? ' mentionnent' : ' mentionne') + ' ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + '</span>'
+            + '<p class="pa-excerpt">' + escapeHtml(excerpt) + escapeHtml(excerptSuffix) + '</p>'
+            + '<a class="pa-link" href="ziegler-alertearnaque-alertes.html" target="_blank" rel="noopener">Voir les alertes de la communauté →</a>'
+            + '</div>';
+          document.getElementById('comboCta').style.display = 'inline-flex';
+        } else {
+          resultsEl.innerHTML = '<p class="pub-empty">Aucune alerte communautaire publiée ne mentionne ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + ' pour le moment. Vous pouvez <a href="ziegler-alertearnaque-alertes.html#publier" target="_blank" rel="noopener">consulter ou publier une alerte</a> si vous êtes concerné.</p>';
+        }
+      } catch (err){
+        resultsEl.innerHTML = '';
+      }
+    }
+
+
+    function decodeEntities(str){
+      const ta = document.createElement('textarea');
+      ta.innerHTML = str;
+      return ta.value;
+    }
+
+    function pubEmptyMarkup(query, isError){
+      const searchLink = 'https://ziegler-associes.com/?s=' + encodeURIComponent(query);
+      const safeQuery = escapeHtml(query);
+      const msg = isError
+        ? "La recherche en direct n'a pas pu être effectuée depuis ce navigateur."
+        : "Aucun article publié par le cabinet sur ce sujet pour le moment.";
+      return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + safeQuery + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
+    }
+
+    // Si un article du cabinet existe sur ce sujet, le score de démo générique
+    // ("absence de signal négatif") est écrasé par un message neutre : mieux vaut
+    // ne rien affirmer que de rassurer à tort à côté d'un article qui dit le contraire.
+    function overrideScoreWithPublicationFound(){
+      document.getElementById('scoreLevel').textContent = 'Publication du cabinet trouvée';
+      document.getElementById('scorePts').textContent = '';
+      const bar = document.getElementById('scoreBar');
+      bar.style.width = '100%';
+      bar.style.background = 'var(--purple)';
+      document.getElementById('scoreText').textContent = "Le cabinet a déjà publié sur ce sujet — lisez l'article ci-dessous avant toute décision.";
+    }
+
+    async function searchZieglerPublications(query, demoFlagged){
+      const statusEl = document.getElementById('pubStatus');
+      const resultsEl = document.getElementById('pubResults');
+      statusEl.style.display = 'block';
+      statusEl.textContent = 'Recherche dans nos publications…';
+      resultsEl.innerHTML = '';
+
+      const apiUrl = 'https://ziegler-associes.com/wp-json/wp/v2/posts?search=' + encodeURIComponent(query) + '&per_page=3';
+
+      try {
+        const res = await fetch(apiUrl, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        statusEl.style.display = 'none';
+        if (Array.isArray(data) && data.length){
+          // Un article existe : si le score de démo n'avait rien signalé, ne pas
+          // laisser un message rassurant à côté d'un article potentiellement alarmant.
+          if (!demoFlagged) overrideScoreWithPublicationFound();
+          resultsEl.innerHTML = data.slice(0, 3).map(post => {
+            const title = escapeHtml(decodeEntities((post.title && post.title.rendered) || 'Article du cabinet'));
+            const excerptRaw = (post.excerpt && post.excerpt.rendered) || '';
+            let excerptPlain = decodeEntities(excerptRaw.replace(/<[^>]+>/g, '')).trim();
+            if (excerptPlain.length > 170) excerptPlain = excerptPlain.slice(0, 170).trim() + '…';
+            const excerpt = escapeHtml(excerptPlain);
+            const link = safeUrl(post.link) !== '#' ? safeUrl(post.link) : ('https://ziegler-associes.com/?s=' + encodeURIComponent(query));
+            return '<div class="pub-article">'
+              + '<span class="pa-tag">Article du cabinet</span>'
+              + '<span class="pa-title">' + title + '</span>'
+              + (excerpt ? '<p class="pa-excerpt">' + excerpt + '</p>' : '')
+              + '<a class="pa-link" href="' + link + '" target="_blank" rel="noopener">Lire l\'article →</a>'
+              + '</div>';
+          }).join('');
+        } else {
+          resultsEl.innerHTML = pubEmptyMarkup(query, false);
+        }
+      } catch (err){
+        statusEl.style.display = 'none';
+        resultsEl.innerHTML = pubEmptyMarkup(query, true);
+      }
+    }
+
+    checkBtn.addEventListener('click', () => {
+      const val = document.getElementById('vname').value.trim();
+      if (!val){ document.getElementById('vname').focus(); return; }
+      document.getElementById('comboCta').style.display = 'none';
+      document.getElementById('domainAgeCheck').hidden = true; // réinitialisé, réaffiché seulement si pertinent
+
+      const phoneLinksBox = document.getElementById('officialLinksPhone');
+      const siteLinksBox = document.getElementById('officialLinksSite');
+      let score, level, text, color;
+
+      if (isPhoneLike(val)) {
+        // --- CAS 1 : numéro de téléphone ---
+        phoneLinksBox.style.display = 'flex';
+        siteLinksBox.style.display = 'none';
+        document.getElementById('pubResults').innerHTML = '';
+        document.getElementById('pubStatus').style.display = 'none';
+        document.querySelector('.pub-check').style.display = 'none';
+        document.getElementById('communityCheck').hidden = false;
+        document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
+
+        const digits = toFrenchNational(normalizeDigits(val));
+        const isArcepDemarchage = ARCEP_DEMARCHAGE_PREFIXES.some(p => digits.startsWith(p));
+
+        const q = encodeURIComponent(val);
+        document.getElementById('tellowsLink').href = 'https://www.tellows.fr/num/' + digits;
+        document.getElementById('franceverifLink').href = 'https://franceverif.fr/fr/verifier-numero-telephone?number=' + q;
+
+        if (isArcepDemarchage) {
+          score = 40; level = 'Démarchage commercial (préfixe ARCEP)'; color = 'var(--warn)';
+          text = "Ce numéro appartient à une tranche officiellement réservée par l'ARCEP au démarchage commercial. Cela signifie que l'appel est probablement de la prospection commerciale — pas nécessairement une arnaque, mais restez vigilant si l'on vous propose un placement financier.";
+        } else {
+          score = 50; level = 'Indéterminé — aucune base officielle disponible'; color = 'var(--warn)';
+          text = "Il n'existe pas de liste officielle des numéros frauduleux en France. Ce numéro n'est ni confirmé ni écarté par notre outil. Consultez les sites spécialisés ci-dessous, qui s'appuient sur des signalements communautaires.";
+        }
+        searchCommunityAlerts(val, 'Téléphone concerné');
+
+      } else if (isEmailLike(val) || isDomainLike(val)) {
+        // --- CAS 2 : email ou nom de domaine ---
+        phoneLinksBox.style.display = 'none';
+        siteLinksBox.style.display = 'flex';
+        document.querySelector('.pub-check').style.display = 'block';
+
+        const normalized = val.toLowerCase().trim();
+        const officialHit = OFFICIAL_BLACKLIST.some(entry => entry.toLowerCase() === normalized || normalized.includes(entry.toLowerCase()) || entry.toLowerCase().includes(normalized));
+
+        if (officialHit) {
+          score = 5; level = 'Sur liste noire officielle'; color = 'var(--danger)';
+          text = "Cet email ou ce site figure sur la liste noire officielle de la Banque de France / ACPR / AMF (usurpation d'identité ou activité non autorisée en France). Ne réalisez aucun versement et ne communiquez aucune information à cet interlocuteur.";
+        } else {
+          const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
+          if (flagged) {
+            score = 12; level = 'Risque élevé (démo)'; color = 'var(--danger)';
+            text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle avant tout versement.";
+          } else {
+            score = 68; level = 'Absence sur la liste noire officielle'; color = 'var(--warn)';
+            text = "Cet email/site n'apparaît pas sur la liste noire officielle Banque de France / ACPR / AMF (instantané du " + (OFFICIAL_BLACKLIST_UPDATED_AT || OFFICIAL_BLACKLIST_DATE) + ") — cela ne garantit pas sa fiabilité, une entité peut ne pas encore avoir été recensée. Consultez systématiquement ScamDoc et les listes AMF avant d'investir.";
+          }
+        }
+        searchZieglerPublications(val, officialHit);
+        document.getElementById('communityCheck').hidden = !isEmailLike(val);
+        if (isEmailLike(val)) {
+          document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
+          searchCommunityAlerts(val, 'Email concerné');
+        }
+        if (isDomainLike(val)) {
+          checkDomainAge(val);
+        } else {
+          document.getElementById('domainAgeCheck').hidden = true;
+        }
+
+      } else {
+        // --- CAS 3 : nom de société (comportement d'origine) ---
+        phoneLinksBox.style.display = 'none';
+        siteLinksBox.style.display = 'flex';
+        document.querySelector('.pub-check').style.display = 'block';
+        document.getElementById('communityCheck').hidden = true;
+        const normalized = val.toLowerCase();
+        const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
+        if (flagged){
+          score = 12; level = 'Risque élevé'; color = 'var(--danger)';
+          text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle de l'AMF avant tout versement, et ne réalisez aucun paiement supplémentaire.";
+        } else if (normalized.length < 3){
+          score = 50; level = 'Indéterminé'; color = 'var(--warn)';
+          text = "Le nom saisi est trop court pour une estimation fiable. Complétez le nom exact de la société ou l'adresse du site.";
+        } else {
+          score = 68; level = 'Absence de signal négatif (démo)'; color = 'var(--warn)';
+          text = "Aucune correspondance trouvée dans notre base de démonstration — cela ne signifie pas que l'acteur est fiable. Consultez systématiquement les listes noires AMF et ScamDoc avant d'investir.";
+        }
+        searchZieglerPublications(val, flagged);
+      }
+
+      document.getElementById('scoreLevel').textContent = level;
+      document.getElementById('scorePts').textContent = score + ' / 100';
+      const bar = document.getElementById('scoreBar');
+      bar.style.width = score + '%';
+      bar.style.background = color;
+      document.getElementById('scoreText').textContent = text;
+      out.classList.add('show');
+
+      // Bouton "Signaler" mis en avant dès qu'un signal de risque réel est détecté
+      // (liste noire officielle ou base de démo — pas le simple démarchage ARCEP).
+      document.getElementById('comboCta').style.display = (score <= 15) ? 'inline-flex' : 'none';
+    });
+  })();
+
+  /* ---------------- IBAN VERIFICATION (format + cle de controle + annuaire BIC) ---------------- */
+  (function(){
+    // Longueurs officielles par pays (norme IBAN Register) — liste des pays européens/SEPA les plus courants.
+    const IBAN_LENGTHS = {
+      AD:24, AT:20, BE:16, BG:22, CH:21, CY:28, CZ:24, DE:22, DK:18, EE:20,
+      ES:24, FI:18, FR:27, GB:22, GR:27, HR:21, HU:28, IE:22, IS:26, IT:27,
+      LI:21, LT:20, LU:20, LV:21, MC:27, MT:31, NL:18, NO:15, PL:28, PT:25,
+      RO:24, SE:24, SI:19, SK:24, SM:27
+    };
+
+    function ibanMod97Valid(cleaned){
+      const rearranged = cleaned.slice(4) + cleaned.slice(0, 4);
+      let numeric = '';
+      for (const ch of rearranged){
+        numeric += /[A-Z]/.test(ch) ? (ch.charCodeAt(0) - 55).toString() : ch;
+      }
+      let remainder = numeric;
+      while (remainder.length > 9){
+        const block = remainder.slice(0, 9);
+        remainder = (parseInt(block, 10) % 97).toString() + remainder.slice(block.length);
+      }
+      return parseInt(remainder, 10) % 97 === 1;
+    }
+
+    // Annuaire des établissements bancaires français (BIC -> nom), charge automatiquement
+    // depuis assets/bic-directory.json, genere chaque jour par update-bic-directory.php
+    // (tache planifiee cote serveur), a partir d'une source ouverte et structuree.
+    let BIC_DIRECTORY = [];
+    (async function loadBicDirectory(){
+      try {
+        const res = await fetch('/assets/bic-directory.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        if (Array.isArray(data.entries) && data.entries.length >= 500){
+          BIC_DIRECTORY = data.entries;
+        }
+      } catch (err){
+        console.warn('Annuaire BIC indisponible pour le moment.', err);
+      }
+    })();
+
+    const ibanBtn = document.getElementById('ibanCheckBtn');
+    if (!ibanBtn) return;
+
+    // Pays pour lesquels openiban.com (service public, autorise l'appel direct
+    // depuis un navigateur — voir openiban.com) identifie automatiquement la banque à
+    // partir du seul IBAN, sans que l'internaute ait besoin de saisir un BIC séparément.
+    const OPENIBAN_SUPPORTED_COUNTRIES = ['DE', 'BE', 'NL', 'LU', 'CH', 'AT', 'LI'];
+
+    async function lookupBankViaOpenIban(cleanedIban){
+      try {
+        const res = await fetch('https://openiban.com/validate/' + encodeURIComponent(cleanedIban) + '?getBIC=true&validateBankCode=true');
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data;
+      } catch (err){
+        console.warn('openiban.com injoignable pour le moment.', err);
+        return null;
+      }
+    }
+
+    ibanBtn.addEventListener('click', async () => {
+      const rawIban = document.getElementById('vIban').value.trim();
+      const rawBic = document.getElementById('vBic').value.trim().toUpperCase();
+      const out = document.getElementById('ibanOut');
+      const breakdownEl = document.getElementById('ibanBreakdown');
+      const bicResultEl = document.getElementById('ibanBicResult');
+      breakdownEl.innerHTML = '';
+      bicResultEl.innerHTML = '';
+      document.getElementById('ibanCta').style.display = 'none';
+
+      if (!rawIban){ document.getElementById('vIban').focus(); return; }
+
+      const cleaned = rawIban.replace(/\s/g, '').toUpperCase();
+      const formatOk = /^[A-Z]{2}\d{2}[A-Z0-9]+$/.test(cleaned);
+      const country = cleaned.slice(0, 2);
+      const expectedLength = IBAN_LENGTHS[country];
+      const lengthOk = expectedLength ? cleaned.length === expectedLength : null;
+      const checksumOk = formatOk ? ibanMod97Valid(cleaned) : false;
+
+      let level, score, color, text;
+
+      if (!formatOk){
+        level = 'Format invalide'; score = 5; color = 'var(--danger)';
+        text = "Ce texte ne correspond pas au format d'un IBAN (2 lettres de pays + 2 chiffres de clé + caractères du compte). Vérifiez la saisie.";
+      } else if (!checksumOk){
+        level = 'Clé de contrôle invalide'; score = 8; color = 'var(--danger)';
+        text = "La clé de contrôle mathématique de cet IBAN est incorrecte — ce n'est PAS un IBAN valide. Il peut s'agir d'une erreur de saisie, ou d'un IBAN fabriqué de toutes pièces. Ne réalisez aucun virement vers ce numéro tant qu'il n'est pas corrigé.";
+      } else if (lengthOk === false){
+        level = 'Longueur incohérente avec le pays'; score = 30; color = 'var(--warn)';
+        text = "La clé de contrôle est mathématiquement correcte, mais la longueur ne correspond pas à celle attendue pour le pays " + country + " (" + expectedLength + " caractères attendus, " + cleaned.length + " fournis). À vérifier avec l'émetteur.";
+      } else {
+        level = 'Format et clé de contrôle valides'; score = 75; color = 'var(--ok)';
+        text = "Cet IBAN est mathématiquement valide (format et clé de contrôle corrects). Cela ne garantit ni que le compte existe, ni qu'il appartient à la personne ou société annoncée — seule votre banque peut le confirmer avant tout virement important.";
+      }
+
+      document.getElementById('ibanLevel').textContent = level;
+      document.getElementById('ibanPts').textContent = score + ' / 100';
+      const bar = document.getElementById('ibanBar');
+      bar.style.width = score + '%';
+      bar.style.background = color;
+      document.getElementById('ibanText').textContent = text;
+      out.classList.add('show');
+
+      // Bouton "Signaler" mis en avant si l'IBAN est invalide (potentiellement fabriqué).
+      document.getElementById('ibanCta').style.display = (score <= 10) ? 'inline-flex' : 'none';
+
+      // Décomposition visuelle pour la France
+      if (formatOk && country === 'FR' && cleaned.length === 27){
+        const bankCode = cleaned.slice(4, 9);
+        const branchCode = cleaned.slice(9, 14);
+        const account = cleaned.slice(14, 25);
+        const ribKey = cleaned.slice(25, 27);
+        breakdownEl.innerHTML = 'Code banque : <strong>' + bankCode + '</strong> — Code guichet : <strong>' + branchCode + '</strong> — N° de compte : <strong>' + account + '</strong> — Clé RIB : <strong>' + ribKey + '</strong>';
+      }
+
+      // Identification automatique de la banque pour les pays couverts par openiban.com
+      // (DE, BE, NL, LU, CH, AT, LI) — l'internaute reste sur notre site, la requête se
+      // fait en arrière-plan, avec attribution claire de la source.
+      if (checksumOk && OPENIBAN_SUPPORTED_COUNTRIES.includes(country)){
+        bicResultEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Identification de la banque en cours…</p>';
+        const openIbanData = await lookupBankViaOpenIban(cleaned);
+        if (openIbanData && openIbanData.bankData && openIbanData.bankData.name){
+          const bd = openIbanData.bankData;
+          bicResultEl.innerHTML = '<div class="pub-article" style="border-color:var(--ok);">'
+            + '<span class="pa-tag" style="color:var(--ok);">Établissement identifié</span>'
+            + '<span class="pa-title">' + bd.name + '</span>'
+            + '<p class="pa-excerpt">' + (bd.city ? 'Ville : ' + bd.city + ' — ' : '') + (bd.bic ? 'Code BIC : ' + bd.bic : '') + '</p>'
+            + '<a class="pa-link" href="https://openiban.com/" target="_blank" rel="noopener">Information fournie par openiban.com →</a>'
+            + '</div>';
+        } else {
+          bicResultEl.innerHTML = '<p class="pub-empty">La banque n\'a pas pu être identifiée automatiquement pour cet IBAN (service momentanément indisponible, ou établissement non référencé).</p>';
+        }
+      }
+
+      // Recherche dans l'annuaire BIC français si un code a été fourni manuellement
+      if (rawBic){
+        const matches = BIC_DIRECTORY.filter(e => e.bic === rawBic || e.bic.startsWith(rawBic));
+        if (matches.length){
+          const m = matches[0];
+          bicResultEl.innerHTML = '<div class="pub-article" style="border-color:var(--ok);">'
+            + '<span class="pa-tag" style="color:var(--ok);">Établissement identifié</span>'
+            + '<span class="pa-title">' + m.name + '</span>'
+            + '<p class="pa-excerpt">Ville : ' + (m.city || 'non renseignée') + ' — Code BIC : ' + m.bic + '</p>'
+            + '</div>';
+        } else if (BIC_DIRECTORY.length) {
+          bicResultEl.innerHTML = '<p class="pub-empty">Ce code BIC n\'a pas été retrouvé dans notre annuaire des établissements français. Il peut s\'agir d\'une banque étrangère, ou d\'un code inexistant — vérifiez-le directement auprès de l\'émetteur.</p>';
+        }
+      }
+    });
+  })();
+
+  /* ---------------- DOMAIN AGE VERIFICATION (WhoisJSON, via relais serveur) ---------------- */
+  (function(){
+    const btn = document.getElementById('domaineCheckBtn');
+    if (!btn) return;
+
+    function escapeHtmlDomaine(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    btn.addEventListener('click', async () => {
+      const raw = document.getElementById('vDomaine').value.trim();
+      const out = document.getElementById('domaineOut');
+      const resultsEl = document.getElementById('domaineStandaloneResults');
+      const cta = document.getElementById('domaineCta');
+      if (!raw){ document.getElementById('vDomaine').focus(); return; }
+
+      cta.style.display = 'none';
+      out.classList.add('show');
+      resultsEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Vérification en cours…</p>';
+
+      try {
+        const res = await fetch('/whois-check.php?domain=' + encodeURIComponent(raw));
+        const data = await res.json();
+
+        if (!res.ok || data.error){
+          resultsEl.innerHTML = '<p class="pub-empty">La vérification n\'a pas pu être effectuée pour ce domaine (format invalide, ou service momentanément indisponible).</p>';
+          return;
+        }
+
+        const ageDays = data.ageDays;
+        const dateStr = data.created ? new Date(data.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+
+        if (ageDays === null) {
+          resultsEl.innerHTML = '<p class="pub-empty">La date de création de ce domaine n\'a pas pu être déterminée (données d\'enregistrement non publiques, ou domaine non trouvé).</p>';
+        } else if (data.isNewlyRegistered) {
+          resultsEl.innerHTML = '<div class="score-readout"><span class="lvl" style="color:var(--danger);">Domaine très récent</span><span class="pts">' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + '</span></div>'
+            + '<div class="score-gauge"><i style="width:10%; background:var(--danger);"></i></div>'
+            + '<p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;">Ce nom de domaine a été enregistré il y a seulement ' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + (dateStr ? ' (le ' + escapeHtmlDomaine(dateStr) + ')' : '') + '. Un site aussi récent pour une société qui se présente comme établie de longue date est un signal fréquent d\'arnaque. Redoublez de prudence avant tout versement.</p>';
+          cta.style.display = 'inline-flex';
+        } else {
+          resultsEl.innerHTML = '<div class="score-readout"><span class="lvl">Domaine établi</span><span class="pts">' + Math.floor(ageDays / 365) + ' an(s)</span></div>'
+            + '<div class="score-gauge"><i style="width:75%; background:var(--ok);"></i></div>'
+            + '<p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;">Domaine enregistré' + (dateStr ? ' le ' + escapeHtmlDomaine(dateStr) : '') + (data.registrar ? ', auprès de ' + escapeHtmlDomaine(data.registrar) : '') + '. Cela ne garantit pas la fiabilité du site, mais l\'absence de création très récente est un point rassurant parmi d\'autres — à compléter avec les autres outils de vérification.</p>';
+        }
+      } catch (err){
+        resultsEl.innerHTML = '<p class="pub-empty">La vérification n\'a pas pu être effectuée (connexion au service impossible).</p>';
+      }
+    });
+  })();
+
+  /* ---------------- CRYPTO WALLET VERIFICATION (format + GoPlus Security) ---------------- */
+  (function(){
+    const cryptoBtn = document.getElementById('cryptoCheckBtn');
+    if (!cryptoBtn) return;
+
+    // Vérifications de format par blockchain (structure/longueur). Ce n'est pas une
+    // somme de contrôle cryptographique complète (contrairement à l'IBAN) mais cela
+    // détecte déjà la grande majorité des adresses mal recopiées ou du mauvais format.
+    function formatCheck(address, chain){
+      const a = address.trim();
+      if (chain === 'bitcoin'){
+        if (/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(a)) return { ok: true, label: 'Bitcoin (Legacy/P2SH)' };
+        if (/^bc1[a-z0-9]{25,59}$/i.test(a)) return { ok: true, label: 'Bitcoin (Bech32/SegWit natif)' };
+        return { ok: false };
+      }
+      if (chain === 'solana'){
+        return { ok: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a), label: 'Solana' };
+      }
+      if (chain === 'tron'){
+        return { ok: /^T[a-zA-Z0-9]{33}$/.test(a), label: 'Tron' };
+      }
+      // Chaines compatibles EVM (Ethereum, BSC, Polygon, Arbitrum, Base, Optimism, Avalanche...)
+      return { ok: /^0x[a-fA-F0-9]{40}$/.test(a), label: 'compatible EVM' };
+    }
+
+    cryptoBtn.addEventListener('click', async () => {
+      const address = document.getElementById('vCrypto').value.trim();
+      const chain = document.getElementById('vCryptoChain').value;
+      const chainLabel = document.getElementById('vCryptoChain').selectedOptions[0].textContent;
+      const out = document.getElementById('cryptoOut');
+
+      if (!address){ document.getElementById('vCrypto').focus(); return; }
+      document.getElementById('cryptoCta').style.display = 'none';
+
+      const fc = formatCheck(address, chain);
+      let level, score, color, text;
+
+      if (!fc.ok){
+        level = 'Format invalide'; score = 5; color = 'var(--danger)';
+        text = "Cette adresse ne correspond pas au format attendu pour " + chainLabel + ". Vérifiez qu'elle a été copiée intégralement, sans espace ni caractère manquant.";
+        document.getElementById('cryptoLevel').textContent = level;
+        document.getElementById('cryptoPts').textContent = score + ' / 100';
+        const bar = document.getElementById('cryptoBar');
+        bar.style.width = score + '%'; bar.style.background = color;
+        document.getElementById('cryptoText').textContent = text;
+        out.classList.add('show');
+        return;
+      }
+
+      level = 'Format valide — vérification en cours…'; score = 50; color = 'var(--warn)';
+      text = 'Recherche en cours auprès de GoPlus Security…';
+      document.getElementById('cryptoLevel').textContent = level;
+      document.getElementById('cryptoPts').textContent = '';
+      const bar = document.getElementById('cryptoBar');
+      bar.style.width = '50%'; bar.style.background = color;
+      document.getElementById('cryptoText').textContent = text;
+      out.classList.add('show');
+
+      if (chain === 'bitcoin'){
+        // GoPlus Security ne couvre pas Bitcoin pour cette vérification.
+        document.getElementById('cryptoLevel').textContent = 'Format valide';
+        document.getElementById('cryptoPts').textContent = '';
+        bar.style.width = '60%'; bar.style.background = 'var(--warn)';
+        document.getElementById('cryptoText').textContent = "L'adresse a un format Bitcoin valide. Aucune base de détection d'adresses malveillantes n'est disponible pour Bitcoin — restez vigilant, en particulier si le montant demandé est important.";
+        return;
+      }
+
+      try {
+        const res = await fetch('/check-crypto-address.php?address=' + encodeURIComponent(address) + '&chain_id=' + encodeURIComponent(chain));
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+
+        if (data.is_risky){
+          document.getElementById('cryptoLevel').textContent = 'Adresse signalée à risque';
+          document.getElementById('cryptoPts').textContent = '5 / 100';
+          bar.style.width = '5%'; bar.style.background = 'var(--danger)';
+          document.getElementById('cryptoText').textContent = "Cette adresse est associée à une activité à risque connue de GoPlus Security (" + data.risk_flags.join(', ') + "). N'envoyez aucun fonds vers cette adresse.";
+          document.getElementById('cryptoCta').style.display = 'inline-flex';
+        } else {
+          document.getElementById('cryptoLevel').textContent = 'Aucun signal de risque connu';
+          document.getElementById('cryptoPts').textContent = '70 / 100';
+          bar.style.width = '70%'; bar.style.background = 'var(--warn)';
+          document.getElementById('cryptoText').textContent = "Cette adresse n'apparaît pas dans la base de GoPlus Security au moment de la vérification. Cela ne garantit pas sa fiabilité : de nouvelles adresses frauduleuses apparaissent en continu. Restez prudent, en particulier pour un premier envoi.";
+        }
+      } catch (err){
+        document.getElementById('cryptoLevel').textContent = 'Vérification indisponible';
+        document.getElementById('cryptoPts').textContent = '';
+        bar.style.width = '50%'; bar.style.background = 'var(--warn)';
+        document.getElementById('cryptoText').textContent = "Le format de l'adresse est valide, mais la vérification en direct n'a pas pu être effectuée pour le moment. Réessayez dans quelques instants.";
+      }
+    });
+  })();
+
+
+  /* ---------------- NOTIFICATIONS PUSH ---------------- */
+  (function(){
+    const VAPID_PUBLIC_KEY = 'BAFvhaZRCUjzQCn3LdgME1XLoC8_byYrpTvMMq-pX5ESlyRJETw2MtoBCoMlXb86cAarAEijjZzADhSIXGOZviw';
+    const btn = document.getElementById('enableNotifBtn');
+    const card = document.getElementById('notifCard');
+
+    function urlBase64ToUint8Array(base64String){
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+    }
+
+    function setCardState(state){
+      if (state === 'unsupported'){
+        card.style.display = 'none';
+      } else if (state === 'enabled'){
+        card.querySelector('h3').textContent = 'Notifications activées';
+        card.querySelector('p').textContent = "Vous serez averti dès qu'une nouvelle alerte, publication ou activité du forum est disponible.";
+        btn.style.display = 'none';
+      } else if (state === 'denied'){
+        card.querySelector('p').textContent = "Les notifications ont été refusées. Vous pouvez les réactiver depuis les réglages de votre navigateur ou de votre téléphone.";
+        btn.style.display = 'none';
+      }
+    }
+
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)){
+      setCardState('unsupported');
+      return;
+    }
+
+    if (Notification.permission === 'granted'){
+      setCardState('enabled');
+    } else if (Notification.permission === 'denied'){
+      setCardState('denied');
+    }
+
+    btn.addEventListener('click', async () => {
+      btn.textContent = 'Activation…';
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted'){
+          setCardState(permission === 'denied' ? 'denied' : 'unsupported');
+          return;
+        }
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        });
+        await fetch('/push-subscribe.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(subscription),
+        });
+        setCardState('enabled');
+      } catch (err){
+        console.error('Erreur activation notifications:', err);
+        btn.textContent = 'Activer les notifications';
+      }
+    });
+  })();
+
+  /* ---------------- SERVICE WORKER ---------------- */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+</script>
+
+</body>
+</html>

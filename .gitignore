@@ -2,3 +2,4 @@
 *.log
 cron-secret.php
 whois-check.php
+push-subscribers.json
