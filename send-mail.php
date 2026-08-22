@@ -45,7 +45,14 @@ if (count($data) > 40) {
 }
 
 // ---------- Configuration SMTP ----------
-$config = require __DIR__ . '/mail-config.php';
+$mailConfigFile = __DIR__ . '/mail-config.php';
+if (!file_exists($mailConfigFile)) {
+    http_response_code(503);
+    error_log('send-mail.php: mail-config.php introuvable -- copiez mail-config.sample.php et renseignez vos identifiants SMTP.');
+    echo json_encode(['error' => 'Service non configuré', 'success' => false]);
+    exit;
+}
+$config = require $mailConfigFile;
 
 // ---------- Construction du corps de l'email (tableau HTML simple) ----------
 function escapeForEmail($str) {

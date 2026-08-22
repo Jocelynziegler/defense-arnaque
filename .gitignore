@@ -1,6 +1,8 @@
 .DS_Store
 *.log
+*.patch
 cron-secret.php
 whois-check.php
 push-subscribers.json
 mail-config.php
+airtable-proxy.php
