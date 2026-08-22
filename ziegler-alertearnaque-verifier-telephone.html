@@ -354,7 +354,7 @@
   .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--purple); background:#fff; outline:none;}
   .verify-col{background:#fff; border:1px solid var(--rule); border-radius:14px; padding:40px;}
   @media(max-width:640px){.verify-col{padding:26px 20px;}}
-  .verify-col h3{font-size:20px; margin-bottom:6px; font-family:var(--serif); font-weight:700;}
+  .verify-col h2{font-size:20px; margin-bottom:6px; font-family:var(--serif); font-weight:700;}
   .verify-col .sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:26px; line-height:1.6;}
   .verify-col .sub strong{color:var(--ink); font-weight:700;}
   .score-gauge{height:10px; border-radius:6px; background:var(--rule); overflow:hidden; margin:18px 0 10px;}
@@ -424,7 +424,7 @@
   <div class="wrap" style="max-width:900px;">
 
     <div class="verify-col">
-      <h3 id="comboTitle">Vérifier un numéro de téléphone</h3>
+      <h2 id="comboTitle">Vérifier un numéro de téléphone</h2>
       <p class="sub" id="comboSub">Renseignez le numéro qui vous a contacté. L'outil identifie les préfixes de démarchage commercial (ARCEP), recherche dans les alertes publiées par d'autres visiteurs, et propose des liens vers des sites spécialisés.</p>
       <div class="field"><label for="vname" id="comboLabel">Numéro de téléphone</label><input id="vname" type="text" placeholder="Ex. : 06 12 34 56 78"></div>
       <button class="btn" id="checkBtn" type="button" style="margin-top:16px;">Vérifier</button>
@@ -689,13 +689,20 @@
       ta.innerHTML = str;
       return ta.value;
     }
+    function safeUrl(url){
+      if (!url) return '#';
+      const cleaned = String(url).replace(/[\s\x00-\x1F]/g, '');
+      if (/^https?:\/\//i.test(cleaned)) return escapeHtml(String(url).trim());
+      return '#';
+    }
 
     function pubEmptyMarkup(query, isError){
       const searchLink = 'https://ziegler-associes.com/?s=' + encodeURIComponent(query);
+      const safeQuery = escapeHtml(query);
       const msg = isError
         ? "La recherche en direct n'a pas pu être effectuée depuis ce navigateur."
         : "Aucun article publié par le cabinet sur ce sujet pour le moment.";
-      return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + query + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
+      return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + safeQuery + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
     }
 
     // Si un article du cabinet existe sur ce sujet, le score de démo générique
@@ -729,11 +736,12 @@
           // laisser un message rassurant à côté d'un article potentiellement alarmant.
           if (!demoFlagged) overrideScoreWithPublicationFound();
           resultsEl.innerHTML = data.slice(0, 3).map(post => {
-            const title = decodeEntities((post.title && post.title.rendered) || 'Article du cabinet');
+            const title = escapeHtml(decodeEntities((post.title && post.title.rendered) || 'Article du cabinet'));
             const excerptRaw = (post.excerpt && post.excerpt.rendered) || '';
-            let excerpt = decodeEntities(excerptRaw.replace(/<[^>]+>/g, '')).trim();
-            if (excerpt.length > 170) excerpt = excerpt.slice(0, 170).trim() + '…';
-            const link = post.link || ('https://ziegler-associes.com/?s=' + encodeURIComponent(query));
+            let excerptPlain = decodeEntities(excerptRaw.replace(/<[^>]+>/g, '')).trim();
+            if (excerptPlain.length > 170) excerptPlain = excerptPlain.slice(0, 170).trim() + '…';
+            const excerpt = escapeHtml(excerptPlain);
+            const link = safeUrl(post.link) !== '#' ? safeUrl(post.link) : escapeHtml('https://ziegler-associes.com/?s=' + encodeURIComponent(query));
             return '<div class="pub-article">'
               + '<span class="pa-tag">Article du cabinet</span>'
               + '<span class="pa-title">' + title + '</span>'

@@ -737,7 +737,7 @@
   .foot-grid{display:grid; grid-template-columns:1.2fr 0.85fr 0.95fr 0.95fr; gap:32px; padding-bottom:36px; border-bottom:1px solid rgba(255,255,255,.12);}
   @media(max-width:900px){.foot-grid{grid-template-columns:1fr 1fr; gap:28px;}}
   @media(max-width:560px){.foot-grid{grid-template-columns:1fr; gap:28px;}}
-  .foot-grid h4{color:#EDE9DE; font-family:var(--sans); font-size:13px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; font-weight:600;}
+  .foot-grid h3{color:#EDE9DE; font-family:var(--sans); font-size:13px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; font-weight:600;}
   .foot-grid p, .foot-grid a{font-size:13.5px; line-height:1.7; color:#9AA2B6; text-decoration:none;}
   .foot-grid a:hover{color:#fff;}
   .foot-bottom{display:flex; justify-content:space-between; padding-top:24px; font-size:12.5px; flex-wrap:wrap; gap:10px;}
@@ -776,6 +776,12 @@
     nav.links, .hero-actions .cta-btn.ghost{display:none;}
     .nav-inner .cta-btn{display:none;}
     .burger{display:block;}
+  }
+  @media(max-width:360px){
+    .nav-inner{padding:14px 10px; gap:8px;}
+    .brand{gap:6px;}
+    .brand-mark{width:34px; height:34px; font-size:12px;}
+    .brand-text strong{font-size:11px;}
   }
   @media(max-width:760px){
     .schema-grid{grid-template-columns:repeat(2,1fr);}
@@ -1682,11 +1688,11 @@
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <h4>Ziegler Alerte Arnaque</h4>
+        <h3>Ziegler Alerte Arnaque</h3>
         <p>Plateforme de signalement, de vérification et de mise en relation avec un avocat, éditée par l'AARPI Cabinet d'Avocats Ziegler &amp; Associés.</p>
       </div>
       <div>
-        <h4>Le parcours</h4>
+        <h3>Le parcours</h3>
         <a href="#signaler">Signaler une arnaque</a><br>
         <a href="#verifier">Vérifier un placement</a><br>
         <a href="ziegler-alertearnaque-alertes.html">Alertes de la communauté</a><br>
@@ -1694,7 +1700,7 @@
         <a href="#equipe">L'équipe</a>
       </div>
       <div>
-        <h4>Informations</h4>
+        <h3>Informations</h3>
         <a href="ziegler-alertearnaque-a-propos.html">À propos de la plateforme</a><br>
         <a href="ziegler-alertearnaque-faq.html">FAQ</a><br>
         <a href="ziegler-alertearnaque-mentions-legales.html">Mentions légales</a><br>
@@ -1704,7 +1710,7 @@
         <a href="https://jocelynziegler.fr" target="_blank" rel="noopener">Jocelyn Ziegler, Avocat</a>
       </div>
       <div>
-        <h4>Contact</h4>
+        <h3>Contact</h3>
         <p style="margin-bottom:4px;">Email :<br><a href="mailto:contact@ziegler-associes.com">contact@ziegler-associes.com</a></p>
         <p style="margin-bottom:4px;">Téléphone :<br><a href="tel:+33188314592">01 88 31 45 92</a><br><a href="tel:+33752076032">07 52 07 60 32</a></p>
         <p>Adresse :<br>51 Av. Raymond Poincaré,<br>75116 Paris, France</p>
@@ -2060,8 +2066,9 @@
     // autres schémas dangereux avant insertion dans un attribut href.
     function safeUrl(url){
       if (!url) return '#';
-      const trimmed = String(url).trim();
-      return /^https?:\/\//i.test(trimmed) ? trimmed : '#';
+      const cleaned = String(url).replace(/[\s\x00-\x1F]/g, '');
+      if (/^https?:\/\//i.test(cleaned)) return escapeHtml(String(url).trim());
+      return '#';
     }
 
     async function searchCommunityAlerts(query, field){
@@ -2541,6 +2548,26 @@
       ta.innerHTML = str;
       return ta.value;
     }
+    // Échappe les caractères HTML sensibles avant insertion dans le DOM.
+    // Ce flux se charge AUTOMATIQUEMENT à chaque visite, sans la moindre
+    // interaction de l'internaute — un titre ou un lien d'article WordPress
+    // malveillant s'exécuterait donc chez TOUS les visiteurs de l'accueil,
+    // sans même qu'ils tapent quoi que ce soit dans un champ.
+    function escapeFeed(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    function safeUrlFeed(url){
+      const fallback = 'https://ziegler-associes.com/publications/';
+      if (!url) return escapeFeed(fallback);
+      const cleaned = String(url).replace(/[\s\x00-\x1F]/g, '');
+      if (/^https?:\/\//i.test(cleaned)) return escapeFeed(String(url).trim());
+      return escapeFeed(fallback);
+    }
     function fallback(){
       statusEl.style.display = 'none';
       listEl.innerHTML = '<p class="pub-empty">Retrouvez l\'ensemble de nos analyses sur <a href="https://ziegler-associes.com/publications/" target="_blank" rel="noopener">ziegler-associes.com/publications</a>.</p>';
@@ -2552,10 +2579,10 @@
         if (!Array.isArray(data) || !data.length) return fallback();
         statusEl.style.display = 'none';
         listEl.innerHTML = data.map(post => {
-          const title = decodeEnt((post.title && post.title.rendered) || 'Article du cabinet');
-          const link = post.link || 'https://ziegler-associes.com/publications/';
+          const title = escapeFeed(decodeEnt((post.title && post.title.rendered) || 'Article du cabinet'));
+          const link = safeUrlFeed(post.link);
           const date = post.date ? new Date(post.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-          return '<a class="feed-item" href="' + link + '" target="_blank" rel="noopener"><span class="fi-title">' + title + '</span><span class="fi-date">' + date + '</span></a>';
+          return '<a class="feed-item" href="' + link + '" target="_blank" rel="noopener"><span class="fi-title">' + title + '</span><span class="fi-date">' + escapeFeed(date) + '</span></a>';
         }).join('');
       })
       .catch(fallback);
@@ -2666,13 +2693,19 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
     }
-    // N'autorise que des liens http(s) ou relatifs — bloque explicitement
-    // javascript: et autres schémas dangereux.
+    // N'autorise que des URL http(s) authentiques avant insertion dans un
+    // attribut href. Retire d'abord les espaces et caractères de contrôle
+    // (tabulation, retour ligne...) pour l'ANALYSE du schéma uniquement —
+    // sans ça, "java\tscript:" redevient "javascript:" une fois inséré,
+    // les navigateurs supprimant ces caractères des URL. Le résultat est
+    // toujours échappé pour un attribut HTML (protège aussi contre
+    // l'évasion d'attribut via un guillemet dans l'URL elle-même).
     function safeUrlTicker(url){
-      if (!url) return 'ziegler-alertearnaque-alertes.html';
-      const trimmed = String(url).trim();
-      if (/^https?:\/\//i.test(trimmed) || /^[a-z0-9._-]/i.test(trimmed)) return trimmed;
-      return 'ziegler-alertearnaque-alertes.html';
+      const fallback = 'ziegler-alertearnaque-alertes.html';
+      if (!url) return escapeHtmlTicker(fallback);
+      const cleaned = String(url).replace(/[\s\x00-\x1F]/g, '');
+      if (/^https?:\/\//i.test(cleaned)) return escapeHtmlTicker(String(url).trim());
+      return escapeHtmlTicker(fallback);
     }
 
     if (track){
