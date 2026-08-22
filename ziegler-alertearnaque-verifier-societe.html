@@ -317,7 +317,13 @@
     pointer-events:none; transition:opacity .2s, transform .2s; border:1px solid var(--rule);
   }
   .chatbot-panel.open{opacity:1; transform:none; pointer-events:auto;}
-  @media(max-width:760px){.chatbot-panel{right:16px; bottom:150px; width:calc(100vw - 32px); height:calc(100vh - 250px);}}
+  @media(max-width:760px){
+    .chatbot-panel{
+      left:0; right:0; top:0; bottom:0; width:100%; max-width:100%;
+      height:100vh; height:100dvh; max-height:100vh; max-height:100dvh;
+      border-radius:0; border:none;
+    }
+  }
 
   .cb-header{display:flex; align-items:center; gap:10px; padding:14px 16px; background:var(--ink); flex-shrink:0;}
   .cb-avatar{
@@ -356,8 +362,8 @@
   }
   .cb-input-row input:focus, .cb-input-row textarea:focus{border-color:var(--purple); background:#fff;}
   .cb-send{
-    width:38px; height:38px; border-radius:50%; background:var(--purple); border:none; color:#fff; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px;
+    width:44px; height:44px; border-radius:50%; background:var(--purple); border:none; color:#fff; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:17px;
   }
   .cb-send:hover{opacity:.9;}
   .cb-footer{padding:8px 14px; font-size:10.5px; color:var(--ink-soft-2); text-align:center; border-top:1px solid var(--rule); background:#fff;}
@@ -1165,12 +1171,23 @@
   let opened = false;
   let started = false;
 
+  function positionLauncher(){
+    var bar = document.querySelector('.mobile-cta-bar');
+    var extra = (bar && getComputedStyle(bar).display !== 'none') ? bar.getBoundingClientRect().height : 0;
+    var base = window.matchMedia('(max-width:760px)').matches ? 16 : 24;
+    launcher.style.bottom = (extra + base) + 'px';
+    if (teaser) teaser.style.bottom = (extra + base + 64) + 'px';
+  }
+  positionLauncher();
+  window.addEventListener('resize', positionLauncher);
+
   function openPanel(){
     panel.classList.add('open');
     panel.setAttribute('aria-hidden', 'false');
     launcher.classList.add('open');
     hideTeaser();
     opened = true;
+    if (window.matchMedia('(max-width:760px)').matches) document.body.style.overflow = 'hidden';
     if (!started) { started = true; goTo('start'); }
   }
   function closePanel(){
@@ -1178,6 +1195,7 @@
     panel.setAttribute('aria-hidden', 'true');
     launcher.classList.remove('open');
     opened = false;
+    document.body.style.overflow = '';
   }
   function showTeaser(){ if (!started) teaser.classList.add('show'); }
   function hideTeaser(){ teaser.classList.remove('show'); }
