@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9BV5B0W23Z"></script>
+<!-- Google tag (gtag.js) -- ne se charge qu'apres consentement, voir bandeau cookies -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-9BV5B0W23Z');
+  (function(){
+    function loadGA(){
+      if (window.__gaLoaded) return;
+      window.__gaLoaded = true;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9BV5B0W23Z';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-9BV5B0W23Z');
+    }
+    window.__loadGA = loadGA;
+    try {
+      if (localStorage.getItem('ga_consent') === 'accepted') loadGA();
+    } catch(e) {}
+  })();
 </script>
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -918,6 +931,30 @@
   .cb-summary{background:#fff; border:1px solid var(--rule); border-radius:12px; padding:12px 14px; font-size:12.5px; line-height:1.7; color:var(--ink-soft);}
   .cb-summary strong{color:var(--ink);}
 
+  /* ---------------- BANDEAU DE CONSENTEMENT COOKIES ---------------- */
+  .cookie-banner{
+    position:fixed; left:0; right:0; bottom:0; z-index:999;
+    background:var(--ink); color:#EDE9DE; padding:16px 20px;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px;
+    box-shadow:0 -4px 16px rgba(0,0,0,.2);
+  }
+  .cookie-banner[hidden]{display:none;}
+  @media(max-width:900px){
+    .cookie-banner{bottom:72px;}
+  }
+  .cookie-banner p{margin:0; font-size:13.5px; line-height:1.5; flex:1 1 auto; min-width:240px;}
+  .cookie-banner a{color:var(--purple-light); text-decoration:underline;}
+  .cookie-banner-actions{display:flex; gap:10px; flex-shrink:0;}
+  .cookie-banner .cb-btn{
+    padding:9px 20px; font-size:13px; border-radius:999px; cursor:pointer; font-weight:700;
+    font-family:var(--sans); border:1px solid rgba(255,255,255,.35);
+  }
+  .cookie-banner .cb-decline{background:transparent; color:#EDE9DE;}
+  .cookie-banner .cb-accept{background:var(--purple); border-color:var(--purple); color:#fff;}
+  @media(max-width:640px){
+    .cookie-banner{flex-direction:column; align-items:stretch; text-align:center; padding:16px;}
+    .cookie-banner-actions{justify-content:center;}
+  }
 </style>
 </head>
 <body>
@@ -3285,5 +3322,30 @@ document.addEventListener('click', (e) => {
 });
 </script>
 
+  <div class="cookie-banner" id="cookieBanner" hidden>
+    <p>Ce site utilise des cookies pour l'analyse du trafic. <a href="/ziegler-alertearnaque-mentions-legales.html#donnees">En savoir plus</a>.</p>
+    <div class="cookie-banner-actions">
+      <button type="button" class="cb-btn cb-decline" id="cookieDecline">Refuser</button>
+      <button type="button" class="cb-btn cb-accept" id="cookieAccept">Accepter</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var banner = document.getElementById('cookieBanner');
+      if (!banner) return;
+      var consent;
+      try { consent = localStorage.getItem('ga_consent'); } catch(e) { consent = null; }
+      if (!consent) banner.hidden = false;
+      document.getElementById('cookieAccept').addEventListener('click', function(){
+        try { localStorage.setItem('ga_consent', 'accepted'); } catch(e) {}
+        banner.hidden = true;
+        if (window.__loadGA) window.__loadGA();
+      });
+      document.getElementById('cookieDecline').addEventListener('click', function(){
+        try { localStorage.setItem('ga_consent', 'declined'); } catch(e) {}
+        banner.hidden = true;
+      });
+    })();
+  </script>
 </body>
 </html>
