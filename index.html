@@ -1134,10 +1134,7 @@
                 <div class="field"><label for="ent">Nom de la société / plateforme</label><input id="ent" name="entite" type="text" placeholder="Ex. : Capital Growth Invest" required></div>
                 <div class="field"><label for="site">Site web / application <span class="opt">(si connu)</span></label><input id="site" name="site" type="text" placeholder="www.exemple.com"></div>
               </div>
-              <div class="field-row">
-                <div class="field"><label for="tel">Téléphone de contact</label><input id="tel" name="telcontact" type="text" placeholder="Numéro utilisé par l'interlocuteur"></div>
-                <div class="field"><label for="pays">Pays / localisation apparente</label><input id="pays" name="pays" type="text" placeholder="France, étranger, inconnu…"></div>
-              </div>
+              <div class="field"><label for="tel">Téléphone de contact avec l'escroc <span class="opt">(si connu)</span></label><input id="tel" name="telcontact" type="text" placeholder="Numéro utilisé par l'interlocuteur"></div>
               <div class="field"><label for="canal">Comment le contact a-t-il été établi ? <span class="opt">(optionnel)</span></label>
                 <select id="canal" name="canal">
                   <option value="">Sélectionner…</option>
@@ -1155,30 +1152,7 @@
             <div class="rstep" data-step="4" hidden>
               <span class="step-label">Étape 4 / 4</span>
               <h3 class="step-title">Montants versés et description</h3>
-              <div class="field-row">
-                <div class="field"><label for="montant">Montant total versé (€)</label><input id="montant" name="montant" type="number" min="0" placeholder="Ex. : 18 500" required></div>
-                <div class="field"><label for="datepremier">Date du premier versement</label><input id="datepremier" name="datepremier" type="date"></div>
-              </div>
-              <div class="field-row">
-                <div class="field"><label for="moyen">Moyen de paiement utilisé</label>
-                  <select id="moyen" name="moyen">
-                    <option value="">Sélectionner…</option>
-                    <option>Virement bancaire</option>
-                    <option>Carte bancaire</option>
-                    <option>Crypto-monnaies</option>
-                    <option>Espèces</option>
-                    <option>Plusieurs moyens</option>
-                  </select>
-                </div>
-                <div class="field"><label for="retrait">Avez-vous tenté un retrait ?</label>
-                  <select id="retrait" name="retrait">
-                    <option value="">Sélectionner…</option>
-                    <option>Oui, refusé ou bloqué</option>
-                    <option>Oui, des frais m'ont été réclamés</option>
-                    <option>Non, pas encore essayé</option>
-                  </select>
-                </div>
-              </div>
+              <div class="field"><label for="montant">Montant total versé (€)</label><input id="montant" name="montant" type="number" min="0" placeholder="Ex. : 18 500" required></div>
               <div class="field" style="margin-bottom:18px;">
                 <label for="explicatif">Décrivez votre situation et le préjudice subi</label>
                 <textarea id="explicatif" name="explicatif" rows="5" placeholder="Expliquez ce qui s'est passé, vos échanges avec l'interlocuteur, et le préjudice (financier, moral…) que vous estimez avoir subi." required></textarea>
@@ -1864,12 +1838,8 @@
         "Type d'arnaque": get('type'),
         'Site web': get('site'),
         "Téléphone de l'interlocuteur": get('telcontact'),
-        'Pays / localisation': get('pays'),
         'Canal de contact': get('canal'),
-        'Montant versé (€)': get('montant'),
-        'Date du premier versement': get('datepremier'),
-        'Moyen de paiement': get('moyen'),
-        'Tentative de retrait': get('retrait')
+        'Montant versé (€)': get('montant')
       };
 
       submitBtn.disabled = true;
