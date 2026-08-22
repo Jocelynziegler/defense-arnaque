@@ -67,7 +67,7 @@
         "addressCountry": "FR"
       },
       "areaServed": { "@type": "Country", "name": "France" },
-      "knowsAbout": ["Arnaques financières", "Escroqueries en cryptomonnaie", "Trading frauduleux", "Droit bancaire", "Récupération de fonds"],
+      "knowsAbout": ["Arnaques financières", "Escroqueries en cryptomonnaie", "Trading frauduleux", "Droit bancaire", "Récupération de fonds", "Vérification de noms de domaine"],
       "employee": [
         { "@type": "Person", "name": "Jocelyn Ziegler", "jobTitle": "Avocat Associé", "worksFor": { "@id": "https://ziegler-alertearnaque.com/#organization" } },
         { "@type": "Person", "name": "Alexandre Dakos", "jobTitle": "Avocat Associé", "worksFor": { "@id": "https://ziegler-alertearnaque.com/#organization" } }
@@ -91,6 +91,7 @@
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vérification de numéro de téléphone", "description": "Détection des préfixes de démarchage commercial ARCEP et recherche dans les signalements communautaires de numéros suspects.", "url": "https://ziegler-alertearnaque.com/#verifier" } },
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vérification d'adresse email", "description": "Vérification d'une adresse email contre la liste noire officielle Banque de France / ACPR / AMF (usurpations d'identité, sites non autorisés).", "url": "https://ziegler-alertearnaque.com/#verifier" } },
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vérification d'IBAN", "description": "Validation du format et de la clé de contrôle d'un IBAN (norme ISO 7064), et identification de l'établissement bancaire pour la France et 7 pays européens.", "url": "https://ziegler-alertearnaque.com/#verifier" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vérification de l'âge d'un nom de domaine", "description": "Vérification de la date d'enregistrement WHOIS d'un site, pour détecter un domaine créé très récemment par une société qui prétend être établie de longue date.", "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html" } },
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vérification de portefeuille crypto-actifs", "description": "Vérification du format d'une adresse de portefeuille crypto (Ethereum, Bitcoin, Solana...) et détection d'adresse malveillante via GoPlus Security.", "url": "https://ziegler-alertearnaque.com/#verifier" } },
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Auto-diagnostic d'arnaque financière", "description": "Questionnaire d'auto-évaluation en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur.", "url": "https://ziegler-alertearnaque.com/#verifier" } }
         ]
@@ -123,6 +124,15 @@
       "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-alertes.html"
     },
     {
+      "@type": "FAQPage",
+      "@id": "https://ziegler-alertearnaque.com/#faqpage",
+      "mainEntity": [
+      { "@type": "Question", "name": "Que se passe-t-il après avoir décrit ma situation ?", "acceptedAnswer": { "@type": "Answer", "text": "Notre secrétariat juridique vous contacte pour organiser la suite de votre dossier avec un avocat du cabinet." } },
+      { "@type": "Question", "name": "Les outils de vérification remplacent-ils les vérifications officielles de l'AMF ?", "acceptedAnswer": { "@type": "Answer", "text": "Non. Ils sont indicatifs et doivent être complétés par une vérification sur les listes noires officielles de l'AMF et sur ScamDoc." } },
+      { "@type": "Question", "name": "Quels recours juridiques existent après une arnaque financière ?", "acceptedAnswer": { "@type": "Answer", "text": "Selon votre situation, plusieurs types d'actions peuvent être engagées avec l'accompagnement du cabinet, des démarches amiables jusqu'à une procédure contentieuse si nécessaire." } }
+      ]
+    },
+    {
       "@type": "SoftwareApplication",
       "name": "Moteur de vérification Ziegler Alerte Arnaque",
       "applicationCategory": "SecurityApplication",
@@ -134,6 +144,7 @@
         "Détection des préfixes de démarchage téléphonique officiels ARCEP et recherche dans une base d'alertes communautaires propre au cabinet",
         "Validation d'IBAN selon la norme internationale ISO 7064 (clé de contrôle mod-97), avec décomposition du code banque pour la France",
         "Identification automatique de l'établissement bancaire via un annuaire de plus de 2 300 établissements français, et via openiban.com pour 7 pays européens (Allemagne, Belgique, Pays-Bas, Luxembourg, Suisse, Autriche, Liechtenstein)",
+        "Vérification de la date d'enregistrement WHOIS d'un nom de domaine, pour détecter un site créé très récemment par une société qui prétend être établie de longue date",
         "Détection d'adresse de portefeuille crypto-actifs malveillante via GoPlus Security, technologie de sécurité Web3 utilisée notamment par OKX et DexScreener",
         "Auto-diagnostic en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur"
       ],
@@ -521,9 +532,10 @@
   @media(max-width:860px){.verify-grid{grid-template-columns:1fr;}}
 
   /* ---- Aperçu des outils (cartes) ---- */
-  .tools-overview{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:28px;}
-  @media(max-width:980px){.tools-overview{grid-template-columns:repeat(3,1fr);}}
-  @media(max-width:560px){.tools-overview{grid-template-columns:repeat(2,1fr);}}
+  .tools-overview{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:28px;}
+  .tools-overview .tool-card{flex:0 1 calc(25% - 9px); min-width:140px;}
+  @media(max-width:980px){.tools-overview .tool-card{flex:0 1 calc(33.333% - 8px);}}
+  @media(max-width:560px){.tools-overview .tool-card{flex:0 1 calc(50% - 6px);}}
   .tool-card{background:#fff; border:1px solid var(--rule); border-radius:12px; padding:18px 14px; text-align:center; cursor:pointer; transition:border-color .15s, transform .15s;}
 
   /* ---- Section technologie de vérification ---- */
@@ -986,7 +998,7 @@
 
       <div class="hero-meta">
         <div><span class="num">4,8 / 5</span><span class="lbl">Note Google — 156 avis</span></div>
-        <div><span class="num">6</span><span class="lbl">Outils de vérification</span></div>
+        <div><span class="num">7</span><span class="lbl">Outils de vérification</span></div>
         <div><span class="num">TF1 · Le Monde · BFM</span><span class="lbl">Cabinet cité dans la presse</span></div>
       </div>
 

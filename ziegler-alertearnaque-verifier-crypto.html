@@ -58,7 +58,18 @@
       "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html#webpage",
       "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html",
       "name": "Vérifier un portefeuille crypto",
-      "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" }
+      "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" },
+      "publisher": { "@id": "https://ziegler-alertearnaque.com/#organization" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html#faqpage",
+      "mainEntity": [
+        { "@type": "Question", "name": "L'adresse n'est pas signalée : puis-je envoyer ?", "acceptedAnswer": { "@type": "Answer", "text": "Prudence. Cela signifie qu'elle n'est pas encore répertoriée comme malveillante. Les escrocs génèrent des adresses neuves en permanence, précisément pour échapper à ces bases." } },
+        { "@type": "Question", "name": "Pourquoi Bitcoin n'est-il pas couvert par la détection ?", "acceptedAnswer": { "@type": "Answer", "text": "La base de détection utilisée couvre les réseaux compatibles EVM ainsi que Solana et Tron. Pour Bitcoin, l'outil valide le format de l'adresse, sans analyse de réputation." } },
+        { "@type": "Question", "name": "Peut-on identifier le propriétaire d'une adresse ?", "acceptedAnswer": { "@type": "Answer", "text": "Pas directement : une adresse n'est pas nominative. En revanche, les mouvements sont publics, et l'identification devient possible lorsque les fonds atteignent un intermédiaire régulé, dans le cadre d'une procédure appropriée." } },
+        { "@type": "Question", "name": "Les sociétés promettant de récupérer mes cryptomonnaies sont-elles fiables ?", "acceptedAnswer": { "@type": "Answer", "text": "Soyez extrêmement vigilant. Les victimes d'arnaques crypto sont massivement re-ciblées par de faux services de récupération réclamant des frais préalables. C'est une seconde escroquerie, et elle est très répandue." } }
+      ]
     }
   ]
 }

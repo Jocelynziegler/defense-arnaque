@@ -58,7 +58,17 @@
       "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html#webpage",
       "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html",
       "name": "Vérifier un nom de domaine",
-      "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" }
+      "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" },
+      "publisher": { "@id": "https://ziegler-alertearnaque.com/#organization" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html#faqpage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Le WHOIS peut-il être caché ou faussé ?", "acceptedAnswer": { "@type": "Answer", "text": "La date de création d'un domaine ne peut pas être falsifiée — elle est enregistrée par le registre officiel de l'extension (.com, .fr, etc.) au moment de la création, indépendamment du propriétaire. En revanche, les coordonnées du titulaire peuvent être masquées (protection de la vie privée RGPD) ; ce n'est pas le cas de la date de création." } },
+        { "@type": "Question", "name": "Un domaine racheté d'occasion affiche-t-il la date du rachat ou la date d'origine ?", "acceptedAnswer": { "@type": "Answer", "text": "En général, la date de création affichée reste celle de la toute première création du domaine, même après un changement de propriétaire — sauf si le domaine a totalement expiré puis a été réenregistré par quelqu'un d'autre, auquel cas une nouvelle date de création peut apparaître." } },
+        { "@type": "Question", "name": "Cette vérification est-elle suffisante à elle seule ?", "acceptedAnswer": { "@type": "Answer", "text": "Non. Combinez-la systématiquement avec la vérification de la société elle-même (liste noire officielle, registres d'agrément) et, si possible, avec les autres outils de cette plateforme." } }
+      ]
     }
   ]
 }

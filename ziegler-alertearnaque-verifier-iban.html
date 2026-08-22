@@ -58,7 +58,18 @@
       "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html#webpage",
       "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html",
       "name": "Vérifier un IBAN",
-      "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" }
+      "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" },
+      "publisher": { "@id": "https://ziegler-alertearnaque.com/#organization" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html#faqpage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Un IBAN valide signifie-t-il que le compte existe ?", "acceptedAnswer": { "@type": "Answer", "text": "Non. La validation confirme uniquement que le numéro est correctement construit sur le plan mathématique. Un IBAN peut être parfaitement valide et ne correspondre à aucun compte ouvert." } },
+        { "@type": "Question", "name": "Peut-on savoir à qui appartient un IBAN ?", "acceptedAnswer": { "@type": "Answer", "text": "Pas publiquement. L'identité du titulaire est protégée par le secret bancaire. Notre outil identifie l'établissement bancaire, jamais la personne." } },
+        { "@type": "Question", "name": "Communiquer mon IBAN présente-t-il un risque ?", "acceptedAnswer": { "@type": "Answer", "text": "Transmettre son IBAN pour recevoir un paiement est une opération courante et nécessaire. Le risque n'est pas dans l'IBAN lui-même mais dans ce qui l'accompagne : ne signez jamais un mandat de prélèvement à un interlocuteur que vous n'avez pas vérifié, et surveillez vos relevés." } },
+        { "@type": "Question", "name": "La vérification est-elle enregistrée ?", "acceptedAnswer": { "@type": "Answer", "text": "Le contrôle du format et de la clé s'effectue directement dans votre navigateur. L'IBAN saisi n'est pas conservé par le cabinet." } }
+      ]
     }
   ]
 }
