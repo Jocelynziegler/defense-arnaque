@@ -1223,6 +1223,7 @@
         <div class="tool-card" data-goto="telephone"><div class="tc-icon"><i class="fa-solid fa-phone"></i></div><div class="tc-label">Téléphone</div><div class="tc-sub">Préfixes ARCEP + communauté</div></div>
         <div class="tool-card" data-goto="email"><div class="tc-icon"><i class="fa-solid fa-envelope"></i></div><div class="tc-label">Email</div><div class="tc-sub">Banque de France / ACPR / AMF</div></div>
         <div class="tool-card" data-goto="iban"><div class="tc-icon"><i class="fa-solid fa-building-columns"></i></div><div class="tc-label">IBAN</div><div class="tc-sub">Format + identification banque</div></div>
+        <div class="tool-card" data-goto="domaine"><div class="tc-icon"><i class="fa-solid fa-globe"></i></div><div class="tc-label">Domaine</div><div class="tc-sub">Âge du nom de domaine</div></div>
         <div class="tool-card" data-goto="crypto"><div class="tc-icon"><i class="fa-solid fa-coins"></i></div><div class="tc-label">Crypto</div><div class="tc-sub">GoPlus Security</div></div>
         <div class="tool-card" data-goto="quiz"><div class="tc-icon"><i class="fa-solid fa-compass"></i></div><div class="tc-label">Auto-diagnostic</div><div class="tc-sub">6 questions, 1 minute</div></div>
       </div>
@@ -1233,6 +1234,7 @@
           <button class="vtab" data-tab="telephone" type="button" role="tab" aria-selected="false">Téléphone</button>
           <button class="vtab" data-tab="email" type="button" role="tab" aria-selected="false">Email</button>
           <button class="vtab" data-tab="iban" type="button" role="tab" aria-selected="false">IBAN</button>
+          <button class="vtab" data-tab="domaine" type="button" role="tab" aria-selected="false">Domaine</button>
           <button class="vtab" data-tab="crypto" type="button" role="tab" aria-selected="false">Crypto</button>
           <button class="vtab" data-tab="quiz" type="button" role="tab" aria-selected="false">Auto-diagnostic</button>
         </div>
@@ -1298,6 +1300,7 @@
             <button class="btn" id="ibanCheckBtn" type="button" style="margin-top:6px;">Vérifier l'IBAN</button>
             <p style="margin-top:10px; font-size:12.5px;"><a href="/ziegler-alertearnaque-verifier-iban.html" style="color:var(--ink-soft-2);">En savoir plus sur la vérification d'un IBAN →</a></p>
 
+
             <div class="verify-out" id="ibanOut">
               <div class="score-readout"><span class="lvl" id="ibanLevel">—</span><span class="pts" id="ibanPts"></span></div>
               <div class="score-gauge"><i id="ibanBar"></i></div>
@@ -1306,6 +1309,22 @@
               <div id="ibanBicResult" style="margin-top:14px;"></div>
               <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="ibanCta" href="#signaler">Signaler ma situation au cabinet →</a>
             </div>
+          </div>
+        </div>
+
+        <div class="vpanel" data-panel="domaine" hidden>
+          <div class="verify-col" style="padding:0; max-width:none;">
+            <h3>Depuis quand ce site existe-t-il ?</h3>
+            <p class="sub">Un nom de domaine créé il y a quelques jours ou semaines pour une société qui prétend être établie de longue date est l'un des signaux d'arnaque les plus fiables. Renseignez le site à vérifier.</p>
+            <div class="field"><label for="vDomaine">Nom de domaine ou adresse du site</label><input id="vDomaine" type="text" placeholder="Ex. : capital-growth-invest.com"></div>
+            <button class="btn" id="domaineCheckBtn" type="button" style="margin-top:16px;">Vérifier le domaine</button>
+
+            <div class="verify-out" id="domaineOut">
+              <div id="domaineStandaloneResults" style="margin-top:4px;"></div>
+              <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="domaineCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+
+            <div class="tool-source-note" style="font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);">Vérification basée sur les données d'enregistrement publiques du domaine (WHOIS), via WhoisJSON. Ne remplace pas une vérification officielle de l'agrément de la société.</div>
           </div>
         </div>
 
@@ -2464,6 +2483,61 @@
         } else if (BIC_DIRECTORY.length) {
           bicResultEl.innerHTML = '<p class="pub-empty">Ce code BIC n\'a pas été retrouvé dans notre annuaire des établissements français. Il peut s\'agir d\'une banque étrangère, ou d\'un code inexistant — vérifiez-le directement auprès de l\'émetteur.</p>';
         }
+      }
+    });
+  })();
+
+  /* ---------------- DOMAIN AGE VERIFICATION (WhoisJSON, via relais serveur) ---------------- */
+  (function(){
+    const btn = document.getElementById('domaineCheckBtn');
+    if (!btn) return;
+
+    function escapeHtmlDomaine(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    btn.addEventListener('click', async () => {
+      const raw = document.getElementById('vDomaine').value.trim();
+      const out = document.getElementById('domaineOut');
+      const resultsEl = document.getElementById('domaineStandaloneResults');
+      const cta = document.getElementById('domaineCta');
+      if (!raw){ document.getElementById('vDomaine').focus(); return; }
+
+      cta.style.display = 'none';
+      out.classList.add('show');
+      resultsEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Vérification en cours…</p>';
+
+      try {
+        const res = await fetch('/whois-check.php?domain=' + encodeURIComponent(raw));
+        const data = await res.json();
+
+        if (!res.ok || data.error){
+          resultsEl.innerHTML = '<p class="pub-empty">La vérification n\'a pas pu être effectuée pour ce domaine (format invalide, ou service momentanément indisponible).</p>';
+          return;
+        }
+
+        const ageDays = data.ageDays;
+        const dateStr = data.created ? new Date(data.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+
+        if (ageDays === null) {
+          resultsEl.innerHTML = '<p class="pub-empty">La date de création de ce domaine n\'a pas pu être déterminée (données d\'enregistrement non publiques, ou domaine non trouvé).</p>';
+        } else if (data.isNewlyRegistered) {
+          resultsEl.innerHTML = '<div class="score-readout"><span class="lvl" style="color:var(--danger);">Domaine très récent</span><span class="pts">' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + '</span></div>'
+            + '<div class="score-gauge"><i style="width:10%; background:var(--danger);"></i></div>'
+            + '<p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;">Ce nom de domaine a été enregistré il y a seulement ' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + (dateStr ? ' (le ' + escapeHtmlDomaine(dateStr) + ')' : '') + '. Un site aussi récent pour une société qui se présente comme établie de longue date est un signal fréquent d\'arnaque. Redoublez de prudence avant tout versement.</p>';
+          cta.style.display = 'inline-flex';
+        } else {
+          resultsEl.innerHTML = '<div class="score-readout"><span class="lvl">Domaine établi</span><span class="pts">' + Math.floor(ageDays / 365) + ' an(s)</span></div>'
+            + '<div class="score-gauge"><i style="width:75%; background:var(--ok);"></i></div>'
+            + '<p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;">Domaine enregistré' + (dateStr ? ' le ' + escapeHtmlDomaine(dateStr) : '') + (data.registrar ? ', auprès de ' + escapeHtmlDomaine(data.registrar) : '') + '. Cela ne garantit pas la fiabilité du site, mais l\'absence de création très récente est un point rassurant parmi d\'autres — à compléter avec les autres outils de vérification.</p>';
+        }
+      } catch (err){
+        resultsEl.innerHTML = '<p class="pub-empty">La vérification n\'a pas pu être effectuée (connexion au service impossible).</p>';
       }
     });
   })();
