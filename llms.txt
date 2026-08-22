@@ -7,11 +7,12 @@ Le Cabinet d'Avocats Ziegler & Associés, fondé par Jocelyn Ziegler et associé
 La plateforme propose trois façons d'agir :
 
 1. **Signaler sa situation** — un formulaire en 4 étapes ou un assistant conversationnel (chatbot) pour décrire une arnaque financière. Les coordonnées transmises restent strictement confidentielles ; le secrétariat juridique du cabinet recontacte la personne pour organiser la suite avec un avocat. Aucune publication n'est faite depuis ce canal.
-2. **Vérifier avant d'agir** — six outils, organisés en onglets sur la page d'accueil (section "Vérifier un placement avant d'investir") :
+2. **Vérifier avant d'agir** — sept outils, organisés en onglets sur la page d'accueil (section "Vérifier un placement avant d'investir") :
    - **Société / site** : recherche contre la liste noire officielle Banque de France / ACPR / AMF (mise à jour automatique quotidienne) et les publications du cabinet.
    - **Téléphone** : détection des préfixes de démarchage commercial officiels ARCEP, et recherche dans les alertes communautaires publiées par d'autres visiteurs.
    - **Email** : recherche contre la même liste noire officielle Banque de France / ACPR / AMF (usurpations d'identité, sites non autorisés).
    - **IBAN** : validation du format et de la clé de contrôle (norme ISO 7064 / mod-97), décomposition du code banque pour la France, et identification automatique de l'établissement bancaire pour la France (annuaire BIC) et 7 pays européens (Allemagne, Belgique, Pays-Bas, Luxembourg, Suisse, Autriche, Liechtenstein) via openiban.com.
+   - **Domaine** : âge du nom de domaine d'un site (date d'enregistrement WHOIS, via WhoisJSON) — un domaine créé très récemment pour une société qui prétend être établie de longue date est un signal fréquent d'arnaque.
    - **Portefeuille crypto-actifs** : vérification du format d'adresse (Ethereum et chaînes compatibles EVM, Bitcoin, Solana, Tron) et détection d'adresse malveillante via GoPlus Security (service utilisé notamment par OKX et DexScreener).
    - **Auto-diagnostic** : questionnaire en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur.
    Chaque outil affiche, en cas de signal de risque, une invitation claire à signaler la situation au cabinet.
@@ -36,6 +37,7 @@ Chaque outil dispose de sa page autonome, avec l'outil fonctionnel et un contenu
 - [Vérifier un numéro de téléphone](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-telephone.html): préfixes de démarchage officiels ARCEP détaillés, explication de l'usurpation de numéro (spoofing), ce qu'un interlocuteur légitime ne demande jamais, signalement au 33700 et Bloctel.
 - [Vérifier une adresse email suspecte](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html): liste noire officielle Banque de France / ACPR / AMF, méthode de lecture d'une adresse (domaine réel, sous-domaines trompeurs, variations typographiques), usurpations d'autorités et fraude au recouvrement de fonds.
 - [Vérifier un IBAN avant un virement](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html): validation ISO 7064 (clé mod-97), décomposition d'un IBAN français, identification de la banque, six signaux d'alerte sur un IBAN, démarches si le virement est déjà parti.
+- [Vérifier l'âge d'un nom de domaine](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html): date d'enregistrement WHOIS d'un site, bureau d'enregistrement, seuil d'alerte à 90 jours, signal fréquent d'une nouvelle arnaque relancée sous un nom de domaine différent.
 - [Vérifier un portefeuille crypto](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html): détection d'adresse malveillante via GoPlus Security, formats d'adresse par blockchain, irréversibilité des transactions, mécanismes d'arnaque crypto les plus fréquents.
 - [Auto-diagnostic d'arnaque financière](https://ziegler-alertearnaque.com/ziegler-alertearnaque-auto-diagnostic.html): questionnaire en 6 questions inspiré de l'AMF et du ministère de l'Intérieur, chaque signal expliqué en détail, lecture du résultat, schéma type d'une escroquerie en huit étapes.
 

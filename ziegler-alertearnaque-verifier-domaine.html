@@ -17,15 +17,15 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#8A4CB8">
-<title>Vérifier une adresse email suspecte | Ziegler Alerte Arnaque</title>
-<meta name="description" content="Vérifiez si une adresse email figure sur la liste noire officielle Banque de France / ACPR / AMF, et apprenez à repérer une usurpation.">
+<title>Vérifier l'âge d'un nom de domaine | Ziegler Alerte Arnaque</title>
+<meta name="description" content="Vérifiez depuis quand un nom de domaine existe (données WHOIS). Un site créé récemment pour une société soi-disant ancienne est un signal d'arnaque fréquent.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html">
+<link rel="canonical" href="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ziegler Alerte Arnaque">
-<meta property="og:title" content="Vérifier une adresse email suspecte | Ziegler Alerte Arnaque">
-<meta property="og:description" content="Vérifiez si une adresse email figure sur la liste noire officielle Banque de France / ACPR / AMF, et apprenez à repérer une usurpation.">
-<meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html">
+<meta property="og:title" content="Vérifier l'âge d'un nom de domaine | Ziegler Alerte Arnaque">
+<meta property="og:description" content="Vérifiez depuis quand un nom de domaine existe avant de faire confiance à un site.">
+<meta property="og:url" content="https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -33,8 +33,8 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vérifier une adresse email suspecte | Ziegler Alerte Arnaque">
-<meta name="twitter:description" content="Vérifiez si une adresse email figure sur la liste noire officielle Banque de France / ACPR / AMF, et apprenez à repérer une usurpation.">
+<meta name="twitter:title" content="Vérifier l'âge d'un nom de domaine | Ziegler Alerte Arnaque">
+<meta name="twitter:description" content="Vérifiez depuis quand un nom de domaine existe avant de faire confiance à un site.">
 <meta name="twitter:image" content="https://ziegler-alertearnaque.com/assets/og-image.png">
 <meta name="twitter:image:alt" content="Ziegler Alerte Arnaque — Cabinet d'Avocats Ziegler & Associés">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,14 +50,14 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://ziegler-alertearnaque.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Vérifier une adresse email", "item": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html" }
+        { "@type": "ListItem", "position": 2, "name": "Vérifier un nom de domaine", "item": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html" }
       ]
     },
     {
       "@type": "WebPage",
-      "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html#webpage",
-      "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html",
-      "name": "Vérifier une adresse email",
+      "@id": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html#webpage",
+      "url": "https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html",
+      "name": "Vérifier un nom de domaine",
       "isPartOf": { "@id": "https://ziegler-alertearnaque.com/#website" }
     }
   ]
@@ -200,6 +200,9 @@
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
   @media(max-width:560px){.field-row{grid-template-columns:1fr;}}
   .pa-submit{align-self:flex-start; margin-top:6px; border:none; cursor:pointer;}
+  @media(max-width:480px){
+    .pa-submit{align-self:stretch; justify-content:center; white-space:normal; text-align:center; padding:12px 16px;}
+  }
   .pa-submit:disabled{opacity:.6; cursor:not-allowed;}
   .pa-success{
     max-width:640px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.2); border-radius:var(--radius);
@@ -347,33 +350,22 @@
   @media(max-width:640px){.field-row{grid-template-columns:1fr;}}
   .field{display:flex; flex-direction:column; gap:7px;}
   .field label{font-size:13px; font-weight:600; color:var(--ink);}
-  .field label .opt{font-weight:400; color:var(--ink-soft-2); font-style:italic;}
-  .field input, .field select, .field textarea{
+  .field input{
     border:1px solid var(--rule); border-radius:var(--radius); padding:11px 13px; background:var(--parchment); color:var(--ink); font-family:var(--sans); font-size:14.5px;
   }
-  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--purple); background:#fff; outline:none;}
+  .field input:focus{border-color:var(--purple); background:#fff; outline:none;}
   .verify-col{background:#fff; border:1px solid var(--rule); border-radius:14px; padding:40px;}
   @media(max-width:640px){.verify-col{padding:26px 20px;}}
   .verify-col h2{font-size:20px; margin-bottom:6px; font-family:var(--serif); font-weight:700;}
   .verify-col .sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:26px; line-height:1.6;}
-  .verify-col .sub strong{color:var(--ink); font-weight:700;}
   .score-gauge{height:10px; border-radius:6px; background:var(--rule); overflow:hidden; margin:18px 0 10px;}
-  .score-gauge > i{display:block; height:100%; width:0%; background:var(--ok); transition:width .5s ease, background .5s ease;}
+  .score-gauge > i{display:block; height:100%; background:var(--ok); transition:width .5s ease, background .5s ease;}
   .score-readout{display:flex; justify-content:space-between; align-items:baseline;}
   .score-readout .lvl{font-family:var(--serif); font-size:22px; font-weight:700;}
   .score-readout .pts{font-family:var(--mono); font-size:13px; color:var(--ink-soft-2);}
   .verify-out{display:none; margin-top:22px; border-top:1px solid var(--rule); padding-top:20px;}
   .verify-out.show{display:block;}
-  .pub-article{border:1px solid var(--rule); background:var(--paper); padding:14px 16px; margin-top:10px; border-radius:8px;}
-  .pub-article .pa-tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--purple);}
-  .pub-article .pa-title{font-family:var(--serif); font-size:15.5px; margin:5px 0 6px; display:block; color:var(--ink);}
-  .pub-article .pa-excerpt{font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0 0 8px;}
-  .pub-article a.pa-link{font-size:12.5px; font-weight:600; color:var(--ink); text-decoration:underline; text-underline-offset:2px;}
   .pub-empty{font-size:13.5px; color:var(--ink-soft); margin:4px 0 0; line-height:1.55;}
-  .pub-check{margin-top:22px; border-top:1px solid var(--rule); padding-top:18px;}
-  .pub-heading{font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono); display:block; margin-bottom:10px;}
-  .official-links{margin-top:18px; display:flex; flex-direction:column; gap:6px;}
-  .official-links a{font-size:13px; color:var(--ink-soft); text-decoration:underline; text-underline-offset:2px;}
   .intro-content{font-size:15.5px; line-height:1.75; color:var(--ink-soft);}
   .intro-content h2{font-size:19px; margin:32px 0 12px; color:var(--ink);}
   .intro-content h3{font-size:16px; margin:22px 0 8px; color:var(--ink); font-weight:600;}
@@ -415,8 +407,8 @@
 <section class="hero">
   <div class="wrap">
     <span class="eyebrow">Outil de vérification</span>
-    <h1>Vérifier une adresse email suspecte</h1>
-    <p>Un email vous propose un placement, un remboursement ou usurpe l'identité d'un établissement connu ? Vérifiez en quelques secondes qu'elle ne figure pas sur la liste noire officielle Banque de France / ACPR / AMF.</p>
+    <h1>Vérifier l'âge d'un nom de domaine</h1>
+    <p>Un nom de domaine créé il y a quelques jours ou semaines pour une société qui prétend être établie depuis longtemps est l'un des signaux d'arnaque les plus fiables. Vérifiez en quelques secondes la date d'enregistrement d'un site.</p>
   </div>
 </section>
 
@@ -424,118 +416,51 @@
   <div class="wrap" style="max-width:900px;">
 
     <div class="verify-col">
-      <h2 id="comboTitle">Vérifier une adresse email</h2>
-      <p class="sub" id="comboSub">Renseignez l'adresse email de votre interlocuteur. L'outil interroge la liste noire officielle Banque de France / ACPR / AMF (usurpations, sites non autorisés) et vos alertes communautaires.</p>
-      <div class="field"><label for="vname" id="comboLabel">Adresse email</label><input id="vname" type="text" placeholder="Ex. : contact@site-suspect.com"></div>
-      <button class="btn" id="checkBtn" type="button" style="margin-top:16px;">Vérifier</button>
+      <h2>Depuis quand ce site existe-t-il ?</h2>
+      <p class="sub">Renseignez le nom de domaine ou l'adresse du site à vérifier. L'outil interroge les données d'enregistrement publiques (WHOIS) pour déterminer sa date de création exacte.</p>
+      <div class="field"><label for="vDomaine">Nom de domaine ou adresse du site</label><input id="vDomaine" type="text" placeholder="Ex. : capital-growth-invest.com"></div>
+      <button class="btn" id="domaineCheckBtn" type="button" style="margin-top:16px;">Vérifier le domaine</button>
 
-      <div class="verify-out" id="checkOut">
-        <div class="score-readout"><span class="lvl" id="scoreLevel">—</span><span class="pts" id="scorePts">0 / 100</span></div>
-        <div class="score-gauge"><i id="scoreBar"></i></div>
-        <p id="scoreText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
-
-        <div class="pub-check" id="domainAgeCheck" hidden>
-          <strong class="pub-heading">Depuis quand ce site existe-t-il ?</strong>
-          <div id="domainAgeResults"></div>
-        </div>
-
-        <div class="pub-check">
-          <strong class="pub-heading">Le cabinet a-t-il déjà écrit sur ce sujet ?</strong>
-          <div class="pub-status" id="pubStatus">Recherche dans nos publications…</div>
-          <div id="pubResults"></div>
-        </div>
-
-        <div class="pub-check" id="communityCheck" hidden>
-          <strong class="pub-heading">Signalé par d'autres visiteurs ?</strong>
-          <div id="communityResults"></div>
-        </div>
-
-        <div class="official-links" id="officialLinksSite">
-          <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifications officielles recommandées</strong>
-          <a href="https://www.amf-france.org/fr/espace-epargnants/proteger-son-epargne/listes-noires-et-mises-en-garde" target="_blank" rel="noopener">Listes noires AMF — acteurs non autorisés</a>
-          <a href="https://www.abe-infoservice.fr/fr/liste-noire" target="_blank" rel="noopener">Listes noires officielles Banque de France / ACPR / AMF</a>
-          <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">Liste noire tenue par le cabinet d'Avocats Ziegler &amp; Associés</a>
-          <a href="https://fr.scamdoc.com/" target="_blank" rel="noopener">ScamDoc — score de confiance d'un site</a>
-          <a href="https://protectepargne.amf-france.org/verifier/suis-je-victime-dune-arnaque" target="_blank" rel="noopener">AMF — Suis-je victime d'une arnaque ? (diagnostic officiel)</a>
-        </div>
-
-        <div class="official-links" id="officialLinksPhone" hidden>
-          <strong style="font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft-2); font-family:var(--mono);">Vérifier ce numéro sur des sites tiers spécialisés</strong>
-          <a id="tellowsLink" href="https://www.tellows.fr/" target="_blank" rel="noopener">Tellows — communauté de signalement de numéros</a>
-          <a id="franceverifLink" href="https://franceverif.fr/fr/verifier-numero-telephone" target="_blank" rel="noopener">France Verif — annuaire inversé et signalements</a>
-          <a href="https://www.33700.fr/signaler-form-pc/" target="_blank" rel="noopener">Signaler ce numéro au 33700 (spam/démarchage)</a>
-        </div>
-
-        <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="comboCta" href="/#signaler">Signaler ma situation au cabinet →</a>
+      <div class="verify-out" id="domaineOut">
+        <div id="domaineStandaloneResults" style="margin-top:4px;"></div>
+        <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="domaineCta" href="/#signaler">Signaler ma situation au cabinet →</a>
       </div>
 
-      <div class="tool-source-note">Contrôle basé sur la liste noire officielle Banque de France / ACPR / AMF, mise à jour automatiquement chaque nuit, croisée avec les publications du cabinet et les signalements de la communauté.</div>
+      <div class="tool-source-note">Vérification basée sur les données d'enregistrement publiques du domaine (WHOIS), via WhoisJSON. Ne remplace pas une vérification officielle de l'agrément de la société.</div>
     </div>
 
     <div class="intro-content">
-      <h2>Comment vérifier une adresse email ?</h2>
-      <p>Les emails frauduleux usurpent souvent l'identité d'institutions connues (AMF, banques, plateformes) via des adresses très proches de l'originale. La liste noire officielle Banque de France / ACPR / AMF recense les adresses déjà identifiées comme usurpées ou non autorisées à proposer des produits financiers.</p>
+      <h2>Pourquoi vérifier l'âge d'un nom de domaine ?</h2>
+      <p>Créer un site internet aujourd'hui prend quelques minutes, et un nom de domaine quelques secondes. Les escrocs profitent de cette facilité pour lancer une nouvelle plateforme d'investissement dès qu'une précédente est repérée et bloquée. Un domaine enregistré il y a seulement quelques jours, alors que la société se présente comme "leader depuis 15 ans", est une contradiction qui se vérifie objectivement — contrairement à la plupart des promesses commerciales.</p>
 
       <h2>Que vérifie exactement cet outil ?</h2>
       <ul>
-        <li><strong>La liste noire officielle</strong> Banque de France / ACPR / AMF, récupérée automatiquement chaque nuit.</li>
-        <li><strong>Les publications du cabinet</strong> : si Ziegler &amp; Associés a déjà analysé cette adresse ou la société associée, l'article apparaît directement.</li>
-        <li><strong>Les signalements de la communauté</strong> : d'autres visiteurs ont-ils déjà signalé cette même adresse dans une alerte publiée ?</li>
+        <li><strong>La date de création réelle du domaine</strong>, telle qu'enregistrée auprès du bureau d'enregistrement (registrar), consultable publiquement via le protocole WHOIS.</li>
+        <li><strong>Le bureau d'enregistrement</strong> (registrar) auprès duquel le domaine a été enregistré.</li>
+        <li><strong>Un signal automatique</strong> si le domaine a moins de 90 jours — le seuil généralement retenu pour qualifier un domaine de "très récent".</li>
       </ul>
 
-      <h2>L'adresse n'apparaît sur aucune liste : est-elle fiable ?</h2>
-      <p>Non, l'absence de signalement ne garantit pas la fiabilité d'une adresse — de nouvelles adresses frauduleuses apparaissent chaque jour. Vérifiez toujours le nom de domaine complet (souvent très proche de l'original avec une lettre modifiée), et ne cliquez jamais sur un lien ou une pièce jointe d'un expéditeur non vérifié.</p>
+      <h2>Un domaine ancien garantit-il la fiabilité d'un site ?</h2>
+      <p>Non. Un domaine ancien peut avoir été racheté d'occasion, ou une société initialement légitime peut avoir changé d'activité. À l'inverse, un domaine récent ne signifie pas automatiquement une arnaque — une entreprise qui vient réellement de se lancer a nécessairement un domaine récent. C'est un signal à croiser avec les autres (liste noire, agrément, avis), jamais une preuve isolée.</p>
 
+      <h3>Le cas des sociétés qui changent régulièrement de nom de domaine</h3>
+      <p>Un signal particulièrement révélateur : une société qui a déjà été bloquée ou signalée sous un nom de domaine relance fréquemment son activité sous un nouveau nom, quasiment identique dans son contenu et son argumentaire commercial. Si le domaine que vous vérifiez a moins de quelques semaines et que la présentation vous semble étrangement familière, c'est un signal à prendre très au sérieux.</p>
 
-      <h2>Lire une adresse email : ce qui compte vraiment</h2>
-      <p>Une adresse email frauduleuse est presque toujours construite pour ressembler à une adresse légitime. Savoir où regarder change tout.</p>
-      <ul>
-        <li><strong>Le nom affiché n'est pas l'adresse.</strong> Votre messagerie affiche souvent « Service client — Banque X » alors que l'adresse réelle est tout autre. Ce libellé est librement choisi par l'expéditeur : affichez systématiquement l'adresse complète avant toute décision.</li>
-        <li><strong>Seul compte ce qui suit l'arobase</strong>, et plus précisément la fin. Dans <em>service@banque-x.securite-client.com</em>, le domaine réel est <em>securite-client.com</em> : « banque-x » n'est qu'un sous-domaine que n'importe qui peut créer.</li>
-        <li><strong>Les variations typographiques.</strong> Un tiret ajouté, un « rn » à la place d'un « m », un « l » minuscule à la place d'un « I » majuscule, une extension changée de .fr en .com ou .net : ces écarts d'un caractère sont la méthode la plus courante.</li>
-        <li><strong>Les extensions inhabituelles</strong> pour un acteur financier français — .cfd, .sbs, .xyz, .click reviennent fréquemment dans la liste noire officielle.</li>
-      </ul>
-
-      <h2>Sur quoi repose notre vérification</h2>
-      <p>Cet outil interroge la liste noire officielle publiée conjointement par la Banque de France, l'ACPR et l'AMF. Elle recense les sites et adresses email qui usurpent l'identité de professionnels autorisés, ou qui proposent des produits financiers sans disposer de l'agrément requis en France.</p>
-      <p>Cette liste est récupérée automatiquement chaque nuit sur nos serveurs, et non figée dans le code du site : la version que vous interrogez est celle du jour. Un résultat positif est un signal fort — l'adresse a été identifiée par les autorités françaises de contrôle.</p>
-      <p>Un résultat négatif, en revanche, ne vaut pas quitus. Une liste noire est par nature en retard sur la fraude : une entité y figure une fois qu'elle a été repérée et instruite, ce qui prend du temps. Beaucoup d'adresses frauduleuses actives n'y sont pas encore.</p>
-
-      <h2>Les usurpations les plus fréquentes</h2>
-      <p>Trois familles reviennent constamment dans les dossiers du cabinet :</p>
-      <ul>
-        <li><strong>L'usurpation d'autorités.</strong> Des adresses imitant l'AMF, l'ACPR ou la Banque de France, souvent pour annoncer qu'une somme a été « bloquée » et qu'une démarche payante permettrait de la débloquer. Ces autorités ne contactent jamais un particulier pour lui réclamer un versement.</li>
-        <li><strong>L'usurpation de sociétés de gestion connues.</strong> Le nom d'un établissement réputé est repris, parfois avec son identité visuelle complète et de faux documents contractuels très soignés. Le seul écart est le domaine de l'adresse.</li>
-        <li><strong>La fraude au recouvrement de fonds.</strong> Elle vise les personnes <em>déjà</em> victimes : un prétendu cabinet ou organisme promet de récupérer les sommes perdues contre des frais préalables. C'est une seconde escroquerie greffée sur la première, et elle est particulièrement répandue.</li>
-      </ul>
-
-      <h2>Trois vérifications complémentaires en quelques minutes</h2>
-      <ul>
-        <li><strong>Vérifiez l'agrément, pas seulement l'adresse.</strong> Toute société proposant des services d'investissement en France doit être enregistrée. Les registres officiels des agents financiers et des intermédiaires permettent de le contrôler — l'absence d'enregistrement est rédhibitoire.</li>
-        <li><strong>Regardez l'âge du nom de domaine.</strong> Un domaine créé il y a quelques semaines pour un acteur qui se présente comme établi depuis des années est une contradiction en soi.</li>
-        <li><strong>Ne cliquez pas, retapez.</strong> Plutôt que de suivre un lien reçu par email, saisissez vous-même l'adresse du site officiel dans votre navigateur. Cela neutralise l'essentiel des redirections frauduleuses.</li>
-      </ul>
-
-      <h2>Vous avez répondu ou transmis des informations</h2>
-      <p>Si vous avez communiqué des identifiants bancaires, changez immédiatement vos mots de passe et prévenez votre banque. Si vous avez ouvert une pièce jointe, faites analyser votre appareil. Si vous avez effectué un versement, contactez votre banque sans délai et conservez l'intégralité des échanges : ces messages constituent des éléments de preuve utiles pour la suite.</p>
-
-      <h2>Questions fréquentes sur la vérification d'une adresse email</h2>
-      <h3>L'adresse n'est pas sur la liste noire : est-ce rassurant ?</h3>
-      <p>Modérément. Cela signifie qu'elle n'a pas encore été recensée par les autorités françaises, pas qu'elle est fiable. Complétez toujours par une vérification de l'agrément de la société.</p>
-      <h3>Puis-je vérifier un nom de domaine et pas une adresse complète ?</h3>
-      <p>Oui. L'outil accepte indifféremment une adresse email complète ou un nom de domaine, et la liste noire officielle recense les deux.</p>
-      <h3>Mon adresse a été usurpée pour écrire à d'autres personnes. Que faire ?</h3>
-      <p>Cette situation, dite d'usurpation d'expéditeur, ne suppose pas nécessairement que votre messagerie ait été compromise. Changez votre mot de passe par précaution, prévenez vos contacts, et signalez les faits.</p>
-      <h3>Ma saisie est-elle conservée ?</h3>
-      <p>Non. La comparaison s'effectue dans votre navigateur, et l'adresse saisie n'est pas enregistrée par le cabinet.</p>
+      <h2>Questions fréquentes sur la vérification d'un nom de domaine</h2>
+      <h3>Le WHOIS peut-il être caché ou faussé ?</h3>
+      <p>La date de création d'un domaine ne peut pas être falsifiée — elle est enregistrée par le registre officiel de l'extension (.com, .fr, etc.) au moment de la création, indépendamment du propriétaire. En revanche, les coordonnées du titulaire peuvent être masquées (protection de la vie privée RGPD) ; ce n'est pas le cas de la date de création.</p>
+      <h3>Un domaine racheté d'occasion affiche-t-il la date du rachat ou la date d'origine ?</h3>
+      <p>En général, la date de création affichée reste celle de la toute première création du domaine, même après un changement de propriétaire — sauf si le domaine a totalement expiré puis a été réenregistré par quelqu'un d'autre, auquel cas une nouvelle date de création peut apparaître.</p>
+      <h3>Cette vérification est-elle suffisante à elle seule ?</h3>
+      <p>Non. Combinez-la systématiquement avec la vérification de la société elle-même (liste noire officielle, registres d'agrément) et, si possible, avec les autres outils de cette plateforme.</p>
 
       <h2>Autres outils de vérification</h2>
-      <p>Ce vérificateur d'email fait partie d'un ensemble de 6 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
+      <p>Ce vérificateur d'âge de domaine fait partie d'un ensemble de 7 outils proposés par le Cabinet d'Avocats Ziegler &amp; Associés :</p>
       <div class="other-tools">
         <a href="/ziegler-alertearnaque-verifier-societe.html"><i class="fa-solid fa-building"></i> Société</a>
         <a href="/ziegler-alertearnaque-verifier-telephone.html"><i class="fa-solid fa-phone"></i> Téléphone</a>
+        <a href="/ziegler-alertearnaque-verifier-email.html"><i class="fa-solid fa-envelope"></i> Email</a>
         <a href="/ziegler-alertearnaque-verifier-iban.html"><i class="fa-solid fa-building-columns"></i> IBAN</a>
-        <a href="/ziegler-alertearnaque-verifier-domaine.html"><i class="fa-solid fa-globe"></i> Domaine</a>
         <a href="/ziegler-alertearnaque-verifier-crypto.html"><i class="fa-solid fa-coins"></i> Crypto</a>
         <a href="/ziegler-alertearnaque-auto-diagnostic.html"><i class="fa-solid fa-compass"></i> Auto-diagnostic</a>
       </div>
@@ -569,113 +494,12 @@
 
 
 <script>
-  /* ---------------- QUICK CHECK (société / téléphone / email + live search of the firm's own publications) ---------------- */
+  /* ---------------- DOMAIN AGE VERIFICATION (WhoisJSON, via relais serveur) ---------------- */
   (function(){
-    // Illustrative demo list only — not a live connection to AMF / official registries.
-    const demoBlacklist = ['global crypto invest', 'capital growth invest', 'eurotrade wealth', 'vendome capital partners fx'];
+    const btn = document.getElementById('domaineCheckBtn');
+    if (!btn) return;
 
-    // Instantané de la liste noire officielle Banque de France / ACPR / AMF (sites et emails
-    // usurpant l'identité de professionnels/autorités, ou non autorisés à proposer des produits
-    // financiers en France). Source : https://www.abe-infoservice.fr/fr/liste-noire
-    // Instantané du 21/08/2026 — à rafraîchir périodiquement, la vraie liste est mise à jour en continu.
-    const OFFICIAL_BLACKLIST_DATE = '21/08/2026';
-    // Filet de sécurité : utilisé tant que le fichier auto-généré assets/blacklist.json
-    // n'a pas encore été récupéré (ou si sa récupération échoue). Ce fichier est mis à
-    // jour automatiquement chaque jour par update-blacklist.php via une tâche planifiée
-    // (cron) côté serveur — voir les instructions de configuration fournies séparément.
-    let OFFICIAL_BLACKLIST_UPDATED_AT = null; // renseigné dynamiquement si le fetch réussit
-    let OFFICIAL_BLACKLIST = ["ACPRFR@OUTLOOK.FR","act-capital.cc","act-capital.io","advantcrest.com","alphaairobot.com","amf-mediation@financier.com","amf@departement-financier.com","amf@support-financial.com","amundi.cfd","amundi.sbs","amundi06.cfd","amundi06.click","amundi06.cyou","amundi06.forum","amundi06.homes","amundi06.lol","amundi06.sbs","amundi06.xyz","amundi05.click","amundi05.lol","amundic.sbs","amundiesr.com","annovazzi-credits.org","atlas-finance.org","audacia212.com","aura-epargne.com","aurum-foundation.com","aurum.foundation","banquedefrance@custcare.help","bfi-bk.com","bfigroupefr.fr","bgfieurope.socialegroup.org","blockchain@financialdepartemnt.com","blueforge.ltd","bpi-credit.com","bpi-particulares.com","bpi-particulares.net","bpi-platform.com","bpi-platform.net","bpibackup.com","bpibanks.com","bpibpi.com","bpifinancialhelpcenter.online","bpiplatform.com","bpiplatform.net","bpimanagement.de","bpimanagement.online","bpiviiiipp.com","cab.sigmainvestglobal.com","capitalpluspltd.com","capstellar.fr","cax-online.com","centralbureau51@gmail.com","client.corsokane.org","client.netixos.com","client.quantx-group.com","complaints@crypto-amf.com","conseiller@infofranceservice.fr","contact@aides-stop-fraude.com","contact@bdweurope.com","contact@bpi-credit.com","contact@courtage-dachuna.com","contact@dwsglobalinvest.info","contact@financiere-jln.com","contact@fibus-courtage.com","contact@fundsnordea.com","contact@groupsecuritiesdublin.com","contact@integrate-exchangep2p-live-custom.com","contact@mutelia.com","contact@partners.group-appswiss.com","contact@pretalia.com","contact@shell-france.fr","contact@truefinanse.com","contact@winvias.com","controle-banquedefrance@laposte.net","corsokane.org","courtage-dachuna.com","cryptover.org","darsvint.fr","departement.juridique-xtb@supportfinancenetwork.com","dominiontradex.fr","dynamictrevion.fr","ecxtrade.com","epargneia.com","escrow@heurofinancial.com","essorinvexaro.fr","extranet-mgi.com","fibus-courtage.com","financiere-de-grenelle.com","financiere-gfr.com","financiere-jln.com","financiere-st-gabriel.com","finance@bpandapm.com","firstprivate-finad.com","france.acpr@proton.me","fundsuri.com","fxtrading.com","gaveltrdltd.com","heurobank@finance-info.eu","heurosasbank.io","hevia.finance","hlf-gestion-or.com","hsbc@serice-gestions.com","infodesk@rapidrecovery.online","infoprolive.com","instantfundedaccount.com","investiraupays.com","isaloge-investissement.com","konilabs-courtage.com","laurent.fortuneo.credit","livpm.com","log.noelse-france.com","login.groupsecuritiesdublin.com","lp-harmonie.com","marketsview.io","mayfieldedu.com","mcafinances.com","miginvestgr.tiiny.site","mon-vaul.com","monetiscore.com","mustfinance9@gmail.com","mynco.com","netixos.com","noelse-france.com","noelse-international.com","nom.prénom@apptraderepublicgestion.com","nom.prénom@apptrepublicgestion.com","nom.prénom@info-regroup.com","online-nova.com","opti-nova.net","paris-titrisation.com","paristitrisation.com","paristitrisation.fr","paysofax.com","presse-actu.com","pretalia.com","proxtrend.com","pt-patrimoine.com","revexium.com","service.client@npb-france.com","service.orangebank@europe.com","servicefinancier@shell-france.fr","sigmainvestglobal.com","skalrett.com","slbaction.com","snfinancement@gmail.com","strath-well.com","sumeria.com","supportafmdefrancr@gmail.com","support.acpr.fr@gmail.com","support@amf-fr","support@amf-fr.com","support@antifraude-amf.com","support@capitalpluspltd.com","support@heurosasbank.io","support@sigmainvestglobal.com","swisscapitalhub.com","targetplusia.com","team.coinmarketcap@atomicmail.io","terremassif.com","tiercefortange.com","trading.corso-web.com","trxdynis.com","truefinanse.com","vantagemarkets.com","virement-lydia.fr","virementslydia.fr","virmtlydia.fr","vision-lonox-hex.net","vivaldi-park.com","vivaldiiparking.com","vivaldiparking.com","vuxocap.co","web.bdweurope.com","web.bpcebanxo.com","web.npbonline.app","webtrader.aptos-ai.net","webtrader.swisscapitalplatform.com","winvias.com","prénom.nom-revolut@rv-conseil.com","prénom.nom@accmanager.tech","prénom.nom@arokconseil.com","prénom.nom@bitpsolution.com","prénom.nom@clientbglprivee.com","prénom.nom@contact-sitir.com","prénom.nom@courtier-immo.fr","prénom.nom@crypto-gestion.com","prénom.nom@dwsglobalinvest.info","prénom.nom@financiere-de-grenelle.com","prénom.nom@fivearrows-gestion.com","prénom.nom@fivearrows-rothschild.com","prénom.nom@fivearrows.fr","prénom.nom@fortuneo.credit","prénom.nom@fundsnordea.com","prénom.nom@gestion-financiere-gfr.com","prénom.nom@hardimmo.com","prénom.nom@info-cgfinancia.com","prénom.nom@inter-parking.fr","prénom.nom@limmobiliere-cst.com","prénom.nom@limmobilierecastorama.com","prénom.nom@maestrimmo-gestion.com","prénom.nom@noelse-international.com","prénom.nom@noelsefrance.com","prénom.nom@opci-crystalpark.fr","prénom.nom@pmanager-finad.com","prénom.nom@polegestiondeblock.com","prénom.nom@portfoliomanager-finad.com","prénom.nom@rothschildcoam.com","prénom.nom@rvltsecurities.com","prénom.nom@sasruelaboetie-paris08.com","prénom.nom@serviceclientimmobilier.com","prénom.nom@sigma-invest.co","prénom.nom@support-lesfurets.com","prénom.nom@tradelive.info","prénom.nom@wise.com-gestionassets.app","prénomnom@meritumcapital-intl.com"];
-
-    // Préfixes officiels ARCEP réservés au démarchage téléphonique commercial en France.
-    // Un numéro dans ces tranches est légalement affecté au démarchage commercial — ce n'est
-    // PAS en soi une preuve d'arnaque, juste un signal de type d'appel probable.
-    const ARCEP_DEMARCHAGE_PREFIXES = ['0162','0163','0270','0271','0377','0378','0424','0425','0568','0569','0948','0949','09475','09476','09477','09478','09479'];
-
-    function normalizeDigits(str){ return str.replace(/[^\d]/g, ''); }
-
-    function toFrenchNational(digits){
-      // Convertit un +33XXXXXXXXX en 0XXXXXXXXX pour la comparaison de préfixes.
-      if (digits.startsWith('33') && digits.length === 11) return '0' + digits.slice(2);
-      return digits;
-    }
-
-    function isPhoneLike(val){
-      const digits = normalizeDigits(val);
-      return /^0[1-9]\d{8}$/.test(digits) || /^33[1-9]\d{8}$/.test(digits);
-    }
-
-    function isEmailLike(val){
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
-    }
-
-    function isDomainLike(val){
-      return /^[a-z0-9.-]+\.[a-z]{2,}(\/.*)?$/i.test(val.trim()) && !val.includes(' ');
-    }
-
-    // Verifie depuis quand un nom de domaine existe. Un site cree il y a
-    // quelques jours ou semaines pour une societe qui pretend etre etablie
-    // depuis longtemps est l'un des signaux d'arnaque les plus fiables.
-    async function checkDomainAge(rawInput){
-      const box = document.getElementById('domainAgeCheck');
-      const resultsEl = document.getElementById('domainAgeResults');
-      box.hidden = false;
-      resultsEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Verification en cours...</p>';
-      try {
-        const res = await fetch('/whois-check.php?domain=' + encodeURIComponent(rawInput));
-        const data = await res.json();
-        if (!res.ok || data.error){
-          box.hidden = true;
-          return;
-        }
-        const ageDays = data.ageDays;
-        const dateStr = data.created ? new Date(data.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
-        if (data.isNewlyRegistered) {
-          resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
-            + '<span class="pa-tag" style="color:var(--danger);">Signal d\'alerte</span>'
-            + '<span class="pa-title">Nom de domaine cree il y a ' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + (dateStr ? ' (' + escapeHtml(dateStr) + ')' : '') + '</span>'
-            + '<p class="pa-excerpt">Un domaine aussi recent pour une societe qui se presente comme etablie de longue date est un signal frequent d\'arnaque. Redoublez de prudence.</p>'
-            + '</div>';
-        } else if (ageDays !== null) {
-          resultsEl.innerHTML = '<p class="pub-empty">Domaine enregistre ' + (dateStr ? 'le ' + escapeHtml(dateStr) : 'il y a ' + Math.floor(ageDays / 365) + ' an(s)') + (data.registrar ? ' aupres de ' + escapeHtml(data.registrar) : '') + '. Cela ne garantit pas la fiabilite du site, mais l\'absence de creation tres recente est un point rassurant parmi d\'autres.</p>';
-        } else {
-          box.hidden = true;
-        }
-      } catch (err){
-        box.hidden = true;
-      }
-    }
-
-    // Récupère la version à jour de la liste noire officielle, générée automatiquement
-    // chaque jour par update-blacklist.php (tâche planifiée côté serveur). Comme ce
-    // fichier est sur le même domaine que le site, aucun blocage CORS ne s'applique
-    // (contrairement à une tentative de récupération directe depuis abe-infoservice.fr).
-    // En cas d'échec (fichier pas encore généré, etc.), la liste figée ci-dessus reste
-    // utilisée : le site ne casse jamais, il utilise simplement une version un peu plus
-    // ancienne en attendant.
-    (async function loadLiveBlacklist(){
-      try {
-        const res = await fetch('/assets/blacklist.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        if (Array.isArray(data.entries) && data.entries.length >= 50) {
-          OFFICIAL_BLACKLIST = data.entries;
-          OFFICIAL_BLACKLIST_UPDATED_AT = data.updated_at || null;
-        }
-      } catch (err) {
-        console.warn('Liste noire officielle : fichier auto-généré indisponible, utilisation de la version figée du ' + OFFICIAL_BLACKLIST_DATE + '.', err);
-      }
-    })();
-
-    const checkBtn = document.getElementById('checkBtn');
-    const out = document.getElementById('checkOut');
-
-    // Recherche dans VOS PROPRES alertes publiées si un numéro ou un email
-    // signalé par la communauté correspond à celui recherché. C'est la seule vraie
-    // base "anti-arnaque téléphonique" légale disponible : celle que le
-    // cabinet construit lui-même via les signalements de ses visiteurs.
-    // Échappe les caractères HTML sensibles avant insertion dans le DOM.
-    // Indispensable pour tout texte provenant de la communauté (faille XSS sinon).
-    function escapeHtml(str){
+    function escapeHtmlDomaine(str){
       return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -684,217 +508,48 @@
         .replace(/'/g, '&#39;');
     }
 
-    async function searchCommunityAlerts(query, field){
-      // field vaut 'Téléphone concerné' ou 'Email concerné'
-      const resultsEl = document.getElementById('communityResults');
-      if (!resultsEl) return;
-      const digitsQuery = normalizeDigits(query);
-      try {
-        const res = await fetch('/airtable-proxy.php?action=alerts_list');
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        const matches = (data.records || []).filter(r => {
-          const val = (r.fields[field] || '').toString();
-          if (!val) return false;
-          if (field === 'Téléphone concerné') return normalizeDigits(val) === digitsQuery && digitsQuery.length >= 8;
-          return val.toLowerCase().trim() === query.toLowerCase().trim();
-        });
-        if (matches.length){
-          const excerpt = (matches[0].fields['Texte de l\'alerte'] || '').toString().slice(0, 160);
-          const excerptSuffix = matches[0].fields['Texte de l\'alerte'] && matches[0].fields['Texte de l\'alerte'].length > 160 ? '…' : '';
-          resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
-            + '<span class="pa-tag" style="color:var(--danger);">Signalé par la communauté</span>'
-            + '<span class="pa-title">' + matches.length + ' alerte' + (matches.length > 1 ? 's' : '') + ' publiée' + (matches.length > 1 ? 's' : '') + (matches.length > 1 ? ' mentionnent' : ' mentionne') + ' ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + '</span>'
-            + '<p class="pa-excerpt">' + escapeHtml(excerpt) + escapeHtml(excerptSuffix) + '</p>'
-            + '<a class="pa-link" href="ziegler-alertearnaque-alertes.html" target="_blank" rel="noopener">Voir les alertes de la communauté →</a>'
-            + '</div>';
-          document.getElementById('comboCta').style.display = 'inline-flex';
-        } else {
-          resultsEl.innerHTML = '<p class="pub-empty">Aucune alerte communautaire publiée ne mentionne ce ' + (field === 'Téléphone concerné' ? 'numéro' : 'email') + ' pour le moment. Vous pouvez <a href="ziegler-alertearnaque-alertes.html#publier" target="_blank" rel="noopener">consulter ou publier une alerte</a> si vous êtes concerné.</p>';
-        }
-      } catch (err){
-        resultsEl.innerHTML = '';
-      }
-    }
+    btn.addEventListener('click', async () => {
+      const raw = document.getElementById('vDomaine').value.trim();
+      const out = document.getElementById('domaineOut');
+      const resultsEl = document.getElementById('domaineStandaloneResults');
+      const cta = document.getElementById('domaineCta');
+      if (!raw){ document.getElementById('vDomaine').focus(); return; }
 
-
-    function decodeEntities(str){
-      const ta = document.createElement('textarea');
-      ta.innerHTML = str;
-      return ta.value;
-    }
-    function safeUrl(url){
-      if (!url) return '#';
-      const cleaned = String(url).replace(/[\s\x00-\x1F]/g, '');
-      if (/^https?:\/\//i.test(cleaned)) return escapeHtml(String(url).trim());
-      return '#';
-    }
-
-    function pubEmptyMarkup(query, isError){
-      const searchLink = 'https://ziegler-associes.com/?s=' + encodeURIComponent(query);
-      const safeQuery = escapeHtml(query);
-      const msg = isError
-        ? "La recherche en direct n'a pas pu être effectuée depuis ce navigateur."
-        : "Aucun article publié par le cabinet sur ce sujet pour le moment.";
-      return '<p class="pub-empty">' + msg + ' Vous pouvez consulter directement <a href="' + searchLink + '" target="_blank" rel="noopener">nos publications sur « ' + safeQuery + ' »</a> ou la <a href="https://ziegler-associes.com/liste-noire-des-societes-et-sites-non-autorises/" target="_blank" rel="noopener">liste noire tenue par le cabinet</a>. Si vous êtes concerné, vous pouvez aussi <a href="#signaler">signaler votre situation</a> pour qu\'un avocat étudie votre dossier.</p>';
-    }
-
-    // Si un article du cabinet existe sur ce sujet, le score de démo générique
-    // ("absence de signal négatif") est écrasé par un message neutre : mieux vaut
-    // ne rien affirmer que de rassurer à tort à côté d'un article qui dit le contraire.
-    function overrideScoreWithPublicationFound(){
-      document.getElementById('scoreLevel').textContent = 'Publication du cabinet trouvée';
-      document.getElementById('scorePts').textContent = '';
-      const bar = document.getElementById('scoreBar');
-      bar.style.width = '100%';
-      bar.style.background = 'var(--purple)';
-      document.getElementById('scoreText').textContent = "Le cabinet a déjà publié sur ce sujet — lisez l'article ci-dessous avant toute décision.";
-    }
-
-    async function searchZieglerPublications(query, demoFlagged){
-      const statusEl = document.getElementById('pubStatus');
-      const resultsEl = document.getElementById('pubResults');
-      statusEl.style.display = 'block';
-      statusEl.textContent = 'Recherche dans nos publications…';
-      resultsEl.innerHTML = '';
-
-      const apiUrl = 'https://ziegler-associes.com/wp-json/wp/v2/posts?search=' + encodeURIComponent(query) + '&per_page=3';
-
-      try {
-        const res = await fetch(apiUrl, { headers: { 'Accept': 'application/json' } });
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        statusEl.style.display = 'none';
-        if (Array.isArray(data) && data.length){
-          // Un article existe : si le score de démo n'avait rien signalé, ne pas
-          // laisser un message rassurant à côté d'un article potentiellement alarmant.
-          if (!demoFlagged) overrideScoreWithPublicationFound();
-          resultsEl.innerHTML = data.slice(0, 3).map(post => {
-            const title = escapeHtml(decodeEntities((post.title && post.title.rendered) || 'Article du cabinet'));
-            const excerptRaw = (post.excerpt && post.excerpt.rendered) || '';
-            let excerptPlain = decodeEntities(excerptRaw.replace(/<[^>]+>/g, '')).trim();
-            if (excerptPlain.length > 170) excerptPlain = excerptPlain.slice(0, 170).trim() + '…';
-            const excerpt = escapeHtml(excerptPlain);
-            const link = safeUrl(post.link) !== '#' ? safeUrl(post.link) : escapeHtml('https://ziegler-associes.com/?s=' + encodeURIComponent(query));
-            return '<div class="pub-article">'
-              + '<span class="pa-tag">Article du cabinet</span>'
-              + '<span class="pa-title">' + title + '</span>'
-              + (excerpt ? '<p class="pa-excerpt">' + excerpt + '</p>' : '')
-              + '<a class="pa-link" href="' + link + '" target="_blank" rel="noopener">Lire l\'article →</a>'
-              + '</div>';
-          }).join('');
-        } else {
-          resultsEl.innerHTML = pubEmptyMarkup(query, false);
-        }
-      } catch (err){
-        statusEl.style.display = 'none';
-        resultsEl.innerHTML = pubEmptyMarkup(query, true);
-      }
-    }
-
-    checkBtn.addEventListener('click', () => {
-      const val = document.getElementById('vname').value.trim();
-      if (!val){ document.getElementById('vname').focus(); return; }
-      document.getElementById('comboCta').style.display = 'none';
-      document.getElementById('domainAgeCheck').hidden = true;
-
-      const phoneLinksBox = document.getElementById('officialLinksPhone');
-      const siteLinksBox = document.getElementById('officialLinksSite');
-      let score, level, text, color;
-
-      if (isPhoneLike(val)) {
-        // --- CAS 1 : numéro de téléphone ---
-        phoneLinksBox.style.display = 'flex';
-        siteLinksBox.style.display = 'none';
-        document.getElementById('pubResults').innerHTML = '';
-        document.getElementById('pubStatus').style.display = 'none';
-        document.querySelector('.pub-check').style.display = 'none';
-        document.getElementById('communityCheck').hidden = false;
-        document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
-
-        const digits = toFrenchNational(normalizeDigits(val));
-        const isArcepDemarchage = ARCEP_DEMARCHAGE_PREFIXES.some(p => digits.startsWith(p));
-
-        const q = encodeURIComponent(val);
-        document.getElementById('tellowsLink').href = 'https://www.tellows.fr/num/' + digits;
-        document.getElementById('franceverifLink').href = 'https://franceverif.fr/fr/verifier-numero-telephone?number=' + q;
-
-        if (isArcepDemarchage) {
-          score = 40; level = 'Démarchage commercial (préfixe ARCEP)'; color = 'var(--warn)';
-          text = "Ce numéro appartient à une tranche officiellement réservée par l'ARCEP au démarchage commercial. Cela signifie que l'appel est probablement de la prospection commerciale — pas nécessairement une arnaque, mais restez vigilant si l'on vous propose un placement financier.";
-        } else {
-          score = 50; level = 'Indéterminé — aucune base officielle disponible'; color = 'var(--warn)';
-          text = "Il n'existe pas de liste officielle des numéros frauduleux en France. Ce numéro n'est ni confirmé ni écarté par notre outil. Consultez les sites spécialisés ci-dessous, qui s'appuient sur des signalements communautaires.";
-        }
-        searchCommunityAlerts(val, 'Téléphone concerné');
-
-      } else if (isEmailLike(val) || isDomainLike(val)) {
-        // --- CAS 2 : email ou nom de domaine ---
-        phoneLinksBox.style.display = 'none';
-        siteLinksBox.style.display = 'flex';
-        document.querySelector('.pub-check').style.display = 'block';
-
-        const normalized = val.toLowerCase().trim();
-        const officialHit = OFFICIAL_BLACKLIST.some(entry => entry.toLowerCase() === normalized || normalized.includes(entry.toLowerCase()) || entry.toLowerCase().includes(normalized));
-
-        if (officialHit) {
-          score = 5; level = 'Sur liste noire officielle'; color = 'var(--danger)';
-          text = "Cet email ou ce site figure sur la liste noire officielle de la Banque de France / ACPR / AMF (usurpation d'identité ou activité non autorisée en France). Ne réalisez aucun versement et ne communiquez aucune information à cet interlocuteur.";
-        } else {
-          const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
-          if (flagged) {
-            score = 12; level = 'Risque élevé (démo)'; color = 'var(--danger)';
-            text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle avant tout versement.";
-          } else {
-            score = 68; level = 'Absence sur la liste noire officielle'; color = 'var(--warn)';
-            text = "Cet email/site n'apparaît pas sur la liste noire officielle Banque de France / ACPR / AMF (instantané du " + (OFFICIAL_BLACKLIST_UPDATED_AT || OFFICIAL_BLACKLIST_DATE) + ") — cela ne garantit pas sa fiabilité, une entité peut ne pas encore avoir été recensée. Consultez systématiquement ScamDoc et les listes AMF avant d'investir.";
-          }
-        }
-        searchZieglerPublications(val, officialHit);
-        document.getElementById('communityCheck').hidden = !isEmailLike(val);
-        if (isEmailLike(val)) {
-          document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
-          searchCommunityAlerts(val, 'Email concerné');
-        }
-        if (isDomainLike(val)) {
-          checkDomainAge(val);
-        }
-
-      } else {
-        // --- CAS 3 : nom de société (comportement d'origine) ---
-        phoneLinksBox.style.display = 'none';
-        siteLinksBox.style.display = 'flex';
-        document.querySelector('.pub-check').style.display = 'block';
-        document.getElementById('communityCheck').hidden = true;
-        const normalized = val.toLowerCase();
-        const flagged = demoBlacklist.some(b => normalized.includes(b) || b.includes(normalized));
-        if (flagged){
-          score = 12; level = 'Risque élevé'; color = 'var(--danger)';
-          text = "Ce nom correspond à un exemple illustratif de notre base de démonstration. Vérifiez impérativement ce prestataire sur la liste noire officielle de l'AMF avant tout versement, et ne réalisez aucun paiement supplémentaire.";
-        } else if (normalized.length < 3){
-          score = 50; level = 'Indéterminé'; color = 'var(--warn)';
-          text = "Le nom saisi est trop court pour une estimation fiable. Complétez le nom exact de la société ou l'adresse du site.";
-        } else {
-          score = 68; level = 'Absence de signal négatif (démo)'; color = 'var(--warn)';
-          text = "Aucune correspondance trouvée dans notre base de démonstration — cela ne signifie pas que l'acteur est fiable. Consultez systématiquement les listes noires AMF et ScamDoc avant d'investir.";
-        }
-        searchZieglerPublications(val, flagged);
-      }
-
-      document.getElementById('scoreLevel').textContent = level;
-      document.getElementById('scorePts').textContent = score + ' / 100';
-      const bar = document.getElementById('scoreBar');
-      bar.style.width = score + '%';
-      bar.style.background = color;
-      document.getElementById('scoreText').textContent = text;
+      cta.style.display = 'none';
       out.classList.add('show');
+      resultsEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Vérification en cours…</p>';
 
-      // Bouton "Signaler" mis en avant dès qu'un signal de risque réel est détecté
-      // (liste noire officielle ou base de démo — pas le simple démarchage ARCEP).
-      document.getElementById('comboCta').style.display = (score <= 15) ? 'inline-flex' : 'none';
+      try {
+        const res = await fetch('/whois-check.php?domain=' + encodeURIComponent(raw));
+        const data = await res.json();
+
+        if (!res.ok || data.error){
+          resultsEl.innerHTML = '<p class="pub-empty">La vérification n\'a pas pu être effectuée pour ce domaine (format invalide, ou service momentanément indisponible).</p>';
+          return;
+        }
+
+        const ageDays = data.ageDays;
+        const dateStr = data.created ? new Date(data.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+
+        if (ageDays === null) {
+          resultsEl.innerHTML = '<p class="pub-empty">La date de création de ce domaine n\'a pas pu être déterminée (données d\'enregistrement non publiques, ou domaine non trouvé).</p>';
+        } else if (data.isNewlyRegistered) {
+          resultsEl.innerHTML = '<div class="score-readout"><span class="lvl" style="color:var(--danger);">Domaine très récent</span><span class="pts">' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + '</span></div>'
+            + '<div class="score-gauge"><i style="width:10%; background:var(--danger);"></i></div>'
+            + '<p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;">Ce nom de domaine a été enregistré il y a seulement ' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + (dateStr ? ' (le ' + escapeHtmlDomaine(dateStr) + ')' : '') + '. Un site aussi récent pour une société qui se présente comme établie de longue date est un signal fréquent d\'arnaque. Redoublez de prudence avant tout versement.</p>';
+          cta.style.display = 'inline-flex';
+        } else {
+          resultsEl.innerHTML = '<div class="score-readout"><span class="lvl">Domaine établi</span><span class="pts">' + Math.floor(ageDays / 365) + ' an(s)</span></div>'
+            + '<div class="score-gauge"><i style="width:75%; background:var(--ok);"></i></div>'
+            + '<p style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;">Domaine enregistré' + (dateStr ? ' le ' + escapeHtmlDomaine(dateStr) : '') + (data.registrar ? ', auprès de ' + escapeHtmlDomaine(data.registrar) : '') + '. Cela ne garantit pas la fiabilité du site, mais l\'absence de création très récente est un point rassurant parmi d\'autres — à compléter avec les autres outils de vérification.</p>';
+        }
+      } catch (err){
+        resultsEl.innerHTML = '<p class="pub-empty">La vérification n\'a pas pu être effectuée (connexion au service impossible).</p>';
+      }
     });
   })();
 </script>
+
 
 <!-- EXIT-INTENT POPUP -->
 <div class="exit-overlay" id="exitOverlay" aria-hidden="true">
