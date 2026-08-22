@@ -434,6 +434,11 @@
         <div class="score-gauge"><i id="scoreBar"></i></div>
         <p id="scoreText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
 
+        <div class="pub-check" id="domainAgeCheck" hidden>
+          <strong class="pub-heading">Depuis quand ce site existe-t-il ?</strong>
+          <div id="domainAgeResults"></div>
+        </div>
+
         <div class="pub-check">
           <strong class="pub-heading">Le cabinet a-t-il déjà écrit sur ce sujet ?</strong>
           <div class="pub-status" id="pubStatus">Recherche dans nos publications…</div>
@@ -611,6 +616,39 @@
       return /^[a-z0-9.-]+\.[a-z]{2,}(\/.*)?$/i.test(val.trim()) && !val.includes(' ');
     }
 
+    // Verifie depuis quand un nom de domaine existe. Un site cree il y a
+    // quelques jours ou semaines pour une societe qui pretend etre etablie
+    // depuis longtemps est l'un des signaux d'arnaque les plus fiables.
+    async function checkDomainAge(rawInput){
+      const box = document.getElementById('domainAgeCheck');
+      const resultsEl = document.getElementById('domainAgeResults');
+      box.hidden = false;
+      resultsEl.innerHTML = '<p class="pub-empty" style="font-style:italic;">Verification en cours...</p>';
+      try {
+        const res = await fetch('/whois-check.php?domain=' + encodeURIComponent(rawInput));
+        const data = await res.json();
+        if (!res.ok || data.error){
+          box.hidden = true;
+          return;
+        }
+        const ageDays = data.ageDays;
+        const dateStr = data.created ? new Date(data.created).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+        if (data.isNewlyRegistered) {
+          resultsEl.innerHTML = '<div class="pub-article" style="border-color:var(--danger);">'
+            + '<span class="pa-tag" style="color:var(--danger);">Signal d\'alerte</span>'
+            + '<span class="pa-title">Nom de domaine cree il y a ' + ageDays + ' jour' + (ageDays > 1 ? 's' : '') + (dateStr ? ' (' + escapeHtml(dateStr) + ')' : '') + '</span>'
+            + '<p class="pa-excerpt">Un domaine aussi recent pour une societe qui se presente comme etablie de longue date est un signal frequent d\'arnaque. Redoublez de prudence.</p>'
+            + '</div>';
+        } else if (ageDays !== null) {
+          resultsEl.innerHTML = '<p class="pub-empty">Domaine enregistre ' + (dateStr ? 'le ' + escapeHtml(dateStr) : 'il y a ' + Math.floor(ageDays / 365) + ' an(s)') + (data.registrar ? ' aupres de ' + escapeHtml(data.registrar) : '') + '. Cela ne garantit pas la fiabilite du site, mais l\'absence de creation tres recente est un point rassurant parmi d\'autres.</p>';
+        } else {
+          box.hidden = true;
+        }
+      } catch (err){
+        box.hidden = true;
+      }
+    }
+
     // Récupère la version à jour de la liste noire officielle, générée automatiquement
     // chaque jour par update-blacklist.php (tâche planifiée côté serveur). Comme ce
     // fichier est sur le même domaine que le site, aucun blocage CORS ne s'applique
@@ -762,6 +800,7 @@
       const val = document.getElementById('vname').value.trim();
       if (!val){ document.getElementById('vname').focus(); return; }
       document.getElementById('comboCta').style.display = 'none';
+      document.getElementById('domainAgeCheck').hidden = true;
 
       const phoneLinksBox = document.getElementById('officialLinksPhone');
       const siteLinksBox = document.getElementById('officialLinksSite');
@@ -820,6 +859,9 @@
         if (isEmailLike(val)) {
           document.getElementById('communityResults').innerHTML = '<p class="pub-empty" style="font-style:italic;">Recherche dans les alertes publiées…</p>';
           searchCommunityAlerts(val, 'Email concerné');
+        }
+        if (isDomainLike(val)) {
+          checkDomainAge(val);
         }
 
       } else {

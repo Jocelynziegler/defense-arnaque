@@ -1,3 +1,4 @@
 .DS_Store
 *.log
 cron-secret.php
+whois-check.php
