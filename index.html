@@ -2851,13 +2851,10 @@
     }
 
     if (track){
-      loadTicker().then(({ items, isDemo }) => {
-        if (!items.length){
-          // Airtable is connected and working, but has zero published alerts yet:
-          // hide the ticker rather than show fictional entries as if real.
-          if (tickerBar) tickerBar.style.display = 'none';
-          return;
-        }
+      // Affiche immediatement un contenu de repli (aucune attente reseau),
+      // pour que le bandeau ne reste jamais vide le temps du chargement --
+      // remplace ensuite par les vraies donnees des qu'elles arrivent.
+      function renderTicker(items){
         const itemHtml = items.map(a => {
           const safeLink = safeUrlTicker(a.link);
           const safeTag = escapeHtmlTicker(a.tag);
@@ -2867,6 +2864,19 @@
         }).join('');
         // Duplicated once for a seamless infinite scroll loop.
         track.innerHTML = itemHtml + itemHtml;
+      }
+
+      renderTicker(FALLBACK_TICKER);
+
+      loadTicker().then(({ items, isDemo }) => {
+        if (!items.length){
+          // Airtable is connected and working, but has zero published alerts yet:
+          // hide the ticker rather than show fictional entries as if real.
+          if (tickerBar) tickerBar.style.display = 'none';
+          return;
+        }
+        if (isDemo) return; // deja affiche instantanement ci-dessus, rien a changer
+        renderTicker(items);
       });
     }
   })();
