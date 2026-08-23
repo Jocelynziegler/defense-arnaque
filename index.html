@@ -2879,7 +2879,12 @@
         // de plus en plus vite a mesure que le nombre d'alertes augmente.
         requestAnimationFrame(() => {
           const halfWidth = track.scrollWidth / 2;
-          const READING_SPEED_PX_PER_S = 30;
+          // Calibre sur le rythme des sous-titres TV/streaming (~160 mots/min,
+          // standard eprouve pour lire du texte tout en regardant autre chose),
+          // ralenti par rapport au calcul brut car un defilement CONTINU
+          // demande un effort de suivi visuel supplementaire par rapport a
+          // un sous-titre statique qui apparait puis disparait.
+          const READING_SPEED_PX_PER_S = 24;
           const duration = Math.max(halfWidth / READING_SPEED_PX_PER_S, 20); // 20s minimum, evite un defilement saccade si tres peu de contenu
           track.style.animationDuration = duration + 's';
         });
