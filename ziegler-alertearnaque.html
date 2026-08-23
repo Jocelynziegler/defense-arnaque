@@ -3064,14 +3064,25 @@
   // ecrans les plus etroits (texte des boutons contraint) -- une valeur
   // fixe en CSS ne couvre pas tous les cas.
   function positionLauncher(){
-    var bar = document.querySelector('.mobile-cta-bar');
-    var extra = (bar && getComputedStyle(bar).display !== 'none') ? bar.getBoundingClientRect().height : 0;
     var base = window.matchMedia('(max-width:760px)').matches ? 16 : 24;
+    var extra = 0;
+    var banner = document.getElementById('cookieBanner');
+    if (banner && !banner.hasAttribute('hidden')){
+      // Le bandeau cookies est visible : se positionner juste au-dessus de
+      // lui (son propre positionnement tient deja compte de la barre CTA
+      // mobile le cas echeant, donc pas besoin de l'additionner en double).
+      extra = window.innerHeight - banner.getBoundingClientRect().top;
+    } else {
+      var bar = document.querySelector('.mobile-cta-bar');
+      extra = (bar && getComputedStyle(bar).display !== 'none') ? bar.getBoundingClientRect().height : 0;
+    }
     launcher.style.bottom = (extra + base) + 'px';
     if (teaser) teaser.style.bottom = (extra + base + 64) + 'px';
   }
   positionLauncher();
+  window.addEventListener('load', positionLauncher); // re-verifie apres chargement complet (bandeau cookies, plus bas dans la page, doit avoir fini de s'executer)
   window.addEventListener('resize', positionLauncher);
+  window.addEventListener('cookiebanner:changed', positionLauncher);
 
   function openPanel(){
     panel.classList.add('open');
@@ -3375,10 +3386,12 @@ document.addEventListener('click', (e) => {
         try { localStorage.setItem('ga_consent', 'accepted'); } catch(e) {}
         banner.hidden = true;
         if (window.__loadGA) window.__loadGA();
+        window.dispatchEvent(new Event('cookiebanner:changed'));
       });
       document.getElementById('cookieDecline').addEventListener('click', function(){
         try { localStorage.setItem('ga_consent', 'declined'); } catch(e) {}
         banner.hidden = true;
+        window.dispatchEvent(new Event('cookiebanner:changed'));
       });
     })();
   </script>

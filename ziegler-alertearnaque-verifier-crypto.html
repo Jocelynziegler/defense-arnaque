@@ -919,14 +919,22 @@
   let started = false;
 
   function positionLauncher(){
-    var bar = document.querySelector('.mobile-cta-bar');
-    var extra = (bar && getComputedStyle(bar).display !== 'none') ? bar.getBoundingClientRect().height : 0;
     var base = window.matchMedia('(max-width:760px)').matches ? 16 : 24;
+    var extra = 0;
+    var banner = document.getElementById('cookieBanner');
+    if (banner && !banner.hasAttribute('hidden')){
+      extra = window.innerHeight - banner.getBoundingClientRect().top;
+    } else {
+      var bar = document.querySelector('.mobile-cta-bar');
+      extra = (bar && getComputedStyle(bar).display !== 'none') ? bar.getBoundingClientRect().height : 0;
+    }
     launcher.style.bottom = (extra + base) + 'px';
     if (teaser) teaser.style.bottom = (extra + base + 64) + 'px';
   }
   positionLauncher();
+  window.addEventListener('load', positionLauncher);
   window.addEventListener('resize', positionLauncher);
+  window.addEventListener('cookiebanner:changed', positionLauncher);
 
   function openPanel(){
     panel.classList.add('open');
@@ -1140,10 +1148,12 @@ document.addEventListener('click', (e) => {
         try { localStorage.setItem('ga_consent', 'accepted'); } catch(e) {}
         banner.hidden = true;
         if (window.__loadGA) window.__loadGA();
+        window.dispatchEvent(new Event('cookiebanner:changed'));
       });
       document.getElementById('cookieDecline').addEventListener('click', function(){
         try { localStorage.setItem('ga_consent', 'declined'); } catch(e) {}
         banner.hidden = true;
+        window.dispatchEvent(new Event('cookiebanner:changed'));
       });
     })();
   </script>
