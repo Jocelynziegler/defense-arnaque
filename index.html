@@ -2872,6 +2872,17 @@
         }).join('');
         // Duplicated once for a seamless infinite scroll loop.
         track.innerHTML = itemHtml + itemHtml;
+
+        // Calcule la duree de l'animation pour un rythme de LECTURE constant
+        // (environ 30px/seconde, confortable pour lire en défilant), quelle
+        // que soit la quantite de contenu -- une duree fixe en CSS defilerait
+        // de plus en plus vite a mesure que le nombre d'alertes augmente.
+        requestAnimationFrame(() => {
+          const halfWidth = track.scrollWidth / 2;
+          const READING_SPEED_PX_PER_S = 30;
+          const duration = Math.max(halfWidth / READING_SPEED_PX_PER_S, 20); // 20s minimum, evite un defilement saccade si tres peu de contenu
+          track.style.animationDuration = duration + 's';
+        });
       }
 
       renderTicker(FALLBACK_TICKER);
