@@ -2775,48 +2775,56 @@
     }
 
     async function loadTicker(){
-      // 1. Priorité aux alertes communautaires publiées, via le relais serveur
-      // sécurisé (le jeton Airtable ne quitte jamais le serveur).
-      try {
-        const res = await fetch('/airtable-proxy.php?action=ticker');
-        if (res.ok) {
-          const data = await res.json();
-          const records = (data.records || []).map(r => ({
-            tag: r.fields['Type'] || 'Autre',
-            entity: r.fields['Entité concernée'] || '',
-            when: r.fields['Date'] ? timeAgo(r.fields['Date']) : '',
-            link: 'ziegler-alertearnaque-alertes.html'
-          }));
-          if (records.length) return { items: records, isDemo: false };
-        }
-      } catch (err){
-        console.warn('Ticker : relais Airtable injoignable, tentative avec les publications du cabinet.', err);
+      // Les deux sources sont interrogées en parallèle (plus rapide qu'en
+      // séquence) et fusionnées en un seul bandeau : alertes communautaires
+      // publiées ET dernières publications réelles du cabinet sur
+      // ziegler-associes.com — jamais de contenu fictif tant que l'une des
+      // deux sources répond, triées par date (les plus récentes en premier).
+      const [alertsResult, postsResult] = await Promise.allSettled([
+        fetch('/airtable-proxy.php?action=ticker').then(res => res.ok ? res.json() : null),
+        fetch('https://ziegler-associes.com/wp-json/wp/v2/posts?per_page=8', { headers: { Accept: 'application/json' } }).then(res => res.ok ? res.json() : null),
+      ]);
+
+      let items = [];
+
+      if (alertsResult.status === 'fulfilled' && alertsResult.value) {
+        const records = (alertsResult.value.records || []).map(r => ({
+          tag: r.fields['Type'] || 'Autre',
+          entity: r.fields['Entité concernée'] || '',
+          dateRaw: r.fields['Date'] || null,
+          link: 'ziegler-alertearnaque-alertes.html'
+        }));
+        items = items.concat(records);
+      } else if (alertsResult.status === 'rejected') {
+        console.warn('Ticker : relais Airtable injoignable.', alertsResult.reason);
       }
 
-      // 2. À défaut (aucune alerte communautaire publiée pour l'instant), on
-      // affiche automatiquement les dernières analyses réelles et déjà publiées
-      // par le cabinet sur ziegler-associes.com — jamais de contenu fictif, et
-      // toujours à jour sans aucune intervention manuelle.
-      try {
-        const res = await fetch('https://ziegler-associes.com/wp-json/wp/v2/posts?per_page=8', { headers: { Accept: 'application/json' } });
-        if (res.ok) {
-          const posts = await res.json();
-          if (Array.isArray(posts) && posts.length) {
-            const items = posts.map(post => ({
-              tag: 'Alerte du cabinet',
-              entity: decodeEntTicker((post.title && post.title.rendered) || 'Analyse du cabinet'),
-              when: post.date ? timeAgo(post.date) : '',
-              link: post.link || 'https://ziegler-associes.com/publications/'
-            }));
-            return { items, isDemo: false };
-          }
-        }
-      } catch (err){
-        console.warn('Ticker : publications du cabinet injoignables, repli sur les exemples.', err);
+      if (postsResult.status === 'fulfilled' && Array.isArray(postsResult.value)) {
+        const posts = postsResult.value.map(post => ({
+          tag: 'Alerte du cabinet',
+          entity: decodeEntTicker((post.title && post.title.rendered) || 'Analyse du cabinet'),
+          dateRaw: post.date || null,
+          link: post.link || 'https://ziegler-associes.com/publications/'
+        }));
+        items = items.concat(posts);
+      } else if (postsResult.status === 'rejected') {
+        console.warn('Ticker : publications du cabinet injoignables.', postsResult.reason);
       }
 
-      // 3. Dernier recours seulement : exemples illustratifs figés.
-      return { items: FALLBACK_TICKER, isDemo: true };
+      if (!items.length) {
+        // Aucune des deux sources n'a repondu : dernier recours seulement.
+        return { items: FALLBACK_TICKER, isDemo: true };
+      }
+
+      // Les plus recentes en premier, un maximum de 12 pour garder un
+      // bandeau lisible et une boucle de defilement raisonnable.
+      items.sort((a, b) => new Date(b.dateRaw || 0) - new Date(a.dateRaw || 0));
+      items = items.slice(0, 12).map(a => ({
+        tag: a.tag, entity: a.entity, link: a.link,
+        when: a.dateRaw ? timeAgo(a.dateRaw) : ''
+      }));
+
+      return { items, isDemo: false };
     }
 
     const track = document.getElementById('tickerTrack');
