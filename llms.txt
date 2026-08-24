@@ -38,6 +38,14 @@ Chaque outil dispose de sa page autonome, avec l'outil fonctionnel et un contenu
 - [Vérifier une adresse email suspecte](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html): liste noire officielle Banque de France / ACPR / AMF, méthode de lecture d'une adresse (domaine réel, sous-domaines trompeurs, variations typographiques), usurpations d'autorités et fraude au recouvrement de fonds.
 - [Vérifier un IBAN avant un virement](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html): validation ISO 7064 (clé mod-97), décomposition d'un IBAN français, identification de la banque, six signaux d'alerte sur un IBAN, démarches si le virement est déjà parti.
 - [Vérifier l'âge d'un nom de domaine](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html): date d'enregistrement WHOIS d'un site, bureau d'enregistrement, seuil d'alerte à 90 jours, signal fréquent d'une nouvelle arnaque relancée sous un nom de domaine différent.
+
+## Pages dédiées par type d'arnaque financière
+
+- [Arnaque au faux conseiller financier](https://ziegler-alertearnaque.com/ziegler-alertearnaque-arnaque-faux-conseiller.html): démarchage téléphonique non sollicité, faux conseiller sur les réseaux sociaux, signaux d'alerte et marche à suivre.
+- [Arnaque aux crypto-actifs frauduleux](https://ziegler-alertearnaque.com/ziegler-alertearnaque-arnaque-crypto.html): plateformes de trading crypto non régulées, faux rendements, retraits bloqués, comment réagir.
+- [Arnaque au trading, Forex et CFD](https://ziegler-alertearnaque.com/ziegler-alertearnaque-arnaque-trading-forex.html): options binaires (interdites en France depuis 2018), courtiers non régulés, effet de levier abusif.
+- [Arnaque aux placements atypiques](https://ziegler-alertearnaque.com/ziegler-alertearnaque-arnaque-placement-atypique.html): investissements en vin, forêt, œuvres d'art, or ou diamants présentés avec un rendement garanti irréaliste.
+- [Faux livret d'épargne à haut rendement](https://ziegler-alertearnaque.com/ziegler-alertearnaque-arnaque-livret-fictif.html): établissements fictifs imitant les codes d'une vraie banque, taux anormalement élevés.
 - [Vérifier un portefeuille crypto](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-crypto.html): détection d'adresse malveillante via GoPlus Security, formats d'adresse par blockchain, irréversibilité des transactions, mécanismes d'arnaque crypto les plus fréquents.
 - [Auto-diagnostic d'arnaque financière](https://ziegler-alertearnaque.com/ziegler-alertearnaque-auto-diagnostic.html): questionnaire en 6 questions inspiré de l'AMF et du ministère de l'Intérieur, chaque signal expliqué en détail, lecture du résultat, schéma type d'une escroquerie en huit étapes.
 
