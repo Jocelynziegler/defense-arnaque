@@ -1976,12 +1976,14 @@
       card.addEventListener('click', () => {
         const type = card.dataset.type;
 
-        // Si un signalement vient d'être envoyé, on repart sur un formulaire neuf.
-        if (resultCard.classList.contains('show')) {
+        // Si un signalement vient d'être envoyé (succès ou échec), on repart sur un formulaire neuf.
+        const errCard = document.getElementById('reportError');
+        if (resultCard.classList.contains('show') || errCard.classList.contains('show')) {
           form.reset();
           form.style.display = 'block';
           document.querySelector('.steps-track').style.display = 'flex';
           resultCard.classList.remove('show');
+          errCard.classList.remove('show');
         }
 
         const radios = document.querySelectorAll('input[name="type"]');
