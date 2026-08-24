@@ -45,7 +45,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#8A4CB8">
 <title>Ziegler Alerte Arnaque — Signaler, vérifier, agir</title>
-<meta name="description" content="Victime d'une arnaque financière ? Vérifiez société, email, téléphone, IBAN ou crypto, et signalez votre situation. Cabinet Ziegler & Associés.">
+<meta name="description" content="Victime d'une arnaque financière ? Vérifiez société, email, téléphone, IBAN, domaine ou crypto, et signalez votre situation. Cabinet Ziegler & Associés.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="author" content="Cabinet d'Avocats Ziegler & Associés">
 <link rel="canonical" href="https://ziegler-alertearnaque.com/">
@@ -1244,6 +1244,23 @@
             </div>
           </div>
 
+          <div class="result-card" id="reportError" style="border-color:var(--danger);">
+            <div class="stamp" style="background:var(--danger);">Envoi non confirmé</div>
+            <h3>Nous n'avons pas pu confirmer la réception de votre dossier</h3>
+            <p>Une fenêtre d'envoi d'email a normalement été préparée automatiquement — si elle ne s'est pas ouverte (bloqueur de fenêtres pop-up), ou par sécurité, contactez-nous directement plutôt que d'attendre un retour de notre part.</p>
+            <div class="result-urgent">
+              <p><strong>Le plus sûr : appelez directement notre standard juridique</strong></p>
+              <div class="result-urgent-phones">
+                <a href="tel:+33188314592">01 88 31 45 92</a>
+                <span class="ru-sep">·</span>
+                <a href="tel:+33752076032">07 52 07 60 32</a>
+              </div>
+            </div>
+            <div class="result-actions">
+              <button class="btn gold" id="retrySubmitBtn" type="button">Réessayer l'envoi</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -1907,7 +1924,12 @@
         body: JSON.stringify(payload)
       })
       .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-      .then(() => { if (window.gtag) gtag('event', 'signalement_envoye', { 'event_category': 'conversion', 'event_label': 'Formulaire de signalement' }); })
+      .then(() => {
+        if (window.gtag) gtag('event', 'signalement_envoye', { 'event_category': 'conversion', 'event_label': 'Formulaire de signalement' });
+        form.style.display = 'none';
+        document.querySelector('.steps-track').style.display = 'none';
+        resultCard.classList.add('show');
+      })
       .catch(err => {
         console.error("Échec de l'envoi automatique du signalement :", err);
         // Fallback so the lead is never silently lost: open a pre-filled email draft.
@@ -1916,14 +1938,24 @@
           .map(([k, v]) => k + ' : ' + (v || '—'))
           .join('\n');
         window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
+        // Honnête : on ne montre PAS la carte de succes si l'envoi a echoue --
+        // le visiteur doit savoir que son dossier n'est pas confirme recu, pas
+        // croire a tort qu'un avocat va le recontacter.
+        form.style.display = 'none';
+        document.querySelector('.steps-track').style.display = 'none';
+        document.getElementById('reportError').classList.add('show');
       })
       .finally(() => {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Envoyer mon signalement';
-        form.style.display = 'none';
-        document.querySelector('.steps-track').style.display = 'none';
-        resultCard.classList.add('show');
       });
+    });
+
+    document.getElementById('retrySubmitBtn').addEventListener('click', () => {
+      document.getElementById('reportError').classList.remove('show');
+      form.style.display = 'block';
+      document.querySelector('.steps-track').style.display = 'flex';
+      submitBtn.click();
     });
 
     document.getElementById('newReportBtn').addEventListener('click', () => {
@@ -2960,7 +2992,8 @@
       })
       .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
       .then(() => {
-        note.innerHTML = '✅ Merci — vous recevrez nos prochaines alertes à <strong>' + email + '</strong>.';
+        const safeEmail = email.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        note.innerHTML = '✅ Merci — vous recevrez nos prochaines alertes à <strong>' + safeEmail + '</strong>.';
         if (window.gtag) gtag('event', 'newsletter_inscription', { 'event_category': 'engagement', 'event_label': 'Newsletter' });
       })
       .catch(err => {
@@ -2992,6 +3025,9 @@
     </form>
     <div class="exit-success" id="exitSuccess" hidden>
       <i class="fa-solid fa-circle-check" style="color:var(--ok); margin-right:6px;"></i>Merci. Le secrétariat juridique vous recontacte prochainement, en toute confidentialité.
+    </div>
+    <div class="exit-success" id="exitError" hidden style="color:var(--danger);">
+      <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>Envoi non confirmé — par sécurité, appelez-nous directement au <a href="tel:+33188314592" style="color:inherit; text-decoration:underline;">01 88 31 45 92</a>.
     </div>
   </div>
 </div>
@@ -3375,17 +3411,22 @@
       body: JSON.stringify(payload)
     })
     .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-    .then(() => { if (window.gtag) gtag('event', 'popup_sortie_envoye', { 'event_category': 'conversion', 'event_label': 'Popup de sortie' }); })
-    .catch(err => {
-      console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
-      const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
-      window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
-    })
-    .finally(() => {
+    .then(() => {
+      if (window.gtag) gtag('event', 'popup_sortie_envoye', { 'event_category': 'conversion', 'event_label': 'Popup de sortie' });
       alreadySubmitted = true;
       form.hidden = true;
       successEl.hidden = false;
       setTimeout(closeExit, 2500);
+    })
+    .catch(err => {
+      console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
+      const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
+      window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
+      // Honnete : pas de faux succes -- le visiteur doit voir clairement que
+      // l'envoi n'est pas confirme, avec un chemin de secours immediat (tel).
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Demander à être rappelé(e)';
+      document.getElementById('exitError').hidden = false;
     });
   });
 })();

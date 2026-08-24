@@ -40,7 +40,7 @@
   # (ce qu'un XSS chercherait typiquement à faire pour exfiltrer des données
   # vers un serveur contrôlé par l'attaquant), bloque les <object>/<embed>,
   # et empêche l'affichage du site dans un cadre étranger.
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://formsubmit.co https://openiban.com https://ziegler-associes.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://formsubmit.co https://openiban.com https://ziegler-associes.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://www.clarity.ms https://*.clarity.ms; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://formsubmit.co"
 </IfModule>
 
 # =============================================================================

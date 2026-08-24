@@ -981,6 +981,9 @@
     <div class="exit-success" id="exitSuccess" hidden>
       <i class="fa-solid fa-circle-check" style="color:var(--ok); margin-right:6px;"></i>Merci. Le secrétariat juridique vous recontacte prochainement, en toute confidentialité.
     </div>
+    <div class="exit-success" id="exitError" hidden style="color:var(--danger);">
+      <i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>Envoi non confirmé — par sécurité, appelez-nous directement au <a href="tel:+33188314592" style="color:inherit; text-decoration:underline;">01 88 31 45 92</a>.
+    </div>
   </div>
 </div>
 
@@ -1055,17 +1058,20 @@
       body: JSON.stringify(payload)
     })
     .then(res => { if (!res.ok) throw new Error('http ' + res.status); return res.json(); })
-    .then(() => { if (window.gtag) gtag('event', 'popup_sortie_envoye', { 'event_category': 'conversion', 'event_label': 'Popup de sortie' }); })
-    .catch(err => {
-      console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
-      const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
-      window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
-    })
-    .finally(() => {
+    .then(() => {
+      if (window.gtag) gtag('event', 'popup_sortie_envoye', { 'event_category': 'conversion', 'event_label': 'Popup de sortie' });
       alreadySubmitted = true;
       form.hidden = true;
       successEl.hidden = false;
       setTimeout(closeExit, 2500);
+    })
+    .catch(err => {
+      console.error('Échec de l\'envoi du lead via le popup de sortie :', err);
+      const body = Object.entries(payload).filter(([k]) => !k.startsWith('_')).map(([k, v]) => k + ' : ' + (v || '—')).join('\n');
+      window.open('mailto:juridique@ziegler-associes.com?subject=' + encodeURIComponent(payload._subject) + '&body=' + encodeURIComponent(body), '_blank');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Demander à être rappelé(e)';
+      document.getElementById('exitError').hidden = false;
     });
   });
 })();
