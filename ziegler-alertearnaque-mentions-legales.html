@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<!-- Google tag (gtag.js) -- ne se charge qu'apres consentement, voir bandeau cookies -->
+<!-- Google tag (gtag.js) et Microsoft Clarity -- ne se chargent qu'apres consentement, voir bandeau cookies -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -16,9 +16,24 @@
       gtag('js', new Date());
       gtag('config', 'G-9BV5B0W23Z');
     }
+    function loadClarity(){
+      if (window.__clarityLoaded) return;
+      window.__clarityLoaded = true;
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "y7e016ei0h");
+    }
+    function loadAnalytics(){
+      loadGA();
+      loadClarity();
+    }
     window.__loadGA = loadGA;
+    window.__loadClarity = loadClarity;
+    window.__loadAnalytics = loadAnalytics;
     try {
-      if (localStorage.getItem('ga_consent') === 'accepted') loadGA();
+      if (localStorage.getItem('ga_consent') === 'accepted') loadAnalytics();
     } catch(e) {}
   })();
 </script>
@@ -452,6 +467,7 @@
         <ul>
           <li><strong>Airtable</strong> (États-Unis) : héberge les alertes communautaires et les échanges du forum publiés sur la plateforme, après validation par le cabinet ;</li>
           <li><strong>Google Analytics</strong> (Google Ireland Limited) : mesure d'audience anonymisée du site.</li>
+          <li><strong>Microsoft Clarity</strong> (Microsoft Corporation) : analyse du comportement de navigation (parcours, interactions) pour améliorer l'ergonomie du site.</li>
         </ul>
         <p>Les données saisies dans le formulaire de signalement et les autres formulaires du site sont acheminées directement par email depuis le serveur du cabinet, sans transiter par un prestataire tiers.</p>
         <p>Certains de ces prestataires peuvent être établis ou traiter des données hors de l'Union européenne. Le cabinet veille à ce que ces transferts s'effectuent dans le cadre des garanties prévues par le RGPD (clauses contractuelles types ou décision d'adéquation, selon le prestataire).</p>
@@ -937,7 +953,7 @@ document.addEventListener('click', (e) => {
       document.getElementById('cookieAccept').addEventListener('click', function(){
         try { localStorage.setItem('ga_consent', 'accepted'); } catch(e) {}
         banner.hidden = true;
-        if (window.__loadGA) window.__loadGA();
+        if (window.__loadAnalytics) window.__loadAnalytics();
         window.dispatchEvent(new Event('cookiebanner:changed'));
       });
       document.getElementById('cookieDecline').addEventListener('click', function(){
