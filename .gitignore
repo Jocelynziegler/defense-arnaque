@@ -6,3 +6,4 @@ whois-check.php
 push-subscribers.json
 mail-config.php
 airtable-proxy.php
+rate-limit.json

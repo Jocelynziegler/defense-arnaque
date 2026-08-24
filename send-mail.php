@@ -44,6 +44,53 @@ if (count($data) > 40) {
     exit;
 }
 
+// ---------- Limitation de debit (anti-abus) ----------
+// Plafond genereux pour un usage legitime (les 4 formulaires du site
+// partagent ce point d'acces : signalement, newsletter, chatbot, popup de
+// sortie -- un meme visiteur peut raisonnablement en declencher 2-3 dans
+// une session), mais qui bloque un envoi en masse pouvant faire suspendre
+// le compte SMTP et couper les 4 canaux d'un coup.
+$RATE_LIMIT_MAX = 5;
+$RATE_LIMIT_WINDOW = 3600; // 1 heure, en secondes
+$rateLimitFile = __DIR__ . '/rate-limit.json';
+$clientIp = $_SERVER['REMOTE_ADDR'] ?? 'inconnu';
+
+$rlFp = fopen($rateLimitFile, 'c+');
+if ($rlFp) {
+    flock($rlFp, LOCK_EX);
+    $rlContents = stream_get_contents($rlFp);
+    $rlData = json_decode($rlContents, true);
+    if (!is_array($rlData)) $rlData = [];
+
+    $now = time();
+    // Purge les entrees expirees de CETTE ip (et, au passage, toute IP dont
+    // la derniere requete date de plus de la fenetre, pour eviter que le
+    // fichier ne grossisse indefiniment avec des IP inactives).
+    foreach ($rlData as $ip => $timestamps) {
+        $rlData[$ip] = array_values(array_filter($timestamps, fn($t) => $now - $t < $RATE_LIMIT_WINDOW));
+        if (empty($rlData[$ip])) unset($rlData[$ip]);
+    }
+
+    $recentCount = count($rlData[$clientIp] ?? []);
+    if ($recentCount >= $RATE_LIMIT_MAX) {
+        flock($rlFp, LOCK_UN);
+        fclose($rlFp);
+        http_response_code(429);
+        echo json_encode(['error' => 'Trop de tentatives récentes, réessayez plus tard', 'success' => false]);
+        exit;
+    }
+
+    $rlData[$clientIp][] = $now;
+    ftruncate($rlFp, 0);
+    rewind($rlFp);
+    fwrite($rlFp, json_encode($rlData));
+    flock($rlFp, LOCK_UN);
+    fclose($rlFp);
+}
+// Si le fichier n'a pas pu s'ouvrir (permissions, etc.), on n'empeche pas
+// l'envoi legitime pour autant -- l'echec silencieux ici degrade en "pas de
+// limitation" plutot qu'en "site casse", ce qui est le bon compromis.
+
 // ---------- Configuration SMTP ----------
 $mailConfigFile = __DIR__ . '/mail-config.php';
 if (!file_exists($mailConfigFile)) {
