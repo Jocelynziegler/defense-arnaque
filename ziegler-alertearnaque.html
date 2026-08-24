@@ -2020,6 +2020,23 @@
       });
     });
 
+    // Pre-selection du type d'arnaque quand on arrive depuis une page dediee
+    // (ex: /ziegler-alertearnaque.html?type=Crypto-actifs%20frauduleux#signaler)
+    // -- meme logique que le clic sur une carte de categorie, pour que le
+    // visiteur voie sa selection deja appliquee en arrivant sur le formulaire.
+    try {
+      const urlType = new URLSearchParams(window.location.search).get('type');
+      if (urlType) {
+        const radios = document.querySelectorAll('input[name="type"]');
+        const matched = [...radios].some(r => r.value === urlType);
+        if (matched) {
+          radios.forEach(r => { r.checked = (r.value === urlType); });
+          current = 1;
+          render();
+        }
+      }
+    } catch(e) {}
+
     render();
   })();
 
