@@ -431,6 +431,7 @@
     <span class="eyebrow">Forum de la communauté</span>
     <h1>Posez vos questions, échangez sur vos doutes</h1>
     <p>Vous vous demandez si une société est fiable, comment réagir face à un interlocuteur suspect, ou voulez simplement partager votre expérience ? Chaque sujet est relu par notre équipe avant publication, pour un espace d'échange fiable et sans contenu abusif.</p>
+    <button type="button" id="quickCallbackLink" style="background:none; border:none; padding:0; margin-top:16px; color:var(--purple-light); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Besoin d'être rappelé(e) rapidement, sans remplir de formulaire détaillé ? →</button>
     <div class="hero-note"><i class="fa-solid fa-lock"></i> Seul le texte de votre sujet ou de votre réponse est public, sous le pseudo de votre choix. Votre nom, email et téléphone restent connus uniquement du cabinet.</div>
     <div class="hero-note" style="margin-top:12px; border-color:rgba(201,166,232,.35);"><i class="fa-solid fa-comment"></i> Vous cherchez plutôt à être accompagné(e) personnellement par un avocat, en toute confidentialité ? <a href="/#signaler" style="color:#fff; text-decoration:underline;">Décrivez votre situation ici</a> — ce canal-là n'est jamais publié.</div>
   </div>
@@ -922,6 +923,15 @@
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
+  function openExitManual(){
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });

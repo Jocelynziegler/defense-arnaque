@@ -1048,6 +1048,7 @@
         <a class="cta-btn gold" href="#signaler">Décrire ma situation →</a>
         <a class="cta-btn ghost-light" href="#verifier">Voir tous les outils</a>
       </div>
+      <button type="button" id="quickCallbackLink" style="background:none; border:none; padding:0; margin-top:14px; color:var(--purple-light); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Besoin d'être rappelé(e) rapidement, sans remplir de formulaire détaillé ? →</button>
 
       <div class="hero-meta">
         <div><span class="num">4,8 / 5</span><span class="lbl">Note Google — 156 avis</span></div>
@@ -3366,6 +3367,19 @@
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
+  // Declenchement manuel (bouton "Etre rappele rapidement" du hero) : contrairement
+  // a openExit(), ignore volontairement les garde-fous "deja affiche une fois" /
+  // "deja envoye" -- un clic deliberatement demande doit toujours ouvrir le
+  // formulaire, contrairement a l'interruption automatique a l'intention de sortie.
+  function openExitManual(){
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true; // evite que l'auto-declenchement ne vienne interrompre juste apres
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });

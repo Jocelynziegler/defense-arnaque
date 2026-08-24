@@ -483,6 +483,7 @@
     <span class="eyebrow">Outil de vérification</span>
     <h1>Vérifier un numéro de téléphone suspect</h1>
     <p>Un numéro inconnu vous a contacté pour vous proposer un placement ou un conseil financier ? Vérifiez s'il correspond à un préfixe de démarchage commercial ARCEP, et s'il a déjà été signalé par la communauté.</p>
+    <button type="button" id="quickCallbackLink" style="background:none; border:none; padding:0; margin-top:16px; color:var(--purple-light); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Besoin d'être rappelé(e) rapidement, sans remplir de formulaire détaillé ? →</button>
   </div>
 </section>
 
@@ -1016,6 +1017,15 @@
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
+  function openExitManual(){
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });

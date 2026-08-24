@@ -431,6 +431,7 @@
     <span class="eyebrow">Alertes de la communauté</span>
     <h1>Les situations signalées, vérifiées et partagées anonymement</h1>
     <p>Chaque alerte est publiée par une personne ayant décrit une situation d'arnaque dans le but précis d'avertir la communauté. Elle est vérifiée par notre équipe avant publication.</p>
+    <button type="button" id="quickCallbackLink" style="background:none; border:none; padding:0; margin-top:16px; color:var(--purple-light); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Besoin d'être rappelé(e) rapidement, sans remplir de formulaire détaillé ? →</button>
     <div class="hero-note"><i class="fa-solid fa-lock"></i> Seul le texte de l'alerte est public. Le nom, l'email et le téléphone de la personne qui publie ne sont jamais affichés — ils restent connus uniquement du cabinet, pour pouvoir la recontacter si besoin.</div>
     <div class="hero-note" style="margin-top:12px; border-color:rgba(201,166,232,.35);"><i class="fa-solid fa-comment"></i> Vous cherchez plutôt à être accompagné(e) personnellement par un avocat, en toute confidentialité ? <a href="/#signaler" style="color:#fff; text-decoration:underline;">Décrivez votre situation ici</a> — ce canal-là n'est jamais publié.</div>
   </div>
@@ -831,6 +832,15 @@
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
+  function openExitManual(){
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });

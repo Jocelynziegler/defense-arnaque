@@ -476,6 +476,7 @@
     <span class="eyebrow">Outil de vérification</span>
     <h1>Suis-je victime d'une arnaque financière ?</h1>
     <p>Répondez à 6 questions inspirées des signaux d'alerte identifiés par l'AMF et le ministère de l'Intérieur, pour évaluer si votre situation présente des signes d'escroquerie financière.</p>
+    <button type="button" id="quickCallbackLink" style="background:none; border:none; padding:0; margin-top:16px; color:var(--purple-light); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Besoin d'être rappelé(e) rapidement, sans remplir de formulaire détaillé ? →</button>
   </div>
 </section>
 
@@ -679,6 +680,15 @@
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
+  function openExitManual(){
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });

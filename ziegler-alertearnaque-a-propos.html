@@ -372,6 +372,7 @@
     <span class="eyebrow">Une plateforme au service des victimes</span>
     <h1>Détecter, signaler et comprendre les arnaques financières</h1>
     <p class="lead">Ziegler Alerte Arnaque est une plateforme d'information, de vérification et de signalement, appartenant et éditée par le Cabinet d'Avocats Ziegler &amp; Associés. Elle s'adresse à toute personne confrontée à une offre d'investissement douteuse, ou déjà victime d'une escroquerie financière.</p>
+    <button type="button" id="quickCallbackLink" style="background:none; border:none; padding:0; margin-top:16px; color:var(--purple-light); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Besoin d'être rappelé(e) rapidement, sans remplir de formulaire détaillé ? →</button>
   </div>
 </section>
 
@@ -500,6 +501,15 @@
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
+  function openExitManual(){
+    const chatOpen = document.getElementById('chatbotPanel')?.classList.contains('open');
+    if (chatOpen) return;
+    shown = true;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExit(); });
