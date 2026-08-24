@@ -71,3 +71,30 @@
 
 # Désactive le listage du contenu d'un dossier si aucun index.html n'y est présent.
 Options -Indexes
+
+# =============================================================================
+# Vitesse — compression et mise en cache
+# =============================================================================
+
+# Compresse les fichiers texte avant envoi (reduction typique de 60-80% de la
+# taille transferee pour le HTML/CSS/JS) -- les images et polices sont deja
+# compressees dans leur propre format, inutile de les recompresser.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/xml application/xhtml+xml application/javascript application/x-javascript application/json image/svg+xml
+</IfModule>
+
+# Indique au navigateur combien de temps garder chaque type de fichier en
+# cache local, pour eviter de le re-telecharger a chaque visite -- les
+# images/polices/icones changent rarement, le HTML peut changer a tout moment.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType font/woff2 "access plus 1 month"
+</IfModule>
