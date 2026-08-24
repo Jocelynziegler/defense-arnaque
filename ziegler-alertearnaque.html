@@ -487,6 +487,7 @@
     border:1px solid var(--rule); border-radius:var(--radius); padding:11px 13px; background:var(--parchment); color:var(--ink);
   }
   .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--purple); background:#fff;}
+  .field input.field-invalid, .field select.field-invalid, .field textarea.field-invalid{border-color:var(--danger); background:#FBF2F1;}
   .choice-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:8px;}
   @media(max-width:760px){.choice-grid{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:480px){.choice-grid{grid-template-columns:1fr;}}
@@ -1216,6 +1217,8 @@
               </div>
             </div>
 
+            <p id="wizardError" style="display:none; color:var(--danger); font-size:13px; font-weight:600; margin:0 0 12px;"></p>
+
             <div class="wizard-nav">
               <button type="button" class="btn secondary" id="prevBtn" disabled>← Précédent</button>
               <button type="button" class="btn" id="nextBtn">Continuer →</button>
@@ -1865,16 +1868,38 @@
     function validCurrent(){
       const step = steps.find(s => Number(s.dataset.step) === current);
       const required = Array.from(step.querySelectorAll('[required]'));
+      const errorEl = document.getElementById('wizardError');
+      // Nettoie l'etat d'erreur precedent avant de revalider.
+      step.querySelectorAll('.field-invalid').forEach(el => el.classList.remove('field-invalid'));
+      errorEl.style.display = 'none';
+
       for (const field of required){
         if (field.type === 'radio'){
           const group = step.querySelectorAll(`input[name="${field.name}"]`);
-          if (![...group].some(r => r.checked)){ alert('Merci de sélectionner une option.'); return false; }
+          if (![...group].some(r => r.checked)){
+            errorEl.textContent = 'Merci de sélectionner une option pour continuer.';
+            errorEl.style.display = 'block';
+            return false;
+          }
         } else if (!field.value){
-          field.focus(); alert('Merci de compléter ce champ avant de continuer.'); return false;
+          field.classList.add('field-invalid');
+          field.focus();
+          errorEl.textContent = 'Merci de compléter ce champ avant de continuer.';
+          errorEl.style.display = 'block';
+          return false;
         }
       }
       return true;
     }
+
+    // Efface l'etat d'erreur des que l'utilisateur commence a corriger,
+    // plutot que d'attendre le prochain clic sur "Continuer".
+    form.addEventListener('input', (e) => {
+      if (e.target.classList.contains('field-invalid')) e.target.classList.remove('field-invalid');
+    });
+    form.addEventListener('change', (e) => {
+      if (e.target.type === 'radio') document.getElementById('wizardError').style.display = 'none';
+    });
 
     nextBtn.addEventListener('click', () => {
       if (!validCurrent()) return;
@@ -3362,6 +3387,7 @@
     shown = true;
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => document.getElementById('exitPrenom')?.focus(), 300);
   }
   function closeExit(){
     overlay.classList.remove('show');
@@ -3378,6 +3404,7 @@
     shown = true; // evite que l'auto-declenchement ne vienne interrompre juste apres
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => document.getElementById('exitPrenom')?.focus(), 300);
   }
   document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 

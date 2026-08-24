@@ -1010,6 +1010,7 @@
     shown = true;
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => document.getElementById('exitPrenom')?.focus(), 300);
   }
   function closeExit(){
     overlay.classList.remove('show');
@@ -1022,6 +1023,7 @@
     shown = true;
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => document.getElementById('exitPrenom')?.focus(), 300);
   }
   document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
