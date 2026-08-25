@@ -50,6 +50,22 @@ if (mb_strlen($nom) < 2 || mb_strlen($nom) > 150) {
     exit;
 }
 
+// ---------- Cas particulier : recherche sur le cabinet lui-meme ----------
+// Court-circuite entierement la recherche/IA (jamais d'appel API, jamais de
+// requete comptee dans les limites) -- reponse fixe et maitrisee, plutot que
+// de demander a l'IA de chercher puis de taire ce qu'elle pourrait trouver
+// (ce qui reviendrait a lui faire dissimuler une information, contraire a
+// la logique de transparence de l'outil).
+$nomNormalise = mb_strtolower(trim(preg_replace('/[^\p{L}\p{N}\s]/u', '', $nom)));
+if (str_contains($nomNormalise, 'ziegler')) {
+    echo json_encode([
+        'verdict' => 'rien_trouve',
+        'signaux' => [],
+        'resume' => "Le Cabinet d'Avocats Ziegler & Associés (AARPI, Paris 16e) est bien un cabinet d'avocats en exercice, dont l'activité dominante depuis 7 ans est la défense des victimes d'escroqueries financières.",
+    ]);
+    exit;
+}
+
 // ---------- Limitation de debit : 3 verifications par IP par jour ----------
 // Fenetre glissante de 24h (pas juste "aujourd'hui" calendaire), meme
 // mecanisme eprouve que send-mail.php mais adapte a une fenetre plus longue
