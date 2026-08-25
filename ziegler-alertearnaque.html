@@ -173,7 +173,8 @@
         "Identification automatique de l'établissement bancaire via un annuaire de plus de 2 300 établissements français, et via openiban.com pour 7 pays européens (Allemagne, Belgique, Pays-Bas, Luxembourg, Suisse, Autriche, Liechtenstein)",
         "Vérification de la date d'enregistrement WHOIS d'un nom de domaine, pour détecter un site créé très récemment par une société qui prétend être établie de longue date",
         "Détection d'adresse de portefeuille crypto-actifs malveillante via GoPlus Security, technologie de sécurité Web3 utilisée notamment par OKX et DexScreener",
-        "Auto-diagnostic en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur"
+        "Auto-diagnostic en 6 questions inspiré des signaux d'alerte de l'AMF et du ministère de l'Intérieur",
+        "Analyse par intelligence artificielle des avis, forums et signalements récents concernant une société ou une plateforme d'investissement, en complément des bases officielles"
       ],
       "provider": { "@id": "https://ziegler-alertearnaque.com/#organization" }
     }
@@ -2494,6 +2495,7 @@
       .then(res => res.json().then(data => ({ ok: res.ok, data })))
       .then(({ ok, data }) => {
         btn.textContent = "Lancer l'analyse →";
+        if (typeof window.hideChatTeaser === 'function') window.hideChatTeaser(); // evite un chevauchement avec le resultat, qui peut arriver pile pendant sa fenetre d'affichage automatique
         if (!ok) {
           btn.disabled = false; // reste utilisable pour reessayer, sauf si la limite quotidienne est atteinte (429)
           resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">' + (data.error || "Une erreur est survenue.") + '</p>';
@@ -3321,6 +3323,7 @@
   }
   function showTeaser(){ if (!started) teaser.classList.add('show'); }
   function hideTeaser(){ teaser.classList.remove('show'); }
+  window.hideChatTeaser = hideTeaser; // accessible depuis d'autres blocs (ex: outil de verification IA)
 
   launcher.addEventListener('click', () => { opened ? closePanel() : openPanel(); });
   document.getElementById('chatbotHeaderClose').addEventListener('click', closePanel);
