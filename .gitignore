@@ -7,3 +7,5 @@ push-subscribers.json
 mail-config.php
 airtable-proxy.php
 rate-limit.json
+ai-config.php
+ai-verification-rate-limit.json

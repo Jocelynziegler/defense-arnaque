@@ -1328,6 +1328,13 @@
                 <div id="pubResults"></div>
               </div>
 
+              <div class="pub-check" id="aiCheckBox">
+                <strong class="pub-heading">Que dit-on de cet interlocuteur en ce moment sur le web ?</strong>
+                <p style="font-size:12.5px; color:var(--ink-soft); margin:4px 0 10px; line-height:1.5;">Notre IA recherche les avis, forums et signalements récents (jusqu'à 3 vérifications par jour). Complément aux bases officielles ci-dessus, jamais un substitut.</p>
+                <button class="btn secondary" id="aiCheckBtn" type="button" style="font-size:13px; padding:9px 16px;">Lancer l'analyse →</button>
+                <div id="aiCheckResult" style="margin-top:12px;"></div>
+              </div>
+
               <div class="pub-check" id="communityCheck" hidden>
                 <strong class="pub-heading">Signalé par d'autres visiteurs ?</strong>
                 <div id="communityResults"></div>
@@ -2368,6 +2375,9 @@
       if (!val){ document.getElementById('vname').focus(); return; }
       document.getElementById('comboCta').style.display = 'none';
       document.getElementById('domainAgeCheck').hidden = true; // réinitialisé, réaffiché seulement si pertinent
+      document.getElementById('aiCheckResult').innerHTML = '';
+      document.getElementById('aiCheckBtn').disabled = false;
+      document.getElementById('aiCheckBtn').textContent = "Lancer l'analyse →";
 
       const phoneLinksBox = document.getElementById('officialLinksPhone');
       const siteLinksBox = document.getElementById('officialLinksSite');
@@ -2465,6 +2475,68 @@
       // Bouton "Signaler" mis en avant dès qu'un signal de risque réel est détecté
       // (liste noire officielle ou base de démo — pas le simple démarchage ARCEP).
       document.getElementById('comboCta').style.display = (score <= 15) ? 'inline-flex' : 'none';
+    });
+
+    document.getElementById('aiCheckBtn').addEventListener('click', () => {
+      const nom = document.getElementById('vname').value.trim();
+      if (!nom) { document.getElementById('vname').focus(); return; }
+      const btn = document.getElementById('aiCheckBtn');
+      const resultBox = document.getElementById('aiCheckResult');
+      btn.disabled = true;
+      btn.textContent = 'Recherche en cours (quelques secondes)…';
+      resultBox.innerHTML = '';
+
+      fetch('/ai-verification.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nom })
+      })
+      .then(res => res.json().then(data => ({ ok: res.ok, data })))
+      .then(({ ok, data }) => {
+        btn.textContent = "Lancer l'analyse →";
+        if (!ok) {
+          btn.disabled = false; // reste utilisable pour reessayer, sauf si la limite quotidienne est atteinte (429)
+          resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">' + (data.error || "Une erreur est survenue.") + '</p>';
+          return;
+        }
+        btn.disabled = true;
+        btn.style.display = 'none';
+
+        const safe = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        if (data.verdict === 'signaux_trouves') {
+          const items = data.signaux.map(s => '<li>' + safe(s) + '</li>').join('');
+          resultBox.innerHTML =
+            '<div style="border-left:3px solid var(--danger); padding:10px 14px; background:#FBF2F1;">' +
+            '<strong style="font-size:13px; color:var(--danger);">Plusieurs signaux méritent votre attention</strong>' +
+            '<ul style="margin:8px 0 10px; padding-left:18px; font-size:13px; line-height:1.6;">' + items + '</ul>' +
+            '<p style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Ceci n\'est pas une confirmation d\'arnaque — une vérification humaine reste nécessaire.</p>' +
+            '<button type="button" class="btn gold" id="aiCtaSignaler" style="width:100%; justify-content:center; font-size:13px;">Décrire ma situation à un avocat →</button>' +
+            '</div>';
+          document.getElementById('aiCtaSignaler').addEventListener('click', () => {
+            const explicatif = document.getElementById('explicatif');
+            if (explicatif && !explicatif.value) {
+              explicatif.value = 'Concernant "' + nom + '" : ' + data.resume;
+            }
+            document.getElementById('signaler').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        } else {
+          resultBox.innerHTML =
+            '<div style="border-left:3px solid var(--ok); padding:10px 14px; background:#F3F7EE;">' +
+            '<strong style="font-size:13px; color:var(--ok);">Aucun élément préoccupant trouvé</strong>' +
+            '<p style="font-size:13px; margin:8px 0 10px; line-height:1.6;">' + safe(data.resume) + '</p>' +
+            '<p style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Restez néanmoins vigilant : l\'absence de signal ne garantit pas la fiabilité.</p>' +
+            '<button type="button" class="btn secondary" id="aiCtaContact" style="width:100%; justify-content:center; font-size:13px;">Une question malgré tout ? Contacter le cabinet →</button>' +
+            '</div>';
+          document.getElementById('aiCtaContact').addEventListener('click', () => {
+            if (typeof openExitManual === 'function') openExitManual();
+          });
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = "Lancer l'analyse →";
+        resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">Une erreur est survenue. Réessayez, ou contactez-nous directement.</p>';
+      });
     });
   })();
 
@@ -3442,6 +3514,7 @@
     overlay.setAttribute('aria-hidden', 'false');
     setTimeout(() => document.getElementById('exitPrenom')?.focus(), 300);
   }
+  window.openExitManual = openExitManual; // accessible depuis d'autres blocs (ex: outil de verification IA)
   document.getElementById('quickCallbackLink')?.addEventListener('click', openExitManual);
 
   closeBtn.addEventListener('click', closeExit);
