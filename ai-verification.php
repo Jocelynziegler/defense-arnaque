@@ -91,6 +91,45 @@ if ($rlFp) {
 // Si le fichier ne peut pas s'ouvrir, on laisse passer plutot que de casser
 // le service -- meme choix que send-mail.php.
 
+// ---------- Plafond mensuel global (tous visiteurs confondus) ----------
+// La limite par IP ci-dessus protege contre UN visiteur qui abuse, mais ne
+// plafonne pas le volume total du site : 200 visiteurs differents faisant
+// chacun 1 verification le meme jour ne declenchent jamais la limite par IP.
+// Ce second plafond, independant, coupe l'outil pour tout le monde si le
+// volume mensuel total depasse ce qui a ete budgete -- filet de securite
+// contre une facture surprise, quelle que soit la repartition du trafic.
+$MONTHLY_CAP = 1500; // ajustable selon le trafic reel observe (Analytics/Clarity)
+$monthlyFile = __DIR__ . '/ai-verification-monthly-count.json';
+$currentMonth = date('Y-m');
+
+$mFp = fopen($monthlyFile, 'c+');
+if ($mFp) {
+    flock($mFp, LOCK_EX);
+    $mContents = stream_get_contents($mFp);
+    $mData = json_decode($mContents, true);
+    if (!is_array($mData) || ($mData['mois'] ?? null) !== $currentMonth) {
+        // Nouveau mois (ou fichier absent/corrompu) : on repart de zero.
+        $mData = ['mois' => $currentMonth, 'total' => 0];
+    }
+
+    if ($mData['total'] >= $MONTHLY_CAP) {
+        flock($mFp, LOCK_UN);
+        fclose($mFp);
+        http_response_code(429);
+        echo json_encode(['error' => "L'outil de verification IA a atteint son volume mensuel prevu. Il sera de nouveau disponible le mois prochain, ou contactez-nous directement."]);
+        exit;
+    }
+
+    $mData['total']++;
+    ftruncate($mFp, 0);
+    rewind($mFp);
+    fwrite($mFp, json_encode($mData));
+    flock($mFp, LOCK_UN);
+    fclose($mFp);
+}
+// Meme choix qu'ailleurs : si le fichier ne peut pas s'ouvrir, on laisse
+// passer plutot que de casser le service pour un probleme de permissions.
+
 // ---------- Appel a l'API Anthropic ----------
 $systemPrompt = <<<'PROMPT'
 Tu verifies des societes/plateformes d'investissement pour un cabinet d'avocats francais specialise dans la defense des victimes d'escroqueries financieres.

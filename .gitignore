@@ -9,3 +9,4 @@ airtable-proxy.php
 rate-limit.json
 ai-config.php
 ai-verification-rate-limit.json
+ai-verification-monthly-count.json
