@@ -8,7 +8,7 @@ La plateforme propose trois façons d'agir :
 
 1. **Signaler sa situation** — un formulaire en 4 étapes ou un assistant conversationnel (chatbot) pour décrire une arnaque financière. Les coordonnées transmises restent strictement confidentielles ; le secrétariat juridique du cabinet recontacte la personne pour organiser la suite avec un avocat. Aucune publication n'est faite depuis ce canal.
 2. **Vérifier avant d'agir** — sept outils, organisés en onglets sur la page d'accueil (section "Vérifier un placement avant d'investir") :
-   - **Société / site** : recherche contre la liste noire officielle Banque de France / ACPR / AMF (mise à jour automatique quotidienne) et les publications du cabinet. Complément optionnel : une analyse par intelligence artificielle recherche en temps réel les avis, forums et signalements récents concernant la société ou la plateforme, limitée à 3 vérifications par jour par visiteur.
+   - **Société / site** : recherche contre la liste noire officielle Banque de France / ACPR / AMF (mise à jour automatique quotidienne) et les publications du cabinet. Complément optionnel : une [analyse par intelligence artificielle](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verification-ia.html) recherche en temps réel les avis, forums et signalements récents concernant la société ou la plateforme, limitée à 3 vérifications par jour par visiteur.
    - **Téléphone** : détection des préfixes de démarchage commercial officiels ARCEP, et recherche dans les alertes communautaires publiées par d'autres visiteurs.
    - **Email** : recherche contre la même liste noire officielle Banque de France / ACPR / AMF (usurpations d'identité, sites non autorisés).
    - **IBAN** : validation du format et de la clé de contrôle (norme ISO 7064 / mod-97), décomposition du code banque pour la France, et identification automatique de l'établissement bancaire pour la France (annuaire BIC) et 7 pays européens (Allemagne, Belgique, Pays-Bas, Luxembourg, Suisse, Autriche, Liechtenstein) via openiban.com.
@@ -38,6 +38,10 @@ Chaque outil dispose de sa page autonome, avec l'outil fonctionnel et un contenu
 - [Vérifier une adresse email suspecte](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-email.html): liste noire officielle Banque de France / ACPR / AMF, méthode de lecture d'une adresse (domaine réel, sous-domaines trompeurs, variations typographiques), usurpations d'autorités et fraude au recouvrement de fonds.
 - [Vérifier un IBAN avant un virement](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-iban.html): validation ISO 7064 (clé mod-97), décomposition d'un IBAN français, identification de la banque, six signaux d'alerte sur un IBAN, démarches si le virement est déjà parti.
 - [Vérifier l'âge d'un nom de domaine](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verifier-domaine.html): date d'enregistrement WHOIS d'un site, bureau d'enregistrement, seuil d'alerte à 90 jours, signal fréquent d'une nouvelle arnaque relancée sous un nom de domaine différent.
+
+## Vérification par intelligence artificielle
+
+- [Vérification d'arnaque par intelligence artificielle](https://ziegler-alertearnaque.com/ziegler-alertearnaque-verification-ia.html): technologie propre au cabinet, complément aux bases officielles figées — recherche en temps réel les avis, forums et signalements récents sur une société ou une plateforme d'investissement, distingue une société malhonnête d'une société légitime dont le nom est usurpé, limitée à 3 vérifications par jour par visiteur.
 
 ## Pages dédiées par type d'arnaque financière
 
