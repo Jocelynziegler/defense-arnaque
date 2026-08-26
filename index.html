@@ -492,6 +492,14 @@
   }
   .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--purple); background:#fff;}
   .field input.field-invalid, .field select.field-invalid, .field textarea.field-invalid{border-color:var(--danger); background:#FBF2F1;}
+
+  /* ---- Outil de verification IA : attente et revelation progressive ---- */
+  .ai-loading-intro{font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-bottom:10px;}
+  .ai-loading-status{font-size:13px; font-weight:600; color:var(--purple); margin-bottom:8px; min-height:18px;}
+  .ai-progress-track{height:4px; border-radius:2px; background:var(--paper); overflow:hidden;}
+  .ai-progress-fill{height:100%; width:0%; background:var(--purple); border-radius:2px; transition:width .4s linear;}
+  .ai-reveal{opacity:0; transform:translateY(4px); transition:opacity .35s ease, transform .35s ease;}
+  .ai-reveal.show{opacity:1; transform:translateY(0);}
   .choice-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:8px;}
   @media(max-width:760px){.choice-grid{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:480px){.choice-grid{grid-template-columns:1fr;}}
@@ -2484,8 +2492,49 @@
       const btn = document.getElementById('aiCheckBtn');
       const resultBox = document.getElementById('aiCheckResult');
       btn.disabled = true;
-      btn.textContent = 'Recherche en cours (quelques secondes)…';
-      resultBox.innerHTML = '';
+      btn.style.display = 'none';
+
+      // ---- Mise en scene de l'attente (~20s) : explique pourquoi ca prend
+      // ce temps (recoupement de plusieurs sources), plutot que de laisser
+      // un simple texte statique qui peut donner l'impression que rien ne
+      // se passe.
+      const phases = [
+        'Recherche des avis et signalements récents…',
+        'Analyse des forums et plateformes spécialisées…',
+        'Vérification croisée des signaux trouvés…',
+        'Finalisation de l\'analyse…',
+      ];
+      resultBox.innerHTML =
+        '<p class="ai-loading-intro">Cette vérification prend environ 20 secondes — notre technologie croise plusieurs sources (avis, forums, signalements) pour vous donner une analyse fiable, pas une réponse superficielle.</p>' +
+        '<p class="ai-loading-status" id="aiLoadingStatus">' + phases[0] + '</p>' +
+        '<div class="ai-progress-track"><div class="ai-progress-fill" id="aiProgressFill"></div></div>';
+
+      const fillEl = document.getElementById('aiProgressFill');
+      const statusEl = document.getElementById('aiLoadingStatus');
+      let phaseIndex = 0;
+      const phaseTimer = setInterval(() => {
+        phaseIndex = Math.min(phaseIndex + 1, phases.length - 1);
+        if (statusEl) statusEl.textContent = phases[phaseIndex];
+      }, 5000);
+      // La barre avance de façon fluide vers ~20s mais plafonne a 92% tant
+      // que la vraie reponse n'est pas arrivee -- elle ne doit jamais donner
+      // l'impression d'etre terminee avant que ce soit reellement le cas.
+      requestAnimationFrame(() => { if (fillEl) fillEl.style.width = '92%'; });
+      fillEl && (fillEl.style.transition = 'width 20s linear');
+
+      function stopLoadingAnimation(){
+        clearInterval(phaseTimer);
+      }
+
+      // Revele le contenu du resultat morceau par morceau (bandeau, puis
+      // chaque signal l'un apres l'autre, puis le texte, puis le bouton)
+      // plutot qu'un bloc entier qui s'affiche d'un coup.
+      function revealStaggered(container){
+        const items = container.querySelectorAll('.ai-reveal');
+        items.forEach((el, i) => {
+          setTimeout(() => el.classList.add('show'), i * 220);
+        });
+      }
 
       fetch('/ai-verification.php', {
         method: 'POST',
@@ -2494,49 +2543,54 @@
       })
       .then(res => res.json().then(data => ({ ok: res.ok, data })))
       .then(({ ok, data }) => {
-        btn.textContent = "Lancer l'analyse →";
+        stopLoadingAnimation();
         if (typeof window.hideChatTeaser === 'function') window.hideChatTeaser(); // evite un chevauchement avec le resultat, qui peut arriver pile pendant sa fenetre d'affichage automatique
         if (!ok) {
-          btn.disabled = false; // reste utilisable pour reessayer, sauf si la limite quotidienne est atteinte (429)
+          btn.disabled = false; btn.style.display = ''; // reste utilisable pour reessayer, sauf si la limite quotidienne est atteinte (429)
           resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">' + (data.error || "Une erreur est survenue.") + '</p>';
           return;
         }
-        btn.disabled = true;
-        btn.style.display = 'none';
+
+        if (fillEl) fillEl.style.transition = 'width .3s ease';
+        if (fillEl) fillEl.style.width = '100%';
 
         const safe = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        if (data.verdict === 'signaux_trouves') {
-          const items = data.signaux.map(s => '<li>' + safe(s) + '</li>').join('');
-          resultBox.innerHTML =
-            '<div style="border-left:3px solid var(--danger); padding:10px 14px; background:#FBF2F1;">' +
-            '<strong style="font-size:13px; color:var(--danger);">Plusieurs signaux méritent votre attention</strong>' +
-            '<ul style="margin:8px 0 10px; padding-left:18px; font-size:13px; line-height:1.6;">' + items + '</ul>' +
-            '<p style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Ceci n\'est pas une confirmation d\'arnaque — une vérification humaine reste nécessaire.</p>' +
-            '<button type="button" class="btn gold" id="aiCtaSignaler" style="width:100%; justify-content:center; font-size:13px;">Décrire ma situation à un avocat →</button>' +
-            '</div>';
-          document.getElementById('aiCtaSignaler').addEventListener('click', () => {
-            const explicatif = document.getElementById('explicatif');
-            if (explicatif && !explicatif.value) {
-              explicatif.value = 'Concernant "' + nom + '" : ' + data.resume;
-            }
-            document.getElementById('signaler').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          });
-        } else {
-          resultBox.innerHTML =
-            '<div style="border-left:3px solid var(--ok); padding:10px 14px; background:#F3F7EE;">' +
-            '<strong style="font-size:13px; color:var(--ok);">Aucun élément préoccupant trouvé</strong>' +
-            '<p style="font-size:13px; margin:8px 0 10px; line-height:1.6;">' + safe(data.resume) + '</p>' +
-            '<p style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Restez néanmoins vigilant : l\'absence de signal ne garantit pas la fiabilité.</p>' +
-            '<button type="button" class="btn secondary" id="aiCtaContact" style="width:100%; justify-content:center; font-size:13px;">Une question malgré tout ? Contacter le cabinet →</button>' +
-            '</div>';
-          document.getElementById('aiCtaContact').addEventListener('click', () => {
-            if (typeof openExitManual === 'function') openExitManual();
-          });
-        }
+        setTimeout(() => {
+          if (data.verdict === 'signaux_trouves') {
+            const items = data.signaux.map(s => '<li class="ai-reveal">' + safe(s) + '</li>').join('');
+            resultBox.innerHTML =
+              '<div style="border-left:3px solid var(--danger); padding:10px 14px; background:#FBF2F1;">' +
+              '<strong class="ai-reveal" style="display:block; font-size:13px; color:var(--danger);">Plusieurs signaux méritent votre attention</strong>' +
+              '<ul style="margin:8px 0 10px; padding-left:18px; font-size:13px; line-height:1.6;">' + items + '</ul>' +
+              '<p class="ai-reveal" style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Ceci n\'est pas une confirmation d\'arnaque — une vérification humaine reste nécessaire.</p>' +
+              '<button type="button" class="btn gold ai-reveal" id="aiCtaSignaler" style="width:100%; justify-content:center; font-size:13px;">Décrire ma situation à un avocat →</button>' +
+              '</div>';
+            revealStaggered(resultBox);
+            document.getElementById('aiCtaSignaler').addEventListener('click', () => {
+              const explicatif = document.getElementById('explicatif');
+              if (explicatif && !explicatif.value) {
+                explicatif.value = 'Concernant "' + nom + '" : ' + data.resume;
+              }
+              document.getElementById('signaler').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+          } else {
+            resultBox.innerHTML =
+              '<div style="border-left:3px solid var(--ok); padding:10px 14px; background:#F3F7EE;">' +
+              '<strong class="ai-reveal" style="display:block; font-size:13px; color:var(--ok);">Aucun élément préoccupant trouvé</strong>' +
+              '<p class="ai-reveal" style="font-size:13px; margin:8px 0 10px; line-height:1.6;">' + safe(data.resume) + '</p>' +
+              '<p class="ai-reveal" style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Restez néanmoins vigilant : l\'absence de signal ne garantit pas la fiabilité.</p>' +
+              '<button type="button" class="btn secondary ai-reveal" id="aiCtaContact" style="width:100%; justify-content:center; font-size:13px;">Une question malgré tout ? Contacter le cabinet →</button>' +
+              '</div>';
+            revealStaggered(resultBox);
+            document.getElementById('aiCtaContact').addEventListener('click', () => {
+              if (typeof openExitManual === 'function') openExitManual();
+            });
+          }
+        }, 350); // laisse la barre atteindre 100% avant de reveler le contenu
       })
       .catch(() => {
-        btn.disabled = false;
-        btn.textContent = "Lancer l'analyse →";
+        stopLoadingAnimation();
+        btn.disabled = false; btn.style.display = '';
         resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">Une erreur est survenue. Réessayez, ou contactez-nous directement.</p>';
       });
     });
