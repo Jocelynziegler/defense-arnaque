@@ -50,6 +50,15 @@ if (mb_strlen($nom) < 2 || mb_strlen($nom) > 150) {
     exit;
 }
 
+// Type d'element verifie (societe par defaut, pour compatibilite avec les
+// appels existants) -- adapte la formulation envoyee a l'IA, le reste du
+// prompt (prudence, categories A/B/C, interdiction de citer un autre
+// cabinet...) s'applique de la meme facon quel que soit le type.
+$typesAutorises = ['societe' => 'société ou plateforme', 'telephone' => 'numéro de téléphone', 'email' => 'adresse email', 'iban' => 'IBAN', 'domaine' => 'nom de domaine', 'crypto' => 'adresse de portefeuille crypto'];
+$type = $data['type'] ?? 'societe';
+if (!isset($typesAutorises[$type])) $type = 'societe';
+$typeLabel = $typesAutorises[$type];
+
 // ---------- Cas particulier : recherche sur le cabinet lui-meme ----------
 // Court-circuite entierement la recherche/IA (jamais d'appel API, jamais de
 // requete comptee dans les limites) -- reponse fixe et maitrisee, plutot que
@@ -148,7 +157,7 @@ if ($mFp) {
 
 // ---------- Appel a l'API Anthropic ----------
 $systemPrompt = <<<'PROMPT'
-Tu verifies des societes/plateformes d'investissement pour un cabinet d'avocats francais specialise dans la defense des victimes d'escroqueries financieres.
+Tu verifies un element en lien avec un possible investissement (societe, plateforme, numero de telephone, adresse email, IBAN, nom de domaine, ou adresse de portefeuille crypto) pour un cabinet d'avocats francais specialise dans la defense des victimes d'escroqueries financieres. Le type exact de l'element te sera precise dans le message.
 
 DISTINCTION CRITIQUE A FAIRE AVANT TOUT AUTRE CHOSE :
 Pour chaque information trouvee, classe-la mentalement dans une de ces 3 categories :
@@ -175,7 +184,7 @@ $body = [
     'model' => 'claude-haiku-4-5-20251001',
     'max_tokens' => 800,
     'system' => $systemPrompt,
-    'messages' => [['role' => 'user', 'content' => 'Societe a verifier : ' . $nom]],
+    'messages' => [['role' => 'user', 'content' => 'Element a verifier (' . $typeLabel . ') : ' . $nom]],
     'tools' => [
         ['type' => 'web_search_20250305', 'name' => 'web_search', 'max_uses' => 3],
         [

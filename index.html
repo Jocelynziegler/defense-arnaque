@@ -1393,6 +1393,13 @@
               <div id="ibanBicResult" style="margin-top:14px;"></div>
               <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="ibanCta" href="#signaler">Signaler ma situation au cabinet →</a>
             </div>
+
+            <div class="pub-check" style="margin-top:24px;">
+              <strong class="pub-heading">Que dit-on de cet IBAN en ce moment sur le web ?</strong>
+              <p style="font-size:12.5px; color:var(--ink-soft); margin:4px 0 10px; line-height:1.5;">Notre IA recherche les signalements récents (jusqu'à 3 vérifications par jour). Complément aux vérifications ci-dessus, jamais un substitut.</p>
+              <button class="btn secondary" id="aiCheckBtnIban" type="button" style="font-size:13px; padding:9px 16px;">Lancer l'analyse →</button>
+              <div id="aiCheckResultIban" style="margin-top:12px;"></div>
+            </div>
           </div>
         </div>
 
@@ -1407,6 +1414,13 @@
             <div class="verify-out" id="domaineOut">
               <div id="domaineStandaloneResults" style="margin-top:4px;"></div>
               <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="domaineCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+
+            <div class="pub-check" style="margin-top:24px;">
+              <strong class="pub-heading">Que dit-on de ce site en ce moment sur le web ?</strong>
+              <p style="font-size:12.5px; color:var(--ink-soft); margin:4px 0 10px; line-height:1.5;">Notre IA recherche les avis, forums et signalements récents (jusqu'à 3 vérifications par jour). Complément à la vérification WHOIS ci-dessus, jamais un substitut.</p>
+              <button class="btn secondary" id="aiCheckBtnDomaine" type="button" style="font-size:13px; padding:9px 16px;">Lancer l'analyse →</button>
+              <div id="aiCheckResultDomaine" style="margin-top:12px;"></div>
             </div>
 
             <div class="tool-source-note" style="font-size:12.5px; color:var(--ink-soft-2); margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);">Vérification basée sur les données d'enregistrement publiques du domaine (WHOIS), via WhoisJSON. Ne remplace pas une vérification officielle de l'agrément de la société.</div>
@@ -1442,6 +1456,13 @@
               <div class="score-gauge"><i id="cryptoBar"></i></div>
               <p id="cryptoText" style="font-size:13.5px; color:var(--ink-soft); margin-top:12px; line-height:1.55;"></p>
               <a class="btn gold" style="margin-top:18px; display:none; width:100%; justify-content:center;" id="cryptoCta" href="#signaler">Signaler ma situation au cabinet →</a>
+            </div>
+
+            <div class="pub-check" style="margin-top:24px;">
+              <strong class="pub-heading">Que dit-on de cette adresse en ce moment sur le web ?</strong>
+              <p style="font-size:12.5px; color:var(--ink-soft); margin:4px 0 10px; line-height:1.5;">Notre IA recherche les signalements récents (jusqu'à 3 vérifications par jour). Complément à la vérification GoPlus Security ci-dessus, jamais un substitut.</p>
+              <button class="btn secondary" id="aiCheckBtnCrypto" type="button" style="font-size:13px; padding:9px 16px;">Lancer l'analyse →</button>
+              <div id="aiCheckResultCrypto" style="margin-top:12px;"></div>
             </div>
           </div>
         </div>
@@ -2497,114 +2518,126 @@
       document.getElementById('comboCta').style.display = (score <= 15) ? 'inline-flex' : 'none';
     });
 
-    document.getElementById('aiCheckBtn').addEventListener('click', () => {
-      const nom = document.getElementById('vname').value.trim();
-      if (!nom) { document.getElementById('vname').focus(); return; }
-      const btn = document.getElementById('aiCheckBtn');
-      const resultBox = document.getElementById('aiCheckResult');
-      btn.disabled = true;
-      btn.style.display = 'none';
+    // Fonction generique, reutilisee pour les 4 panneaux de verification
+    // (societe/telephone/email partagent deja le meme panneau -> vname ;
+    // iban, domaine, crypto ont chacun leur propre champ).
+    function wireAiCheck(inputId, btnId, resultId, typeParam){
+      const btn = document.getElementById(btnId);
+      const resultBox = document.getElementById(resultId);
+      if (!btn || !resultBox) return;
 
-      // ---- Mise en scene de l'attente (~20s) : explique pourquoi ca prend
-      // ce temps (recoupement de plusieurs sources), plutot que de laisser
-      // un simple texte statique qui peut donner l'impression que rien ne
-      // se passe.
-      const phases = [
-        'Recherche des avis et signalements récents…',
-        'Analyse des forums et plateformes spécialisées…',
-        'Vérification croisée des signaux trouvés…',
-        'Finalisation de l\'analyse…',
-      ];
-      resultBox.innerHTML =
-        '<p class="ai-loading-intro">Cette vérification prend environ 20 secondes — notre technologie croise plusieurs sources (avis, forums, signalements) pour vous donner une analyse fiable, pas une réponse superficielle.</p>' +
-        '<p class="ai-loading-status" id="aiLoadingStatus">' + phases[0] + '</p>' +
-        '<div class="ai-progress-track"><div class="ai-progress-fill" id="aiProgressFill"></div></div>';
+      btn.addEventListener('click', () => {
+        const nom = document.getElementById(inputId).value.trim();
+        if (!nom) { document.getElementById(inputId).focus(); return; }
+        btn.disabled = true;
+        btn.style.display = 'none';
 
-      const fillEl = document.getElementById('aiProgressFill');
-      const statusEl = document.getElementById('aiLoadingStatus');
-      let phaseIndex = 0;
-      const phaseTimer = setInterval(() => {
-        phaseIndex = Math.min(phaseIndex + 1, phases.length - 1);
-        if (statusEl) statusEl.textContent = phases[phaseIndex];
-      }, 5000);
-      // La barre avance de façon fluide vers ~20s mais plafonne a 92% tant
-      // que la vraie reponse n'est pas arrivee -- elle ne doit jamais donner
-      // l'impression d'etre terminee avant que ce soit reellement le cas.
-      requestAnimationFrame(() => { if (fillEl) fillEl.style.width = '92%'; });
-      fillEl && (fillEl.style.transition = 'width 20s linear');
+        // ---- Mise en scene de l'attente (~20s) : explique pourquoi ca prend
+        // ce temps (recoupement de plusieurs sources), plutot que de laisser
+        // un simple texte statique qui peut donner l'impression que rien ne
+        // se passe.
+        const phases = [
+          'Recherche des avis et signalements récents…',
+          'Analyse des forums et plateformes spécialisées…',
+          'Vérification croisée des signaux trouvés…',
+          'Finalisation de l\'analyse…',
+        ];
+        resultBox.innerHTML =
+          '<p class="ai-loading-intro">Cette vérification prend environ 20 secondes — notre technologie croise plusieurs sources (avis, forums, signalements) pour vous donner une analyse fiable, pas une réponse superficielle.</p>' +
+          '<p class="ai-loading-status">' + phases[0] + '</p>' +
+          '<div class="ai-progress-track"><div class="ai-progress-fill"></div></div>';
 
-      function stopLoadingAnimation(){
-        clearInterval(phaseTimer);
-      }
+        const fillEl = resultBox.querySelector('.ai-progress-fill');
+        const statusEl = resultBox.querySelector('.ai-loading-status');
+        let phaseIndex = 0;
+        const phaseTimer = setInterval(() => {
+          phaseIndex = Math.min(phaseIndex + 1, phases.length - 1);
+          if (statusEl) statusEl.textContent = phases[phaseIndex];
+        }, 5000);
+        // La barre avance de façon fluide vers ~20s mais plafonne a 92% tant
+        // que la vraie reponse n'est pas arrivee -- elle ne doit jamais donner
+        // l'impression d'etre terminee avant que ce soit reellement le cas.
+        requestAnimationFrame(() => { if (fillEl) fillEl.style.width = '92%'; });
+        fillEl && (fillEl.style.transition = 'width 20s linear');
 
-      // Revele le contenu du resultat morceau par morceau (bandeau, puis
-      // chaque signal l'un apres l'autre, puis le texte, puis le bouton)
-      // plutot qu'un bloc entier qui s'affiche d'un coup.
-      function revealStaggered(container){
-        const items = container.querySelectorAll('.ai-reveal');
-        items.forEach((el, i) => {
-          setTimeout(() => el.classList.add('show'), i * 220);
-        });
-      }
-
-      fetch('/ai-verification.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nom })
-      })
-      .then(res => res.json().then(data => ({ ok: res.ok, data })))
-      .then(({ ok, data }) => {
-        stopLoadingAnimation();
-        if (typeof window.hideChatTeaser === 'function') window.hideChatTeaser(); // evite un chevauchement avec le resultat, qui peut arriver pile pendant sa fenetre d'affichage automatique
-        if (!ok) {
-          btn.disabled = false; btn.style.display = ''; // reste utilisable pour reessayer, sauf si la limite quotidienne est atteinte (429)
-          resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">' + (data.error || "Une erreur est survenue.") + '</p>';
-          return;
+        function stopLoadingAnimation(){
+          clearInterval(phaseTimer);
         }
 
-        if (fillEl) fillEl.style.transition = 'width .3s ease';
-        if (fillEl) fillEl.style.width = '100%';
+        // Revele le contenu du resultat morceau par morceau (bandeau, puis
+        // chaque signal l'un apres l'autre, puis le texte, puis le bouton)
+        // plutot qu'un bloc entier qui s'affiche d'un coup.
+        function revealStaggered(container){
+          const items = container.querySelectorAll('.ai-reveal');
+          items.forEach((el, i) => {
+            setTimeout(() => el.classList.add('show'), i * 220);
+          });
+        }
 
-        const safe = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        setTimeout(() => {
-          if (data.verdict === 'signaux_trouves') {
-            const items = data.signaux.map(s => '<li class="ai-reveal">' + safe(s) + '</li>').join('');
-            resultBox.innerHTML =
-              '<div style="border-left:3px solid var(--danger); padding:10px 14px; background:#FBF2F1;">' +
-              '<strong class="ai-reveal" style="display:block; font-size:13px; color:var(--danger);">Plusieurs signaux méritent votre attention</strong>' +
-              '<ul style="margin:8px 0 10px; padding-left:18px; font-size:13px; line-height:1.6;">' + items + '</ul>' +
-              '<p class="ai-reveal" style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Ceci n\'est pas une confirmation d\'arnaque — une vérification humaine reste nécessaire.</p>' +
-              '<button type="button" class="btn gold ai-reveal" id="aiCtaSignaler" style="width:100%; justify-content:center; font-size:13px;">Décrire ma situation à un avocat →</button>' +
-              '</div>';
-            revealStaggered(resultBox);
-            document.getElementById('aiCtaSignaler').addEventListener('click', () => {
-              const explicatif = document.getElementById('explicatif');
-              if (explicatif && !explicatif.value) {
-                explicatif.value = 'Concernant "' + nom + '" : ' + data.resume;
-              }
-              document.getElementById('signaler').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-          } else {
-            resultBox.innerHTML =
-              '<div style="border-left:3px solid var(--ok); padding:10px 14px; background:#F3F7EE;">' +
-              '<strong class="ai-reveal" style="display:block; font-size:13px; color:var(--ok);">Aucun élément préoccupant trouvé</strong>' +
-              '<p class="ai-reveal" style="font-size:13px; margin:8px 0 10px; line-height:1.6;">' + safe(data.resume) + '</p>' +
-              '<p class="ai-reveal" style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Restez néanmoins vigilant : l\'absence de signal ne garantit pas la fiabilité.</p>' +
-              '<button type="button" class="btn secondary ai-reveal" id="aiCtaContact" style="width:100%; justify-content:center; font-size:13px;">Une question malgré tout ? Contacter le cabinet →</button>' +
-              '</div>';
-            revealStaggered(resultBox);
-            document.getElementById('aiCtaContact').addEventListener('click', () => {
-              if (typeof openExitManual === 'function') openExitManual();
-            });
+        fetch('/ai-verification.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nom, type: typeParam })
+        })
+        .then(res => res.json().then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
+          stopLoadingAnimation();
+          if (typeof window.hideChatTeaser === 'function') window.hideChatTeaser(); // evite un chevauchement avec le resultat, qui peut arriver pile pendant sa fenetre d'affichage automatique
+          if (!ok) {
+            btn.disabled = false; btn.style.display = ''; // reste utilisable pour reessayer, sauf si la limite quotidienne est atteinte (429)
+            resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">' + (data.error || "Une erreur est survenue.") + '</p>';
+            return;
           }
-        }, 350); // laisse la barre atteindre 100% avant de reveler le contenu
-      })
-      .catch(() => {
-        stopLoadingAnimation();
-        btn.disabled = false; btn.style.display = '';
-        resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">Une erreur est survenue. Réessayez, ou contactez-nous directement.</p>';
+
+          if (fillEl) fillEl.style.transition = 'width .3s ease';
+          if (fillEl) fillEl.style.width = '100%';
+
+          const safe = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          setTimeout(() => {
+            if (data.verdict === 'signaux_trouves') {
+              const items = data.signaux.map(s => '<li class="ai-reveal">' + safe(s) + '</li>').join('');
+              resultBox.innerHTML =
+                '<div style="border-left:3px solid var(--danger); padding:10px 14px; background:#FBF2F1;">' +
+                '<strong class="ai-reveal" style="display:block; font-size:13px; color:var(--danger);">Plusieurs signaux méritent votre attention</strong>' +
+                '<ul style="margin:8px 0 10px; padding-left:18px; font-size:13px; line-height:1.6;">' + items + '</ul>' +
+                '<p class="ai-reveal" style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Ceci n\'est pas une confirmation d\'arnaque — une vérification humaine reste nécessaire.</p>' +
+                '<button type="button" class="btn gold ai-reveal ai-cta-signaler" style="width:100%; justify-content:center; font-size:13px;">Décrire ma situation à un avocat →</button>' +
+                '</div>';
+              revealStaggered(resultBox);
+              resultBox.querySelector('.ai-cta-signaler').addEventListener('click', () => {
+                const explicatif = document.getElementById('explicatif');
+                if (explicatif && !explicatif.value) {
+                  explicatif.value = 'Concernant "' + nom + '" : ' + data.resume;
+                }
+                document.getElementById('signaler').scrollIntoView({ behavior: 'smooth', block: 'start' });
+              });
+            } else {
+              resultBox.innerHTML =
+                '<div style="border-left:3px solid var(--ok); padding:10px 14px; background:#F3F7EE;">' +
+                '<strong class="ai-reveal" style="display:block; font-size:13px; color:var(--ok);">Aucun élément préoccupant trouvé</strong>' +
+                '<p class="ai-reveal" style="font-size:13px; margin:8px 0 10px; line-height:1.6;">' + safe(data.resume) + '</p>' +
+                '<p class="ai-reveal" style="font-size:11.5px; color:var(--ink-soft-2); margin-bottom:12px;">Restez néanmoins vigilant : l\'absence de signal ne garantit pas la fiabilité.</p>' +
+                '<button type="button" class="btn secondary ai-reveal ai-cta-contact" style="width:100%; justify-content:center; font-size:13px;">Une question malgré tout ? Contacter le cabinet →</button>' +
+                '</div>';
+              revealStaggered(resultBox);
+              resultBox.querySelector('.ai-cta-contact').addEventListener('click', () => {
+                if (typeof openExitManual === 'function') openExitManual();
+              });
+            }
+          }, 350); // laisse la barre atteindre 100% avant de reveler le contenu
+        })
+        .catch(() => {
+          stopLoadingAnimation();
+          btn.disabled = false; btn.style.display = '';
+          resultBox.innerHTML = '<p style="font-size:13px; color:var(--danger);">Une erreur est survenue. Réessayez, ou contactez-nous directement.</p>';
+        });
       });
-    });
+    }
+
+    wireAiCheck('vname', 'aiCheckBtn', 'aiCheckResult', 'societe');
+    wireAiCheck('vIban', 'aiCheckBtnIban', 'aiCheckResultIban', 'iban');
+    wireAiCheck('vDomaine', 'aiCheckBtnDomaine', 'aiCheckResultDomaine', 'domaine');
+    wireAiCheck('vCrypto', 'aiCheckBtnCrypto', 'aiCheckResultCrypto', 'crypto');
   })();
 
   /* ---------------- IBAN VERIFICATION (format + cle de controle + annuaire BIC) ---------------- */
