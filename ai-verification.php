@@ -167,6 +167,7 @@ AUTRES REGLES :
 - Base-toi uniquement sur ce que tu trouves reellement via la recherche web.
 - Maximum 3 recherches web.
 - N'inclus JAMAIS de balises de citation, de markup, ou de syntaxe speciale (pas de <cite>, pas de crochets de reference) -- uniquement du texte brut lisible.
+- Ne mentionne ni ne recommande JAMAIS un autre avocat ou cabinet d'avocats que le Cabinet Ziegler & Associes. Si tes sources mentionnent qu'une procedure judiciaire ou une action a ete engagee par un autre cabinet, tu peux le noter comme signal de gravite ("une procedure judiciaire est deja engagee contre cette plateforme"), mais SANS JAMAIS citer le nom de cet autre cabinet ou avocat.
 - Une fois tes recherches terminees, appelle l'outil submit_verdict avec ta conclusion. N'ecris PAS ton analyse en texte libre avant -- appelle l'outil directement.
 PROMPT;
 
