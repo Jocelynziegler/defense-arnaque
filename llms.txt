@@ -24,6 +24,7 @@ La plateforme propose trois façons d'agir :
 - [Accueil — Signaler, vérifier](https://ziegler-alertearnaque.com/): présentation des outils, schéma type d'une escroquerie financière, équipe du cabinet, presse, avis clients.
 - [Alertes de la communauté](https://ziegler-alertearnaque.com/ziegler-alertearnaque-alertes.html): alertes anonymisées vérifiées par le cabinet, filtrables par type d'arnaque, avec formulaire de soumission d'une nouvelle alerte.
 - [Forum de la communauté](https://ziegler-alertearnaque.com/ziegler-alertearnaque-forum.html): sujets de discussion et réponses, tous relus par le cabinet avant publication, filtrables par catégorie.
+- [Blog](https://ziegler-alertearnaque.com/ziegler-alertearnaque-blog.html): analyses et actualités du cabinet sur les arnaques financières, mis à jour régulièrement.
 - [FAQ](https://ziegler-alertearnaque.com/ziegler-alertearnaque-faq.html): réponses détaillées sur le signalement, la vérification, les recours juridiques et la protection des données.
 - [À propos de la plateforme](https://ziegler-alertearnaque.com/ziegler-alertearnaque-a-propos.html): présentation du cabinet et de la méthode.
 - [Mentions légales](https://ziegler-alertearnaque.com/ziegler-alertearnaque-mentions-legales.html): identité de l'éditeur, hébergement, propriété intellectuelle, RGPD.
