@@ -10,3 +10,6 @@ rate-limit.json
 ai-config.php
 ai-verification-rate-limit.json
 ai-verification-monthly-count.json
+blog-review-secret.php
+blog-drafts.json
+blog-covered-platforms.json
