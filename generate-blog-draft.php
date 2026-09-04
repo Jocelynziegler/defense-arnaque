@@ -105,16 +105,24 @@ if (empty($aTraiter)) {
 
 // ---------- 3. APPEL API : VERIFICATION PUIS REDACTION ----------
 function callAnthropic($systemPrompt, $userMessage, $toolName, $toolDescription, $toolSchema, $maxSearches, $maxTokens) {
+    $tools = [];
+    if ($maxSearches > 0) {
+        $tools[] = ['type' => 'web_search_20250305', 'name' => 'web_search', 'max_uses' => $maxSearches];
+    }
+    $tools[] = ['name' => $toolName, 'description' => $toolDescription, 'input_schema' => $toolSchema];
+
     $body = [
         'model' => 'claude-haiku-4-5-20251001',
         'max_tokens' => $maxTokens,
         'system' => $systemPrompt,
         'messages' => [['role' => 'user', 'content' => $userMessage]],
-        'tools' => [
-            ['type' => 'web_search_20250305', 'name' => 'web_search', 'max_uses' => $maxSearches],
-            ['name' => $toolName, 'description' => $toolDescription, 'input_schema' => $toolSchema],
-        ],
+        'tools' => $tools,
     ];
+    // Sans recherche web, on force l'appel direct de l'outil (pas de preambule
+    // en texte libre) -- economise des tokens en plus d'economiser la recherche.
+    if ($maxSearches === 0) {
+        $body['tool_choice'] = ['type' => 'tool', 'name' => $toolName];
+    }
     $ch = curl_init('https://api.anthropic.com/v1/messages');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
@@ -169,7 +177,7 @@ REGLES STRICTES :
 - Formulations prudentes uniquement : jamais "c'est une arnaque" au sens juridique, mais "signaux qui meritent verification", "plateforme presentee comme..." etc.
 - Ne mentionne ni ne recommande JAMAIS un autre avocat ou cabinet d'avocats que le Cabinet Ziegler & Associes. Si une autre structure est mentionnee dans tes sources, tu peux noter son existence generiquement sans jamais la nommer precisement si elle pourrait s'apparenter a un cabinet concurrent.
 - Texte brut uniquement, pas de markdown, pas de balises de citation.
-- Maximum 2 recherches web supplementaires pour enrichir les details (le sujet a deja ete verifie).
+- Base-toi UNIQUEMENT sur le resume de verification deja fourni -- ne fais AUCUNE recherche supplementaire, redige directement a partir de ces elements (deja le fruit d'une recherche reelle a l'etape precedente).
 - Une fois termine, appelle l'outil submit_article.
 PROMPT;
 
@@ -228,11 +236,11 @@ foreach ($aTraiter as $candidat) {
     logBD("  -> Victimes confirmees ! Redaction de l'article...");
     $article = callAnthropic(
         $ARTICLE_SYSTEM_PROMPT,
-        "Plateforme : $nom\n\nResume de la verification prealable (victimes confirmees) : " . $verif['resume'] . "\n\nRedige l'article complet.",
+        "Plateforme : $nom\n\nResume de la verification prealable (victimes confirmees) : " . $verif['resume'] . "\n\nRedige l'article complet, sans recherche supplementaire.",
         'submit_article',
         'Soumets l\'article complet redige.',
         $ARTICLE_SCHEMA,
-        2,
+        0,
         2000
     );
 
