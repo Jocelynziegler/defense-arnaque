@@ -35,7 +35,7 @@ if (!file_exists($configFile)) {
 }
 require $configFile;
 
-$CSV_URL         = 'https://www.abe-infoservice.fr/fr/abeis-liste-noire.csv';
+$CSV_URL         = 'https://www.data.gouv.fr/api/1/datasets/r/d2d9df6d-1cd2-41a8-96f5-684cb3057ecb'; // Source officielle AMF via data.gouv.fr (producteur direct, mise a jour quotidienne -- verifie plus fiable que le relais ABE-InfoService utilise par update-blacklist.php)
 $COVERED_FILE    = __DIR__ . '/blog-covered-platforms.json';
 $DRAFTS_FILE     = __DIR__ . '/blog-drafts.json';
 $LOG_FILE        = __DIR__ . '/assets/blog-draft-generation.log';
@@ -63,22 +63,22 @@ if ($csvContent === false || strlen($csvContent) < 100) {
 }
 $csvContent = preg_replace('/^\xEF\xBB\xBF/', '', $csvContent);
 $lines = preg_split('/\r\n|\r|\n/', trim($csvContent));
-$rows = array_map('str_getcsv', $lines);
+$rows = array_map(fn($l) => str_getcsv($l, ';'), $lines); // point-virgule : format reel du CSV AMF (data.gouv.fr), different du relais ABE-InfoService qui utilise la virgule
 if (count($rows) < 2) {
     logBD("ÉCHEC: CSV vide ou mal formé.");
     exit(1);
 }
-array_shift($rows); // en-tête : URL/Mails, Denomination, Categorie(s), Date d'inscription
+array_shift($rows); // en-tête : Nom, Categorie, Date d'inscription (format data.gouv.fr)
 
 $candidats = [];
 foreach ($rows as $row) {
     if (empty($row[0])) continue;
-    $categorie = strtolower($row[2] ?? '');
+    $categorie = strtolower($row[1] ?? ''); // format data.gouv.fr : Nom, Categorie, Date (3 colonnes, pas 4)
     if (strpos($categorie, 'crypto') === false) continue; // filtre : categorie crypto-actifs uniquement, sur demande explicite
     $candidats[] = [
         'nom'       => trim($row[0]),
-        'categorie' => trim($row[2] ?? ''),
-        'date_ajout' => trim($row[3] ?? ''),
+        'categorie' => trim($row[1] ?? ''),
+        'date_ajout' => trim($row[2] ?? ''),
     ];
 }
 logBD(count($candidats) . " candidats trouves dans la categorie crypto-actifs.");
