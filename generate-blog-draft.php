@@ -291,7 +291,7 @@ if ($brouillonCree) {
             $mail->Port = $config['smtp_port'];
             $mail->CharSet = 'UTF-8';
             $mail->setFrom($config['smtp_user'], 'Ziegler Alerte Arnaque — Blog');
-            $mail->addAddress($config['dest_email']);
+            $mail->addAddress($config['to_email'], $config['to_name'] ?? '');
             $mail->Subject = 'Nouveau brouillon d\'article de blog à relire';
             $mail->isHTML(true);
             $mail->Body = '<p>Un nouveau brouillon d\'article a été généré et attend votre relecture.</p><p><a href="https://ziegler-alertearnaque.com/blog-review.php">Consulter et valider →</a></p>';
