@@ -49,7 +49,7 @@
 
 # Empêche l'accès direct au jeton de cron, aux journaux, et aux fichiers
 # de configuration Git — même si un lien y menait par erreur.
-<FilesMatch "^(cron-secret\.php|cron-secret\.sample\.php|mail-config\.php|push-subscribers\.json|rate-limit\.json|ai-config\.php|ai-verification-rate-limit\.json|ai-verification-monthly-count\.json|blog-review-secret\.php|blog-drafts\.json|blog-covered-platforms\.json|whois-config\.php|.*\.log)$">
+<FilesMatch "^(cron-secret\.php|cron-secret\.sample\.php|mail-config\.php|push-subscribers\.json|rate-limit\.json|ai-config\.php|ai-verification-rate-limit\.json|ai-verification-monthly-count\.json|blog-review-secret\.php|blog-drafts\.json|blog-covered-platforms\.json|whois-config\.php|airtable-config\.php|.*\.log)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

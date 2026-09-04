@@ -5,7 +5,7 @@ cron-secret.php
 whois-config.php
 push-subscribers.json
 mail-config.php
-airtable-proxy.php
+airtable-config.php
 rate-limit.json
 ai-config.php
 ai-verification-rate-limit.json
