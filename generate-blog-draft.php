@@ -294,7 +294,11 @@ if ($brouillonCree) {
             $mail->addAddress($config['to_email'], $config['to_name'] ?? '');
             $mail->Subject = 'Nouveau brouillon d\'article de blog à relire';
             $mail->isHTML(true);
-            $mail->Body = '<p>Un nouveau brouillon d\'article a été généré et attend votre relecture.</p><p><a href="https://ziegler-alertearnaque.com/blog-review.php">Consulter et valider →</a></p>';
+            $reviewSecretFile = __DIR__ . '/blog-review-secret.php';
+            $reviewToken = file_exists($reviewSecretFile) ? require $reviewSecretFile : null;
+            $reviewUrl = 'https://ziegler-alertearnaque.com/blog-review.php'
+                . ($reviewToken ? '?token=' . urlencode($reviewToken) : '');
+            $mail->Body = '<p>Un nouveau brouillon d\'article a été généré et attend votre relecture.</p><p><a href="' . htmlspecialchars($reviewUrl, ENT_QUOTES) . '">Consulter et valider →</a></p>';
             $mail->send();
             logBD("Notification email envoyee.");
         } catch (Exception $e) {
