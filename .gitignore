@@ -2,7 +2,7 @@
 *.log
 *.patch
 cron-secret.php
-whois-check.php
+whois-config.php
 push-subscribers.json
 mail-config.php
 airtable-proxy.php
