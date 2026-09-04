@@ -35,7 +35,7 @@ if (!defined('AIRTABLE_TOKEN') || !defined('AIRTABLE_BASE_ID') || AIRTABLE_TOKEN
     exit;
 }
 
-const TABLE_ALERTES = 'Défense Arnaque';
+const TABLE_ALERTES = 'tbl9my7nEOMQkNSJL'; // Table "Alertes" -- identifiant stable (jamais le nom "Défense Arnaque", qui est celui de la BASE, pas de la table -- confusion source du 403 initial)
 
 function airtableGet($path, $params = []) {
     $url = 'https://api.airtable.com/v0/' . AIRTABLE_BASE_ID . '/' . rawurlencode($path);
