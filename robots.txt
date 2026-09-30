@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# Crawlers d'IA génératives / moteurs de réponse (GEO)
+# Crawlers d'IA generatives / moteurs de reponse (GEO)
 User-agent: GPTBot
 Allow: /
 
